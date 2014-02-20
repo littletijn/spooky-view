@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.30110.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ClearView", "ClearView\ClearView.vcxproj", "{7CE47E95-8AA0-4B62-87FD-CA1242022F47}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 2
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://littletijn.visualstudio.com/defaultcollection
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = ClearView\\ClearView.vcxproj
+		SccProjectName1 = ClearView
+		SccLocalPath1 = ClearView
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Debug|Win32.Build.0 = Debug|Win32
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release|Win32.ActiveCfg = Release|Win32
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
