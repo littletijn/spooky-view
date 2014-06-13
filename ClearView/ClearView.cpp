@@ -82,32 +82,42 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	return (int) msg.wParam;
 }
 
-void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
+BOOL IsWindowUsable(HWND hwnd)
 {
-	LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
-	//Get Window class name
 	if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 	{
-		if (idObject == OBJID_WINDOW && GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0))
+		LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
+		if (GetAncestor(hwnd, GA_PARENT) != GetDesktopWindow() || ((styles & WS_POPUP) && _tcscmp(windowClassName, DIALOGBOXCLASSNAME) != 0))
 		{
-			//This is a top-level window, enumerate all windows
-			OutputDebugString(_T("Enuming...\r\n"));
-			EnumWindows(EnumWindowsProc, NULL);
-			OutputDebugString(_T("-------------------------------------\r\n"));
+			//This is not a top-level window or a pop-up window that is not a dialog or it is hidden at the moment, skip it.
+			return FALSE;
 		}
+		return TRUE;
 	}
+	return FALSE;
+}
+
+void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
+{
+	if (IsWindowUsable(hwnd) && idObject == OBJID_WINDOW)
+	{
+		//This is a top-level window, enumerate all windows
+		OutputDebugString(_T("Enuming...\r\n"));
+		EnumWindows(EnumWindowsProc, NULL);
+		OutputDebugString(_T("-------------------------------------\r\n"));
+	}
+}
+
+void CALLBACK WinEventProcForeground(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
+{
+	//When the foreground window has changed, always reset transparency values
+	EnumWindows(EnumWindowsProc, NULL);
 }
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
 {	
-	if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
+	if (IsWindowUsable(hwnd) && IsWindowVisible(hwnd) && !IsIconic(hwnd))
 	{
-		LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
-		if (!IsWindowVisible (hwnd)|| GetAncestor(hwnd, GA_PARENT) != GetDesktopWindow() || IsIconic(hwnd) || ((styles & WS_POPUP) && _tcscmp(windowClassName, DIALOGBOXCLASSNAME) != 0))
-		{
-			//This is not a top-level window or a pop-up window that is not a dialog or it is hidden at the moment, skip it.
-			return TRUE;
-		}
 		if (GetForegroundWindow() == hwnd)
 		{
 			SetWindowAlpha(hwnd, CSettings::WindowTypes::Foregound);
@@ -122,7 +132,10 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
 
 BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam)
 {
-	SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) ^ WS_EX_LAYERED));
+	if (IsWindowUsable(hwnd))
+	{
+		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) ^ WS_EX_LAYERED));
+	}
 	return TRUE;
 }
 
@@ -134,7 +147,7 @@ void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 	if (hProcess != NULL)
 	{
 		//Check if current process is not a Windows Store App or Explorer
-		if (isImmersive == NULL || !isImmersive(hProcess))
+		//if (isImmersive == NULL || !isImmersive(hProcess))
 		{
 			//Create buffers
 			TCHAR filePathName[MAX_PATH];
@@ -181,7 +194,7 @@ void CreateHook()
 	/*EVENT_OBJECT_SHOW*/
 	/*EVENT_SYSTEM_MINIMIZEEND*/
 	hWinEventHook[0] = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
-	hWinEventHook[1] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+	hWinEventHook[1] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, NULL, WinEventProcForeground, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
 	hWinEventHook[2] = SetWinEventHook(EVENT_SYSTEM_MINIMIZEEND, EVENT_SYSTEM_MINIMIZEEND, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
 }
 
