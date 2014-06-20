@@ -10,3 +10,4 @@
 #define IDC_CLEARVIEW                           109
 #define IDM_OPEN                                40000
 #define IDS_APP_TITLE                           40000
+#define IDM_PAUSE                               40001

@@ -23,6 +23,7 @@ HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
 PGNSI2 DwmExtendFrameIntoClientArea;
 CSettings* settings;
+BOOL isPause = false;
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/ms633577(v=vs.85).aspx
 //Max length of className is 256 characters
@@ -68,10 +69,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 			DispatchMessage(&msg);
 		}
 	}
-	for each (HWINEVENTHOOK hook in hWinEventHook)
-	{
-		UnhookWinEvent(hook);
-	}
+	//Remove event hooks
+	Unhook();
 	//Reset windows
 	EnumWindows(EnumWindowsReset, NULL);
 
@@ -80,6 +79,23 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	delete settings;
 
 	return (int) msg.wParam;
+}
+
+BOOL IsPaused()
+{
+	return isPause;
+}
+
+void TogglePause()
+{
+	isPause = !isPause;
+	if (isPause){
+		Unhook();
+	}
+	else{
+		CreateHook();
+		EnumWindows(EnumWindowsProc, NULL);
+	}
 }
 
 BOOL IsWindowUsable(HWND hwnd)
@@ -196,6 +212,14 @@ void CreateHook()
 	hWinEventHook[0] = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
 	hWinEventHook[1] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, NULL, WinEventProcForeground, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
 	hWinEventHook[2] = SetWinEventHook(EVENT_SYSTEM_MINIMIZEEND, EVENT_SYSTEM_MINIMIZEEND, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+}
+
+void Unhook()
+{
+	for each (HWINEVENTHOOK hook in hWinEventHook)
+	{
+		UnhookWinEvent(hook);
+	}
 }
 
 /*

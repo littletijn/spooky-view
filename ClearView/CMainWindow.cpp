@@ -6,6 +6,11 @@
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWnd(hInstance) 
 {
+	//Create struct
+	menuInfo.cbSize = sizeof(MENUINFO);
+	menuInfo.fMask = MIIM_CHECKMARKS; 
+	menuInfo.hbmpChecked = NULL;
+	menuInfo.hbmpUnchecked = NULL;
 };
 
 BOOL CMainWindow::InitInstance()
@@ -33,6 +38,11 @@ void CMainWindow::CloseWindow()
 	PostQuitMessage(0);
 }
 
+HMENU CMainWindow::GetContextMenu()
+{
+	return GetSubMenu(notifyIconContextMenu, 0);
+}
+
 //Message handler
 LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -52,7 +62,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			GetCursorPos(&cursorPos);
 			//We must set the owning window of this Context Menu on the foreground, otherwise the menu cannot be closed by clicking outside of the menu.
 			SetForegroundWindow(hWnd);
-			HMENU iconMenu = GetSubMenu(notifyIconContextMenu, 0);
+			HMENU iconMenu = GetContextMenu();
 			TrackPopupMenu(iconMenu, TPM_CENTERALIGN | TPM_BOTTOMALIGN, cursorPos.x, cursorPos.y, 0, hWnd, NULL);
 		}
 			break;
@@ -72,6 +82,14 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				DestroyWindow(this->hWnd);
 				return 0;
 			break;
+
+			case IDM_PAUSE:
+				UINT checkState = IsPaused() ? MF_UNCHECKED : MF_CHECKED;
+				if (CheckMenuItem(GetContextMenu(), IDM_PAUSE, checkState) != -1){
+					DrawMenuBar(hWnd);
+					TogglePause();
+				}
+				break;
 		}
 		break;
 	case WM_DESTROY:

@@ -10,4 +10,7 @@ BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam);
 void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 void LoadFunctionAdresses();
 void CreateHook();
+void Unhook();
+BOOL IsPaused();
+void TogglePause();
 void ExitProgram();

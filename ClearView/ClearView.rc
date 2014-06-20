@@ -20,6 +20,7 @@ IDC_CLEARVIEW MENUEX
     {
         MENUITEM "&Open...", IDM_OPEN, 0, MFS_DEFAULT
         MENUITEM "&About...", IDM_ABOUT, 0, 0
+        MENUITEM "&Pause", IDM_PAUSE, 0, 0
         MENUITEM "&Exit", IDM_EXIT, 0, 0
     }
 }
@@ -81,8 +82,8 @@ IDI_SMALL          ICON           "small.ico"
 //
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 1 VERSIONINFO
-    FILEVERSION     0,0,1,1
-    PRODUCTVERSION  0,0,1,1
+    FILEVERSION     0,0,1,2
+    PRODUCTVERSION  0,0,1,2
     FILEOS          VOS_NT_WINDOWS32
     FILETYPE        VFT_APP
     FILESUBTYPE     VFT2_UNKNOWN
@@ -96,14 +97,14 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
             VALUE "Comments", "Test build. Do not distribute."
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "ClearView"
-            VALUE "FileVersion", "0.0.1.1 Alpha (Desktop build)"
+            VALUE "FileVersion", "0.0.1.2 Alpha (Suspend build)"
             VALUE "InternalName", "ClearView"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "LegalTrademarks", ""
             VALUE "OriginalFilename", "ClearView.exe"
             VALUE "PrivateBuild", ""
             VALUE "ProductName", "ClearView"
-            VALUE "ProductVersion", "0.0.1.1 Alpha (Desktop Build)"
+            VALUE "ProductVersion", "0.0.1.2 Alpha (Suspend Build)"
             VALUE "SpecialBuild", ""
         }
     }
