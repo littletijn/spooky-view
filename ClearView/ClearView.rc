@@ -82,8 +82,8 @@ IDI_SMALL          ICON           "small.ico"
 //
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 1 VERSIONINFO
-    FILEVERSION     0,0,1,2
-    PRODUCTVERSION  0,0,1,2
+    FILEVERSION     0,0,1,4
+    PRODUCTVERSION  0,0,1,4
     FILEOS          VOS_NT_WINDOWS32
     FILETYPE        VFT_APP
     FILESUBTYPE     VFT2_UNKNOWN
@@ -97,14 +97,14 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
             VALUE "Comments", "Test build. Do not distribute."
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "ClearView"
-            VALUE "FileVersion", "0.0.1.2 Alpha (Suspend build)"
+            VALUE "FileVersion", "0.0.1.4 Alpha (Dump build)"
             VALUE "InternalName", "ClearView"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "LegalTrademarks", ""
             VALUE "OriginalFilename", "ClearView.exe"
             VALUE "PrivateBuild", ""
             VALUE "ProductName", "ClearView"
-            VALUE "ProductVersion", "0.0.1.2 Alpha (Suspend Build)"
+            VALUE "ProductVersion", "0.0.1.4 Alpha (Dump Build)"
             VALUE "SpecialBuild", ""
         }
     }

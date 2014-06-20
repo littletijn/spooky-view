@@ -70,6 +70,7 @@ HKEY CSettings::LoadSettingsKey(TCHAR* processFileName, TCHAR* windowClassName)
 		result = RegOpenKeyEx(registryRootKey, defaultWindowKeyPath, 0, KEY_READ, &currentSetting);
 		if (result != ERROR_SUCCESS)
 		{
+			RegCloseKey(currentSetting);
 			//Read global settings
 			currentSetting = registryRootKey;
 		}
@@ -109,16 +110,4 @@ BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, 
 		RegCloseKey(currentSetting);
 	}
 	return result;
-}
-
-BOOL CSettings::GetEnableGlassBlurrSetting(TCHAR* processFileName, TCHAR* windowClassName)
-{
-	BYTE result;
-
-	HKEY currentSetting = CSettings::LoadSettingsKey(processFileName, windowClassName);
-	if (ReadKeyValue(currentSetting, _T("EnableGlass"), result))
-	{
-		return (result == 1);
-	}
-	return FALSE;
 }

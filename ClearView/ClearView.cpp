@@ -21,7 +21,6 @@ HINSTANCE hInst;								// current instance
 CWnd* mainWindow;
 HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
-PGNSI2 DwmExtendFrameIntoClientArea;
 CSettings* settings;
 BOOL isPause = false;
 
@@ -187,13 +186,6 @@ void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 					SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
 					SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
 				}
-				if (DwmExtendFrameIntoClientArea != NULL && settings->GetEnableGlassBlurrSetting(fileName, windowClassName))
-				{
-					//DwmEnableBlurBehindWindow
-					MARGINS margins = { -1 };
-					DwmExtendFrameIntoClientArea(hwnd, &margins);
-				}
-
 			}
 		}
 		CloseHandle(hProcess);
@@ -228,7 +220,6 @@ Load addresses of function that do not exist on certain version of Windows
 void LoadFunctionAdresses()
 {
 	isImmersive = (PGNSI)GetProcAddress(GetModuleHandle(_T("user32.dll")), "IsImmersiveProcess");
-	DwmExtendFrameIntoClientArea = (PGNSI2)GetProcAddress(GetModuleHandle(_T("Dwmapi.dll")), "DwmExtendFrameIntoClientArea");
 }
 
 //

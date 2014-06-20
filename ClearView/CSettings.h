@@ -10,7 +10,6 @@ public:
 	CSettings();
 	~CSettings();
 	BOOL GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, __out BYTE& alpha);
-	BOOL GetEnableGlassBlurrSetting(TCHAR* processFileName, TCHAR* windowClassName);
 protected:
 	HKEY registryRootKey;
 	HKEY LoadSettingsKey(TCHAR* processFileName, TCHAR* windowClassName);
