@@ -9,8 +9,13 @@
 class CWindow : protected CWnd
 {
 public:
-	CWindow(HINSTANCE hInstance, HWND hParent);
-	virtual BOOL CWindow::InitInstance(int nCmdShow);
+	CWindow(HINSTANCE hInstance, HWND hParent = NULL);
 	ATOM RegisterWindowClass();
-protected:	
+	virtual BOOL CWindow::InitInstance(int nCmdShow);
+	virtual LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
+protected:
+	//Members
+	TCHAR szWindowClass[MAX_LOADSTRING];			// the window class name
+	TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
+	WNDCLASSEX wcex;
 };

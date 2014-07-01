@@ -1,11 +1,10 @@
 #include "CWindow.h"
 #include "CNotifyIcon.h"
 
-class CMainWindow: public CWnd
+class CMainWindow: public CWindow
 {
 public:
 	CMainWindow(HINSTANCE hInstance);
-	~CMainWindow();
 	BOOL InitInstance();
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 private:
@@ -14,5 +13,4 @@ private:
 	//Members
 	CNotifyIcon *cNotifyIcon;
 	HMENU notifyIconContextMenu;
-	MENUITEMINFO menuInfo;
 };

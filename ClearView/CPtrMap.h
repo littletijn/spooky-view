@@ -2,18 +2,18 @@
 
 #include "stdafx.h"
 #include <map>
-#include "CWnd.h"
 
+template <class T>
 class CPtrMap
 {
 public:
 	CPtrMap();
 	~CPtrMap();
-	void Add(CWnd *w);
-	CWnd *Extract();
+	void Add(T *w);
+	T *Extract();
 private:
 	// thread identifier to Window pointer map
-	std::map<DWORD, CWnd *> m_map;
+	std::map<DWORD, T *> m_map;
 	// Critical section used to synchronize access to the map
 	CRITICAL_SECTION m_cs;
 };

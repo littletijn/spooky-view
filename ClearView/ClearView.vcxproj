@@ -60,7 +60,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>psapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>psapi.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -86,6 +86,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CAbout.h" />
     <ClInclude Include="ClearView.h" />
     <ClInclude Include="CMainWindow.h" />
     <ClInclude Include="CNotifyIcon.h" />
@@ -93,12 +94,15 @@
     <ClInclude Include="CSettings.h" />
     <ClInclude Include="CWindow.h" />
     <ClInclude Include="CWnd.h" />
+    <ClInclude Include="CDialog.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="CSetupDialog.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WndProc.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CAbout.cpp" />
     <ClCompile Include="ClearView.cpp" />
     <ClCompile Include="CMainWindow.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
@@ -106,6 +110,8 @@
     <ClCompile Include="CSettings.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="CWnd.cpp" />
+    <ClCompile Include="CSetupDialog.cpp" />
+    <ClCompile Include="CDialog.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -117,6 +123,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="ClearView.ico" />
+    <Image Include="Dino.bmp" />
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>

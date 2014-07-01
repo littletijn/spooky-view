@@ -16,14 +16,8 @@
     <Filter Include="Source Files\Classes">
       <UniqueIdentifier>{fa4b0b2d-48f8-43b7-8131-309ddbfe0914}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Windows">
-      <UniqueIdentifier>{f51f5de1-e8f7-42f9-ae93-3d0597d77bad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Classes">
       <UniqueIdentifier>{b8772376-b0a3-4976-9631-1fa795c5b36e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Windows">
-      <UniqueIdentifier>{14b5428f-c8f8-444a-81bd-b17a252b2ea0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Function">
       <UniqueIdentifier>{3629c232-97d2-4279-a09b-f36e9961a2c7}</UniqueIdentifier>
@@ -36,6 +30,12 @@
     </Filter>
     <Filter Include="Source Files\Declarations">
       <UniqueIdentifier>{92eadda4-ed19-4d14-b5c9-7f749acdc70c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Windows">
+      <UniqueIdentifier>{f51f5de1-e8f7-42f9-ae93-3d0597d77bad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Classes\Windows">
+      <UniqueIdentifier>{14b5428f-c8f8-444a-81bd-b17a252b2ea0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -52,7 +52,7 @@
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="CMainWindow.h">
-      <Filter>Header Files\Windows</Filter>
+      <Filter>Header Files\Classes\Windows</Filter>
     </ClInclude>
     <ClInclude Include="WndProc.h">
       <Filter>Header Files\Function</Filter>
@@ -75,6 +75,15 @@
     <ClInclude Include="CSettings.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="CSetupDialog.h">
+      <Filter>Header Files\Classes\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="CDialog.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CAbout.h">
+      <Filter>Header Files\Classes\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -87,7 +96,7 @@
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
     <ClCompile Include="CMainWindow.cpp">
-      <Filter>Source Files\Windows</Filter>
+      <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
     <ClCompile Include="ClearView.cpp">
       <Filter>Source Files\Function</Filter>
@@ -104,6 +113,15 @@
     <ClCompile Include="CSettings.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
+    <ClCompile Include="CSetupDialog.cpp">
+      <Filter>Source Files\Classes\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="CDialog.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CAbout.cpp">
+      <Filter>Source Files\Classes\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ClearView.rc">
@@ -115,6 +133,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="ClearView.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Dino.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

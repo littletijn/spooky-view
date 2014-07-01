@@ -1,22 +1,18 @@
 #include "stdafx.h"
 #include "CMainWindow.h"
+#include "CAbout.h"
 #include "ClearView.h"
 #include "Resource.h"
 
 //Constructor
-CMainWindow::CMainWindow(HINSTANCE hInstance) : CWnd(hInstance) 
+CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
 {
-	//Create struct
-	menuInfo.cbSize = sizeof(MENUINFO);
-	menuInfo.fMask = MIIM_CHECKMARKS; 
-	menuInfo.hbmpChecked = NULL;
-	menuInfo.hbmpUnchecked = NULL;
 };
 
 BOOL CMainWindow::InitInstance()
 {
 	//Try to create window
-	BOOL canInit = CWnd::InitInstance();
+	BOOL canInit = CWindow::InitInstance(0);
 
 	if (canInit)
 	{
@@ -78,6 +74,13 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		//Handles the Context Menu of the Notification Area Icon
 		switch (LOWORD(wParam))
 		{
+			case IDM_ABOUT:
+			{
+				CAbout *about = new CAbout(this->hInstance);
+				about->InitInstance();
+			}
+			break;
+
 			case IDM_EXIT:
 				DestroyWindow(this->hWnd);
 				return 0;
@@ -89,7 +92,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 					DrawMenuBar(hWnd);
 					TogglePause();
 				}
-				break;
+			break;
 		}
 		break;
 	case WM_DESTROY:

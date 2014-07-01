@@ -1,4 +1,3 @@
-#include "resource.h"
 #include "CSettings.h"
 
 //Callbacks

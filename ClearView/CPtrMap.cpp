@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "CPtrMap.h"
+#include "CWindow.h"
+#include "CDialog.h"
 
 // The pointer map class
 // Its purpose is to shorten the time for which critical section lock is required
@@ -7,19 +9,22 @@
 // allowing for nested CreateWindow calls (ie, calling CreateWindow from within WM_CREATE handler)
 
 // Constructor initializes our critical section
-CPtrMap::CPtrMap()
+template <class T>
+CPtrMap<T>::CPtrMap()
 {
 	InitializeCriticalSection(&m_cs);
 }
 
 // And destructor deletes it
-CPtrMap::~CPtrMap()
+template <class T>
+CPtrMap<T>::~CPtrMap()
 {
 	DeleteCriticalSection(&m_cs);
 }
 
 // Add acquires a critical section lock and adds the current thread and the specified associated window to the map
-void CPtrMap::Add(CWnd *w)
+template <class T>
+void CPtrMap<T>::Add(T *w)
 {
 	EnterCriticalSection(&m_cs);
 	m_map[GetCurrentThreadId()] = w;
@@ -28,13 +33,16 @@ void CPtrMap::Add(CWnd *w)
 }
 
 // Extract acquires a critical section lock and retrieves the window associated with the current window from the map
-CWnd *CPtrMap::Extract()
+template <class T>
+T *CPtrMap<T>::Extract()
 {
 	EnterCriticalSection(&m_cs);
-	CWnd *w = m_map[GetCurrentThreadId()];
+	T *w = m_map[GetCurrentThreadId()];
 	// Important: leave critical section before returning
 	LeaveCriticalSection(&m_cs);
 	return w;
 }
 
-CPtrMap g_ptrmap;
+//http://stackoverflow.com/questions/495021/why-can-templates-only-be-implemented-in-the-header-file
+template class CPtrMap<CWindow>;
+template class CPtrMap<CDialog>;
