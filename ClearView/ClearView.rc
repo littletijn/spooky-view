@@ -45,14 +45,14 @@ STYLE DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_POPUP | WS_SYSM
 CAPTION "About ClearView"
 FONT 8, "MS Shell Dlg", 0, 0, 1
 {
-    LTEXT           "Test build. Do not distribute.", IDC_STATIC, 17, 32, 125, 8, SS_LEFT, WS_EX_LEFT
-    LTEXT           "http://www.tyndomyn.net", IDC_STATIC, 17, 67, 105, 8, SS_LEFT, WS_EX_LEFT
-    LTEXT           "Based on an idea by Michael Siebers", IDC_STATIC, 17, 102, 118, 8, SS_LEFT, WS_EX_LEFT
-    LTEXT           "ClearView", IDC_STATIC, 17, 12, 32, 8, SS_LEFT | SS_NOPREFIX, WS_EX_LEFT
+    LTEXT           "Test build. Do not distribute.", IDC_STATIC, 17, 32, 130, 8, SS_LEFT, WS_EX_LEFT
+    LTEXT           "http://www.tyndomyn.net", IDC_STATIC, 17, 67, 130, 8, SS_LEFT, WS_EX_LEFT
+    LTEXT           "Based on an idea by Mikey", IDC_STATIC, 17, 102, 130, 8, SS_LEFT, WS_EX_LEFT
+    LTEXT           "ClearView", IDC_STATIC, 17, 12, 130, 8, SS_LEFT | SS_NOPREFIX, WS_EX_LEFT
     LTEXT           "0.0.2.0 Alpha (A Dialog about Me build)", IDC_STATIC, 17, 22, 130, 8, SS_LEFT, WS_EX_LEFT
-    LTEXT           "Copyright (c) Martijn van Antwerpen", IDC_STATIC, 17, 57, 120, 8, SS_LEFT, WS_EX_LEFT
+    LTEXT           "Copyright (c) Martijn van Antwerpen", IDC_STATIC, 17, 57, 130, 8, SS_LEFT, WS_EX_LEFT
     DEFPUSHBUTTON   "Close", IDOK, 177, 117, 50, 14, WS_GROUP, WS_EX_LEFT
-    CONTROL         IDB_DINO, IDC_STATIC, WC_STATIC, SS_BITMAP, 162, 12, 59, 41, WS_EX_LEFT
+    CONTROL         IDB_DINO, IDC_STATIC, WC_STATIC, SS_BITMAP | SS_REALSIZECONTROL, 162, 12, 59, 41, WS_EX_LEFT
 }
 
 
@@ -169,8 +169,8 @@ IDI_SMALL          ICON           "small.ico"
 //
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 1 VERSIONINFO
-    FILEVERSION     0,0,2,0
-    PRODUCTVERSION  0,0,2,0
+    FILEVERSION     0,0,2,1
+    PRODUCTVERSION  0,0,2,1
     FILEOS          VOS_NT_WINDOWS32
     FILETYPE        VFT_APP
     FILESUBTYPE     VFT2_UNKNOWN
@@ -184,14 +184,14 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
             VALUE "Comments", "Test build. Do not distribute."
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "ClearView"
-            VALUE "FileVersion", "0.0.2.0 Alpha (A Dialog about Me build)"
+            VALUE "FileVersion", "0.0.2.1 Alpha (Aware build)"
             VALUE "InternalName", "ClearView"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "LegalTrademarks", ""
             VALUE "OriginalFilename", "ClearView.exe"
             VALUE "PrivateBuild", ""
             VALUE "ProductName", "ClearView"
-            VALUE "ProductVersion", "0.0.2.0 Alpha (A Dialog about Me build)"
+            VALUE "ProductVersion", "0.0.2.1 Alpha (Aware build)"
             VALUE "SpecialBuild", ""
         }
     }

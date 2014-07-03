@@ -13,7 +13,6 @@
 #define IDD_SETUP                               118
 #define IDD_ADD_WINDOW                          120
 #define IDB_DINO                                122
-#define IDB_BITMAP1                             123
 #define IDC_LIST_ADD_APPS                       40000
 #define IDC_LIST_ADD_WINDOWS                    40000
 #define IDM_OPEN                                40000
