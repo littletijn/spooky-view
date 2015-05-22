@@ -4,7 +4,7 @@
 
 CSettings::CSettings()
 {
-	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView\\Programs"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
+	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
 	if (result == ERROR_SUCCESS)
 	{
 	}
@@ -49,11 +49,14 @@ HKEY CSettings::LoadSettingsKey(TCHAR* processFileName, TCHAR* windowClassName)
 
 	//http://msdn.microsoft.com/en-us/library/windows/desktop/ms724872(v=vs.85).aspx
 	// The size of a path in the registry is max 255 characters
+	TCHAR programsKeyPath[255] = _T("Programs");
 	TCHAR defaultWindowKeyPath[255];
 	TCHAR classWindowKeyPath[255];
 
-	//Copy Process name to buffer and concat "\Windows" to name
-	_tcscpy_s(defaultWindowKeyPath, processFileName);
+	//Copy default programs path, concat "\" to path, concat Process name to buffer and concat "\Windows" to name
+	_tcscpy_s(defaultWindowKeyPath, programsKeyPath);
+	_tcscat_s(defaultWindowKeyPath, _T("\\"));
+	_tcscat_s(defaultWindowKeyPath, processFileName);
 	_tcscat_s(defaultWindowKeyPath, _T("\\Windows"));
 	//Copy default window path and concat Class name to it
 	_tcscpy_s(classWindowKeyPath, defaultWindowKeyPath);
@@ -65,14 +68,19 @@ HKEY CSettings::LoadSettingsKey(TCHAR* processFileName, TCHAR* windowClassName)
 	result = RegOpenKeyEx(registryRootKey, classWindowKeyPath, 0, KEY_READ, &currentSetting);
 	if (result != ERROR_SUCCESS)
 	{
-		//Open default window key instead
+		//Open default window key, PROCESSNAME\Windows instead
 		RegCloseKey(currentSetting);
 		result = RegOpenKeyEx(registryRootKey, defaultWindowKeyPath, 0, KEY_READ, &currentSetting);
 		if (result != ERROR_SUCCESS)
 		{
 			RegCloseKey(currentSetting);
 			//Read global settings
-			currentSetting = registryRootKey;
+			result = RegOpenKeyEx(registryRootKey, programsKeyPath, 0, KEY_READ, &currentSetting);
+			if (result != ERROR_SUCCESS)
+			{
+				RegCloseKey(currentSetting);
+				//TODO: handle failure
+			}
 		}
 	}
 	return currentSetting;
