@@ -93,17 +93,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CAbout.h" />
+    <ClInclude Include="CAlphaSettings.h" />
     <ClInclude Include="ClearView.h" />
     <ClInclude Include="CMainWindow.h" />
     <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CPtrMap.h" />
+    <ClInclude Include="CRegistrySettingsManager.h" />
     <ClInclude Include="CSettings.h" />
     <ClInclude Include="CWindow.h" />
+    <ClInclude Include="CWindowSetting.h" />
     <ClInclude Include="CWnd.h" />
     <ClInclude Include="CDialog.h" />
+    <ClInclude Include="ISettingsManager.h" />
+    <ClInclude Include="CProgramSetting.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="CSetupDialog.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="String.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="WndProc.h" />
   </ItemGroup>
@@ -112,7 +118,9 @@
     <ClCompile Include="ClearView.cpp" />
     <ClCompile Include="CMainWindow.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
+    <ClCompile Include="CProgramSetting.cpp" />
     <ClCompile Include="CPtrMap.cpp" />
+    <ClCompile Include="CRegistrySettingsManager.cpp" />
     <ClCompile Include="CSettings.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="CWnd.cpp" />

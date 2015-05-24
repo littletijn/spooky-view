@@ -3,6 +3,8 @@
 #include "stdafx.h"
 #include "ClearView.h"
 #include "CMainWindow.h"
+#include "ISettingsManager.h"
+#include "CRegistrySettingsManager.h"
 #include <Psapi.h>
 #include <Uxtheme.h>
 #include <string>
@@ -21,6 +23,7 @@ CMainWindow* mainWindow;
 HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
 CSettings* settings;
+ISettingsManager* settingsManager;
 BOOL isPause = false;
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/ms633577(v=vs.85).aspx
@@ -32,7 +35,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
- 	// TODO: Place code here.
 	MSG msg;
 	HACCEL hAccelTable;
 
@@ -49,7 +51,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	{
 		LoadFunctionAdresses();
 		CreateHook();
-		settings = new CSettings();
+		settingsManager = new CRegistrySettingsManager();
+		settings = settingsManager->LoadSettings();
 		EnumWindows(EnumWindowsProc, NULL);
 	}
 
@@ -72,6 +75,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	//Delete pointers
 	delete mainWindow;
 	delete settings;
+	delete settingsManager;
 
 	return (int) msg.wParam;
 }

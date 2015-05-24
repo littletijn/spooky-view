@@ -37,6 +37,12 @@
     <Filter Include="Header Files\Classes\Windows">
       <UniqueIdentifier>{14b5428f-c8f8-444a-81bd-b17a252b2ea0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Classes\Settings">
+      <UniqueIdentifier>{0d3323fc-24e9-4794-925b-d6896f4c6d46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Classes\Settings">
+      <UniqueIdentifier>{94e6c2a0-8d9f-4c76-a4c9-c806faf5ae5e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -72,9 +78,6 @@
     <ClInclude Include="CWnd.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="CSettings.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="CSetupDialog.h">
       <Filter>Header Files\Classes\Windows</Filter>
     </ClInclude>
@@ -83,6 +86,27 @@
     </ClInclude>
     <ClInclude Include="CAbout.h">
       <Filter>Header Files\Classes\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="CSettings.h">
+      <Filter>Header Files\Classes\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="CRegistrySettingsManager.h">
+      <Filter>Header Files\Classes\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="String.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CWindowSetting.h">
+      <Filter>Header Files\Classes\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="ISettingsManager.h">
+      <Filter>Header Files\Classes\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="CAlphaSettings.h">
+      <Filter>Header Files\Classes\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="CProgramSetting.h">
+      <Filter>Header Files\Classes\Settings</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -110,9 +134,6 @@
     <ClCompile Include="CWnd.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
-    <ClCompile Include="CSettings.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
     <ClCompile Include="CSetupDialog.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
@@ -121,6 +142,15 @@
     </ClCompile>
     <ClCompile Include="CAbout.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="CSettings.cpp">
+      <Filter>Source Files\Classes\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="CRegistrySettingsManager.cpp">
+      <Filter>Source Files\Classes\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="CProgramSetting.cpp">
+      <Filter>Source Files\Classes\Settings</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -4,118 +4,56 @@
 
 CSettings::CSettings()
 {
-	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
-	if (result == ERROR_SUCCESS)
-	{
-	}
+	this->programs = new map<t_string, CProgramSetting *>();
 }
+
 
 CSettings::~CSettings()
 {
-	if (registryRootKey != NULL)
-	{
-		RegCloseKey(registryRootKey);
-	}
+	delete this->programs;
 }
 
-BOOL CSettings::ReadKeyValue(HKEY key, TCHAR* valueName, __out BYTE& value)
-{
-	//Create buffer and variables for return values
-	BOOL readResult = FALSE;
-	DWORD keyType;
-	BYTE keyData[1];
-	DWORD keyDataSize = sizeof(keyData);
-	LSTATUS result;
-
-	//Read the data of the value based on given type
-	result = RegQueryValueEx(key, valueName, NULL, &keyType, keyData, &keyDataSize);
-	if (result != ERROR_SUCCESS || keyType != REG_BINARY)
-	{
-		readResult = FALSE;
-	}
-	else
-	{
-		value = keyData[0];
-		readResult = TRUE;
-	}
-	return readResult;
-}
-
-HKEY CSettings::LoadSettingsKey(TCHAR* processFileName, TCHAR* windowClassName)
-{
-	//Create variables for return values
-	HKEY currentSetting;
-	LSTATUS result;
-
-	//http://msdn.microsoft.com/en-us/library/windows/desktop/ms724872(v=vs.85).aspx
-	// The size of a path in the registry is max 255 characters
-	TCHAR programsKeyPath[255] = _T("Programs");
-	TCHAR defaultWindowKeyPath[255];
-	TCHAR classWindowKeyPath[255];
-
-	//Copy default programs path, concat "\" to path, concat Process name to buffer and concat "\Windows" to name
-	_tcscpy_s(defaultWindowKeyPath, programsKeyPath);
-	_tcscat_s(defaultWindowKeyPath, _T("\\"));
-	_tcscat_s(defaultWindowKeyPath, processFileName);
-	_tcscat_s(defaultWindowKeyPath, _T("\\Windows"));
-	//Copy default window path and concat Class name to it
-	_tcscpy_s(classWindowKeyPath, defaultWindowKeyPath);
-	_tcscat_s(classWindowKeyPath, _T("\\"));
-	_tcscat_s(classWindowKeyPath, windowClassName);
-
-
-	//Open key PROCESSNAME\Windows\CLASSNAME
-	result = RegOpenKeyEx(registryRootKey, classWindowKeyPath, 0, KEY_READ, &currentSetting);
-	if (result != ERROR_SUCCESS)
-	{
-		//Open default window key, PROCESSNAME\Windows instead
-		RegCloseKey(currentSetting);
-		result = RegOpenKeyEx(registryRootKey, defaultWindowKeyPath, 0, KEY_READ, &currentSetting);
-		if (result != ERROR_SUCCESS)
-		{
-			RegCloseKey(currentSetting);
-			//Read global settings
-			result = RegOpenKeyEx(registryRootKey, programsKeyPath, 0, KEY_READ, &currentSetting);
-			if (result != ERROR_SUCCESS)
-			{
-				RegCloseKey(currentSetting);
-				//TODO: handle failure
-			}
-		}
-	}
-	return currentSetting;
-}
-
+// Search settings maps for alpha settings for given process and window class
 BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, __out BYTE& alpha)
 {
-	//Create buffer and variables for return values
-	TCHAR* valueName = NULL;
-	BOOL result = FALSE;
-	BYTE alphaKeyValue;
+	CAlphaSettings alphaSettings;
+	ToLowerCase(processFileName, MAX_PATH);
 
-	HKEY currentSetting = CSettings::LoadSettingsKey(processFileName, windowClassName);
+	auto result = this->programs->find(processFileName);
+	if (result != this->programs->end())
+	{
+		auto setting = result->second;
+		auto windowResult = setting->windows->find(windowClassName);
+		if (windowResult != setting->windows->end())
+		{
+			auto window = windowResult->second;
+			alphaSettings = window->alphaSettings;
+		}
+		else{
+			alphaSettings = setting->alphaSettings;
+		}
+	}
+	else{
+		alphaSettings = this->alphaSettings;
+	}
 
-	//Get valueName
 	switch (type)
 	{
-	case Foregound:
-		valueName = _T("AlphaForeground");
+	case WindowTypes::Foregound:
+		alpha = alphaSettings.foreground;
 		break;
-	case Background:
-		valueName = _T("AlphaBackground");
+
+	case WindowTypes::Background:
+		alpha = alphaSettings.background;
 		break;
 	}
+	return true;
+}
 
-	if (ReadKeyValue(currentSetting, valueName, alphaKeyValue))
-	{
-		alpha = alphaKeyValue;
-		result = TRUE;
+void CSettings::ToLowerCase(TCHAR* string, size_t length)
+{
+	//Make process name lower case
+	for (size_t i = 0; i < _tcsnlen(string, length); i++){
+		string[i] = tolower(string[i]);
 	}
-
-	//Close the key if it is not the root key
-	if (currentSetting != registryRootKey)
-	{
-		RegCloseKey(currentSetting);
-	}
-	return result;
 }

@@ -1,3 +1,10 @@
+#include <string>
+#include <map>
+#include "CProgramSetting.h"
+using namespace std;
+#pragma once
+
+
 class CSettings
 {
 public:
@@ -7,11 +14,13 @@ public:
 		Background
 	};
 
+	CAlphaSettings alphaSettings;
+
+	BOOL GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, __out BYTE& alpha);
+	map<t_string, CProgramSetting *> *programs;
 	CSettings();
 	~CSettings();
-	BOOL GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, __out BYTE& alpha);
 protected:
-	HKEY registryRootKey;
-	HKEY LoadSettingsKey(TCHAR* processFileName, TCHAR* windowClassName);
-	BOOL ReadKeyValue(HKEY key, TCHAR* valueName, __out BYTE& value);
+	void ToLowerCase(TCHAR* string, size_t length);
 };
+
