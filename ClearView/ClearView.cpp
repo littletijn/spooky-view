@@ -38,6 +38,11 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	MSG msg;
 	HACCEL hAccelTable;
 
+	INITCOMMONCONTROLSEX init;
+	init.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	init.dwICC = ICC_LISTVIEW_CLASSES;
+	InitCommonControlsEx(&init);
+
 	hInst = hInstance;
 	mainWindow = new CMainWindow(hInstance);
 	mainWindow->RegisterWindowClass();

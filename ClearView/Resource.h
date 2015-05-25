@@ -15,6 +15,7 @@
 #define IDB_DINO                                122
 #define IDC_LIST_ADD_APPS                       40000
 #define IDC_LIST_ADD_WINDOWS                    40000
+#define IDC_LIST_APPS                           40000
 #define IDM_OPEN                                40000
 #define IDS_APP_TITLE                           40000
 #define IDAPPLY                                 40001
@@ -24,7 +25,7 @@
 #define IDC_STATIC_RUNNING_APPS                 40002
 #define IDM_SETTINGS                            40002
 #define IDC_CHECKBOX_FOREGOUND_ONLY             40003
-#define IDC_LISTAPPS                            40003
+#define IDC_LIST_WINDOWS                        40003
 #define IDC_STATIC_CLASS_NAME                   40003
 #define IDC_BUTTON_BROWSE                       40004
 #define IDC_EDIT_CLASS_NAME                     40004
@@ -33,7 +34,6 @@
 #define IDC_BUTTON_WINDOW_ADD                   40006
 #define IDC_BUTTON_APP_REMOVE                   40007
 #define IDC_BUTTON_WINDOW_REMOVE                40008
-#define IDC_LIST_WINDOWS                        40009
 #define IDC_STATIC_FOREGROUND                   40010
 #define IDC_CHECKBOX_ENABLE_TRANSPARENCY        40011
 #define IDC_SLIDER_FOREGROUND                   40012

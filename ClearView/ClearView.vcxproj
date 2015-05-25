@@ -60,7 +60,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>psapi.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -82,7 +82,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>psapi.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -93,9 +93,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CAbout.h" />
+    <ClInclude Include="CAddAppDialog.h" />
     <ClInclude Include="CAlphaSettings.h" />
+    <ClInclude Include="CDialog.h" />
     <ClInclude Include="ClearView.h" />
     <ClInclude Include="CMainWindow.h" />
+    <ClInclude Include="CModalDialog.h" />
     <ClInclude Include="CNotifyIcon.h" />
     <ClInclude Include="CPtrMap.h" />
     <ClInclude Include="CRegistrySettingsManager.h" />
@@ -103,7 +106,7 @@
     <ClInclude Include="CWindow.h" />
     <ClInclude Include="CWindowSetting.h" />
     <ClInclude Include="CWnd.h" />
-    <ClInclude Include="CDialog.h" />
+    <ClInclude Include="CModelessDialog.h" />
     <ClInclude Include="ISettingsManager.h" />
     <ClInclude Include="CProgramSetting.h" />
     <ClInclude Include="Resource.h" />
@@ -115,8 +118,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CAbout.cpp" />
+    <ClCompile Include="CAddAppDialog.cpp" />
+    <ClCompile Include="CDialog.cpp" />
     <ClCompile Include="ClearView.cpp" />
     <ClCompile Include="CMainWindow.cpp" />
+    <ClCompile Include="CModalDialog.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
     <ClCompile Include="CProgramSetting.cpp" />
     <ClCompile Include="CPtrMap.cpp" />
@@ -125,7 +131,7 @@
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="CWnd.cpp" />
     <ClCompile Include="CSetupDialog.cpp" />
-    <ClCompile Include="CDialog.cpp" />
+    <ClCompile Include="CModelessDialog.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

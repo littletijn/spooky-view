@@ -81,9 +81,6 @@
     <ClInclude Include="CSetupDialog.h">
       <Filter>Header Files\Classes\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="CDialog.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="CAbout.h">
       <Filter>Header Files\Classes\Windows</Filter>
     </ClInclude>
@@ -107,6 +104,18 @@
     </ClInclude>
     <ClInclude Include="CProgramSetting.h">
       <Filter>Header Files\Classes\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="CModalDialog.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CModelessDialog.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CDialog.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CAddAppDialog.h">
+      <Filter>Header Files\Classes\Windows</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -137,9 +146,6 @@
     <ClCompile Include="CSetupDialog.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="CDialog.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
     <ClCompile Include="CAbout.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
@@ -151,6 +157,18 @@
     </ClCompile>
     <ClCompile Include="CProgramSetting.cpp">
       <Filter>Source Files\Classes\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="CModalDialog.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CModelessDialog.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CDialog.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CAddAppDialog.cpp">
+      <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

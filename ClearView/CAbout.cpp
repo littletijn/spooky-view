@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "CAbout.h"
 
-CAbout::CAbout(HINSTANCE hInstance) : CDialog(hInstance)
+CAbout::CAbout(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
 };
 
-void CAbout::SetupDialog()
+BOOL CAbout::SetupDialog()
 {
 	this->dialogResource = MAKEINTRESOURCE(IDD_ABOUTBOX);
+	return TRUE;
 }
 
 INT_PTR CALLBACK CAbout::DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)

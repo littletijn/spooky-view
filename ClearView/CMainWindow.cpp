@@ -3,6 +3,7 @@
 #include "CAbout.h"
 #include "ClearView.h"
 #include "Resource.h"
+#include "CSetupDialog.h"
 
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
@@ -74,6 +75,13 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		//Handles the Context Menu of the Notification Area Icon
 		switch (LOWORD(wParam))
 		{
+			case IDM_OPEN:
+			{
+				CSetupDialog *setup = new CSetupDialog(this->hInstance);
+				setup->InitInstance();
+			}
+			break;
+
 			case IDM_ABOUT:
 			{
 				CAbout *about = new CAbout(this->hInstance);

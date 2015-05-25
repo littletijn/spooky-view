@@ -1,18 +1,16 @@
 #pragma once
 
 #include "stdafx.h"
-#include "CWnd.h"
+#include "CDialog.h"
 
-class CDialog : protected CWnd
+class CModelessDialog : public CDialog
 {
 public:
-	CDialog(HINSTANCE hInstance);
-	~CDialog();
-	BOOL InitInstance();
+	CModelessDialog(HINSTANCE hInstance);
+	~CModelessDialog();
 	virtual INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) = 0;
 protected:
-	LPCTSTR dialogResource;
 	virtual BOOL SetupDialog() = 0;
-	virtual BOOL Create() = 0;
+	virtual BOOL Create();
 };
 

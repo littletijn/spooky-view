@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "CDialog.h"
+#include "CModalDialog.h"
 #include "WndProc.h"
 #include "CPtrMap.h"
 
@@ -18,12 +18,5 @@ BOOL CDialog::InitInstance()
 {
 	SetupDialog();
 	g_ptrmapDlg.Add(this);
-
-	this->hWnd = CreateDialog(this->hInstance, this->dialogResource, NULL, DlgProcMain);
-	if (this->hWnd != NULL)
-	{
-		ShowWindow(this->hWnd, SW_NORMAL);
-		return TRUE;
-	}
-	return FALSE;
+	return Create();
 }

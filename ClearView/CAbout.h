@@ -1,12 +1,12 @@
 #pragma once
-#include "CDialog.h"
+#include "CModelessDialog.h"
 
-class CAbout :public CDialog
+class CAbout :public CModelessDialog
 {
 public:
 	CAbout(HINSTANCE hInstance);
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 protected:
-	void SetupDialog();
+	BOOL SetupDialog();
 };
 
