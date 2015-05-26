@@ -13,3 +13,4 @@ void Unhook();
 BOOL IsPaused();
 void TogglePause();
 void ExitProgram();
+void SendAlreadyRunningNotify();

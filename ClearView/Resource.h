@@ -21,6 +21,7 @@
 #define IDAPPLY                                 40001
 #define IDC_CHECKBOX_AUTO_STARTUP               40001
 #define IDM_PAUSE                               40001
+#define IDS_APP_CLOSING_TITLE                   40001
 #define IDC_CHECKBOX_FORCE                      40002
 #define IDC_STATIC_RUNNING_APPS                 40002
 #define IDM_SETTINGS                            40002

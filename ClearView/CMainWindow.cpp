@@ -4,6 +4,7 @@
 #include "ClearView.h"
 #include "Resource.h"
 #include "CSetupDialog.h"
+#include "CLimitSingleInstance.h"
 
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
@@ -14,18 +15,19 @@ BOOL CMainWindow::InitInstance()
 {
 	//Try to create window
 	BOOL canInit = CWindow::InitInstance(0);
-
-	if (canInit)
-	{
-		//Window created, try to create Notification Icon
-		TCHAR appName[128];
-		LoadString(hInstance, IDS_APP_TITLE, appName, ARRAYSIZE(appName));
-		HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_CLEARVIEW));
-		cNotifyIcon = new CNotifyIcon(this->hWnd, notifyIcon, appName);
-		canInit = cNotifyIcon->Init();
-		notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
-	}
 	return canInit;
+}
+
+BOOL CMainWindow::InitNotifyIcon()
+{
+	//try to create Notification Icon
+	TCHAR appName[MAX_LOADSTRING];
+	LoadString(hInstance, IDS_APP_TITLE, appName, ARRAYSIZE(appName));
+	HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_CLEARVIEW));
+	cNotifyIcon = new CNotifyIcon(this->hWnd, notifyIcon, appName);
+	BOOL canInit = cNotifyIcon->Init();
+	notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
+	return canInit && notifyIconContextMenu != NULL;
 }
 
 void CMainWindow::CloseWindow()
@@ -40,11 +42,26 @@ HMENU CMainWindow::GetContextMenu()
 	return GetSubMenu(notifyIconContextMenu, 0);
 }
 
+HWND CMainWindow::GetHwnd()
+{
+	return this->hWnd;
+}
+
 //Message handler
 LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
+		case WM_COPYDATA:
+		{
+			PCOPYDATASTRUCT dataCopy = (PCOPYDATASTRUCT)lParam;
+			if (dataCopy->dwData == ALREADY_RUNNING_NOTIFY)
+			{
+				ShowAlreadyRunningBalloon();
+			}
+		}
+		break;
+
 	case WM_NOTIFYICON:
 		//Handles the Notification Area Icon
 		switch (lParam)
@@ -110,4 +127,9 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return 0;
+}
+
+void CMainWindow::ShowAlreadyRunningBalloon()
+{
+	cNotifyIcon->ShowBalloon(_T("ClearView is already running"), _T("Right click on this icon to configure this application."));
 }

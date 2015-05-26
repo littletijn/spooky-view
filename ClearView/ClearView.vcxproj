@@ -97,6 +97,7 @@
     <ClInclude Include="CAlphaSettings.h" />
     <ClInclude Include="CDialog.h" />
     <ClInclude Include="ClearView.h" />
+    <ClInclude Include="CLimitSingleInstance.h" />
     <ClInclude Include="CMainWindow.h" />
     <ClInclude Include="CModalDialog.h" />
     <ClInclude Include="CNotifyIcon.h" />

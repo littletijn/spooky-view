@@ -8,6 +8,7 @@
 #include <Psapi.h>
 #include <Uxtheme.h>
 #include <string>
+#include "CLimitSingleInstance.h"
 
 using namespace std;
 
@@ -25,6 +26,7 @@ PGNSI isImmersive;
 CSettings* settings;
 ISettingsManager* settingsManager;
 BOOL isPause = false;
+CLimitSingleInstance singleInstanceObj(_T("ClearView"));
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/ms633577(v=vs.85).aspx
 //Max length of className is 256 characters
@@ -54,6 +56,16 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	}
 	else
 	{
+		if (singleInstanceObj.IsAnotherInstanceRunning())
+		{
+			SendAlreadyRunningNotify();
+			return FALSE;
+		}
+
+		if (!mainWindow->InitNotifyIcon())
+		{
+			return FALSE;
+		}
 		LoadFunctionAdresses();
 		CreateHook();
 		settingsManager = new CRegistrySettingsManager();
@@ -225,4 +237,28 @@ Load addresses of function that do not exist on certain version of Windows
 void LoadFunctionAdresses()
 {
 	isImmersive = (PGNSI)GetProcAddress(GetModuleHandle(_T("user32.dll")), "IsImmersiveProcess");
+}
+
+void SendAlreadyRunningNotify()
+{
+	TCHAR windowClass[MAX_LOADSTRING], windowTitle[MAX_LOADSTRING], windowClosingTitle[MAX_LOADSTRING];
+	TCHAR message[] = _T("Already running");
+
+	LoadString(hInst, IDC_CLEARVIEW, windowClass, MAX_LOADSTRING);
+	LoadString(hInst, IDS_APP_TITLE, windowTitle, MAX_LOADSTRING);
+	LoadString(hInst, IDS_APP_CLOSING_TITLE, windowClosingTitle, MAX_LOADSTRING);
+
+	SetWindowText(mainWindow->GetHwnd(), windowClosingTitle);
+
+	HWND otherHwnd = FindWindow(NULL, windowTitle);
+	if (otherHwnd != NULL)
+	{
+		COPYDATASTRUCT dataCopy;
+		dataCopy.dwData = ALREADY_RUNNING_NOTIFY;
+		dataCopy.cbData = sizeof(message);
+		dataCopy.lpData = message;
+		SetLastError(ERROR_SUCCESS);
+		SendMessage(otherHwnd, WM_COPYDATA, (WPARAM)(HWND)mainWindow->GetHwnd(), (LPARAM)(LPVOID)&dataCopy);
+		DWORD error = GetLastError();
+	}
 }

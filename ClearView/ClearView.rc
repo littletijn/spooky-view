@@ -138,6 +138,7 @@ STRINGTABLE
 {
     IDC_CLEARVIEW                 "CLEARVIEW"
     IDS_APP_TITLE                 "ClearView"
+    IDS_APP_CLOSING_TITLE         "ClearView - Closing"
 }
 
 

@@ -12,6 +12,7 @@ public:
 	~CNotifyIcon();
 	BOOL Init();
 	BOOL SetFocus();
+	BOOL ShowBalloon(TCHAR *title, TCHAR *text);
 protected:
 	//members
 	NOTIFYICONDATA m_sNotifyIcon;
