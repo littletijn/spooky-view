@@ -4,12 +4,14 @@
 #include <CommCtrl.h>
 #include "CSettings.h"
 #include "CProgramSetting.h"
+#include "ISettingsManager.h"
 #include "String.h"
 #include <vector>
 
 using namespace std;
 
 extern CSettings *settings;
+extern ISettingsManager *settingsManager;
 
 CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
@@ -32,28 +34,47 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	case WM_NOTIFY:
 	{
 		LPNMHDR notifyMessage = (LPNMHDR)lParam;
-		switch (notifyMessage->idFrom)
+		if (notifyMessage->code == NM_CLICK)
 		{
+			switch (notifyMessage->idFrom)
+			{
 			case IDC_LIST_APPS:
 				ProgramsListNotified(lParam);
-				break;
+				return TRUE;
 
 			case IDC_LIST_WINDOWS:
 				WindowsListNotified(lParam);
-				break;
+				return TRUE;
+			}
 		}
 	}
 	break;
 
+	case WM_HSCROLL:
+		if (LOWORD(wParam) == TB_THUMBPOSITION || LOWORD(wParam) == TB_THUMBTRACK)
+		{
+			WORD value = HIWORD(wParam);
+			SetAlpha(value, (HWND)lParam);
+		}
+		return TRUE;
+
 	case WM_INITDIALOG:
 		PopulateProcessList(hDlg);
+		SetTrackbarRanges(hDlg);
+		//Set the trackbars on the global settings
+		this->currentAlphaSettings = &settings->alphaSettings;
+		SetTrackbars();
 		return TRUE;
 		break;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
+			case IDAPPLY:
+				settingsManager->SaveSettings(settings);
+				return TRUE;
 			case IDOK:
+				settingsManager->SaveSettings(settings);
 			case IDCANCEL:
 				DestroyWindow(hDlg);
 				return TRUE;
@@ -61,7 +82,6 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				CAddAppDialog *appDialog = new CAddAppDialog(this->hInstance, this->hWnd);
 				appDialog->InitInstance();
 				return TRUE;
-				break;
 
 		}
 		break;
@@ -77,7 +97,21 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		LPNMHDR notifyMessage = (LPNMHDR)lParam;
 		TCHAR textBuffer[MAX_PATH];
 		LPWSTR text = GetSelectedItemText(index, notifyMessage->hwndFrom, textBuffer);
-		PopulateWindowsList(text);
+
+		auto program = settings->programs->find(text);
+		if (program != settings->programs->end())
+		{
+			this->currentProgram = program->second;
+			this->currentAlphaSettings = &program->second->alphaSettings;
+			SetTrackbars();
+		}
+		PopulateWindowsList(program->second);
+	}
+	else
+	{
+		//When no item is selected, get the global settings
+		this->currentAlphaSettings = &settings->alphaSettings;
+		SetTrackbars();
 	}
 }
 
@@ -89,6 +123,18 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 		LPNMHDR notifyMessage = (LPNMHDR)lParam;
 		TCHAR textBuffer[MAX_PATH];
 		LPWSTR text = GetSelectedItemText(index, notifyMessage->hwndFrom, textBuffer);
+		auto window = this->currentProgram->windows->find(text);
+		if (window != this->currentProgram->windows->end())
+		{
+			this->currentAlphaSettings = &window->second->alphaSettings;
+			SetTrackbars();
+		}
+	}
+	else
+	{
+		//When no item is selected, get the program global settings
+		this->currentAlphaSettings = &this->currentProgram->alphaSettings;
+		SetTrackbars();
 	}
 }
 
@@ -104,21 +150,47 @@ void CSetupDialog::PopulateProcessList(HWND hDlg)
 	}	
 }
 
-void CSetupDialog::PopulateWindowsList(LPWSTR itemName)
+void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)
 {
 	HWND listView = GetDlgItem(this->hWnd, IDC_LIST_WINDOWS);
 	ListView_DeleteAllItems(listView);
-	auto program = settings->programs->find(itemName);
 
-	if (program != settings->programs->end())
+	for (auto const &window : *settings->windows)
 	{
-		for (auto const &window : *program->second->windows)
-		{
-			LVITEM item;
-			CreateListViewItem(window.first, item);
-			int result = ListView_InsertItem(listView, &item);
-			delete item.pszText;
-		}
+		LVITEM item;
+		CreateListViewItem(window.first, item);
+		int result = ListView_InsertItem(listView, &item);
+		delete item.pszText;
+	}
+}
+
+void CSetupDialog::SetTrackbarRanges(HWND hWnd)
+{
+	HWND foregroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_FOREGROUND);
+	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
+	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)TRUE, (LPARAM)255);
+	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)TRUE, (LPARAM)255);
+}
+
+void CSetupDialog::SetTrackbars()
+{
+	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
+	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
+	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)this->currentAlphaSettings->foreground);
+	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)this->currentAlphaSettings->background);
+}
+
+void CSetupDialog::SetAlpha(WORD value, HWND trackbar)
+{
+	LONG identifier = GetWindowLong(trackbar, GWL_ID);
+	switch (identifier)
+	{
+	case IDC_SLIDER_FOREGROUND:
+		this->currentAlphaSettings->foreground = value;
+		break;
+	case IDC_SLIDER_BACKGROUND:
+		this->currentAlphaSettings->background = value;
+		break;
 	}
 }
 

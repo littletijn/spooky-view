@@ -9,5 +9,5 @@ public:
 	//Also this destructor will be called
 	virtual ~ISettingsManager() { /* Empty implementation */ }
 	virtual CSettings* LoadSettings() = 0;
-	virtual bool SaveSettings(CSettings settings) = 0;
+	virtual bool SaveSettings(CSettings* settings) = 0;
 };
