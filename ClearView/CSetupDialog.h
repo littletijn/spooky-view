@@ -3,6 +3,7 @@
 #include "String.h"
 #include "CAlphaSettings.h"
 #include "CProgramSetting.h"
+#include "ListView.h"
 
 class CSetupDialog : public CModelessDialog
 {
@@ -14,6 +15,9 @@ public:
 protected:
 	CAlphaSettings *currentAlphaSettings;
 	CProgramSetting *currentProgram;
+	ListView *appsListView;
+	ListView *windowsListView;
+
 	void WindowsListNotified(LPARAM lParam);
 	void ProgramsListNotified(LPARAM lParam);
 	void PopulateProcessList(HWND hDlg);
@@ -21,8 +25,5 @@ protected:
 	void SetTrackbars();
 	void SetAlpha(WORD value, HWND trackbar);
 	void SetTrackbarRanges(HWND hWnd);
-	void CreateListViewItem(t_string text, LVITEM &item);
-	int GetSelectedItemIndex(LPARAM lParam);
-	LPWSTR GetSelectedItemText(int index, HWND hWnd, TCHAR* textBuffer);
 };
 
