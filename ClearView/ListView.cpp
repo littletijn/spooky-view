@@ -48,18 +48,23 @@ int ListView::GetSelectedIndex(LPARAM lParam)
 	return index;
 }
 
-int ListView::AddItem(t_string text)
+int ListView::AddItem(LPWSTR text)
 {
 	LVITEM item;
-	
-	std::vector<wchar_t>* textBuffer = new std::vector<wchar_t>(text.begin(), text.end());
-	textBuffer->push_back(0); //Add null terminator for string
 	SecureZeroMemory(&item, sizeof(item));
 	item.mask = LVIF_TEXT;
-	item.pszText = textBuffer->data();
+	item.pszText = text;
 
 	int result = ListView_InsertItem(this->hWnd, &item);
-	delete item.pszText;
+	return result;
+}
+
+int ListView::AddItem(t_string text)
+{	
+	std::vector<wchar_t>* textBuffer = new std::vector<wchar_t>(text.begin(), text.end());
+	textBuffer->push_back(0); //Add null terminator for string
+	int result = this->AddItem(textBuffer->data());
+	delete textBuffer;
 	return result;
 }
 
