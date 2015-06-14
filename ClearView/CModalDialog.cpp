@@ -18,3 +18,8 @@ BOOL CModalDialog::Create()
 	this->result = DialogBox(this->hInstance, this->dialogResource, this->hParent, DlgProcMain);
 	return TRUE;
 }
+
+INT_PTR CModalDialog::GetResult()
+{
+	return this->result;
+}
