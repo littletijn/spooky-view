@@ -24,6 +24,7 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	switch (message)
 	{
 	case WM_INITDIALOG:
+		this->appsListView = new ListView(hDlg, IDC_LIST_ADD_APPS);
 		LoadModules();
 		return TRUE;
 		break;
@@ -32,9 +33,11 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 		switch (LOWORD(wParam))
 		{
 		case IDOK:
+			EndDialog(hDlg, 1);
+			return TRUE;
 		case IDCANCEL:
-			EndDialog(hDlg, 0);
-			return FALSE;
+			EndDialog(hDlg, 2);
+			return TRUE;
 
 		}
 		case IDC_BUTTON_BROWSE:
@@ -97,12 +100,15 @@ void CAddAppDialog::BrowseFile()
 {
 }
 
+LPWSTR CAddAppDialog::GetSelectedProcess()
+{
+	int index = this->appsListView->GetSelectedIndex();
+	TCHAR textBuffer[MAX_PATH];
+	LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
+	return text;
+}
+
 void CAddAppDialog::AddProcessToList(MODULEENTRY32 *module)
 {
-	HWND listView = GetDlgItem(this->hWnd, IDC_LIST_ADD_APPS);
-	LVITEM item;
-	SecureZeroMemory(&item, sizeof(item));
-	item.mask = LVIF_TEXT;
-	item.pszText = module->szModule;
-	int result = ListView_InsertItem(listView, &item);
+	this->appsListView->AddItem(module->szModule);
 }

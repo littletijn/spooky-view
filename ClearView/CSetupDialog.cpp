@@ -89,7 +89,10 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				appDialog->InitInstance();
 				if (appDialog->GetResult() == 1)
 				{
+					LPWSTR programName = appDialog->GetSelectedProcess();
 
+					CProgramSetting *progSettings = new CProgramSetting();
+					settings->programs[programName] = progSettings;
 				}
 				return TRUE;
 		}

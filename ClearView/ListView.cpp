@@ -48,6 +48,11 @@ int ListView::GetSelectedIndex(LPARAM lParam)
 	return index;
 }
 
+int ListView::GetSelectedIndex()
+{
+	return  ListView_GetNextItem(this->hWnd, -1, LVNI_SELECTED);
+}
+
 int ListView::AddItem(LPWSTR text)
 {
 	LVITEM item;
