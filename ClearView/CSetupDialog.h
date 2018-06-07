@@ -20,7 +20,7 @@ protected:
 
 	void WindowsListNotified(LPARAM lParam);
 	void ProgramsListNotified(LPARAM lParam);
-	void PopulateProcessList(HWND hDlg);
+	void PopulateProcessList();
 	void PopulateWindowsList(CProgramSetting* settings);
 	void SetTrackbars();
 	void SetAlpha(WORD value, HWND trackbar);

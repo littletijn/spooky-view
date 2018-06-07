@@ -65,7 +65,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		this->appsListView = new ListView(hDlg, IDC_LIST_APPS);
 		this->windowsListView = new ListView(hDlg, IDC_LIST_WINDOWS);
 
-		PopulateProcessList(hDlg);
+		PopulateProcessList();
 		SetTrackbarRanges(hDlg);
 		//Set the trackbars on the global settings
 		this->currentAlphaSettings = &settings->alphaSettings;
@@ -146,7 +146,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 	}
 }
 
-void CSetupDialog::PopulateProcessList(HWND hDlg)
+void CSetupDialog::PopulateProcessList()
 {
 	for (auto const &program : *settings->programs)
 	{

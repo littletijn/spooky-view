@@ -2,6 +2,7 @@
 #include "CAddAppDialog.h"
 #include "Tlhelp32.h"
 #include "Commctrl.h"
+#include "ListView.h"
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -24,6 +25,7 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	switch (message)
 	{
 	case WM_INITDIALOG:
+		this->appsListView = new ListView(hDlg, IDC_LIST_APPS);
 		LoadModules();
 		return TRUE;
 		break;
@@ -99,10 +101,5 @@ void CAddAppDialog::BrowseFile()
 
 void CAddAppDialog::AddProcessToList(MODULEENTRY32 *module)
 {
-	HWND listView = GetDlgItem(this->hWnd, IDC_LIST_ADD_APPS);
-	LVITEM item;
-	SecureZeroMemory(&item, sizeof(item));
-	item.mask = LVIF_TEXT;
-	item.pszText = module->szModule;
-	int result = ListView_InsertItem(listView, &item);
+	int result = this->appsListView->AddItem(module->szModule);
 }
