@@ -3,6 +3,7 @@
 #include "Tlhelp32.h"
 #include "Commctrl.h"
 #include "ListView.h"
+#include "strsafe.h"
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -19,6 +20,9 @@ BOOL CAddAppDialog::SetupDialog()
 	return TRUE;
 }
 
+/*
+Handles Window Messages
+*/
 INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	this->hWnd = hDlg;
@@ -47,7 +51,9 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	return FALSE;
 }
 
-
+/*
+Load the list of programs currently running
+*/
 void CAddAppDialog::LoadModules()
 {
 	PROCESSENTRY32 sProcess = { sizeof(PROCESSENTRY32) };
@@ -70,23 +76,44 @@ void CAddAppDialog::LoadModules()
 			HANDLE hModulesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, sProcess.th32ProcessID);
 			if (Module32First(hModulesSnapshot, &sModule))
 			{
-				this->AddProcessToList(&sModule);
+				TCHAR *programName = NULL;
 				DWORD dInfoSize = GetFileVersionInfoSize(sModule.szExePath, dwDummy);
-				if (dInfoSize){
+				if (dInfoSize)
+				{
 					LPVOID lpVersionInfo = new BYTE[dInfoSize];
 					if (GetFileVersionInfo(sModule.szExePath, dDummyHandle, dInfoSize, lpVersionInfo))
 					{
 						if (VerQueryValue(lpVersionInfo, TEXT("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &dwBytes))
 						{
+							TCHAR subBlock[200];
+							size_t subBlockSize = 200;
+							HRESULT hr;
 
-						}
-						else
-						{
-							MessageBox(this->hWnd, _T("Function <VerQueryValue> for Translation unsuccessful!"), _T("ERROR!"), IDOK);
+							for (int i = 0; i < (dwBytes / sizeof(struct LANGANDCODEPAGE)); i++)
+							{
+								hr = StringCchPrintf(
+									subBlock, 
+									subBlockSize, 
+									TEXT("\\StringFileInfo\\%04x%04x\\FileDescription"),
+									lpTranslate[i].wLanguage,
+									lpTranslate[i].wCodePage
+								);
+								if (!FAILED(hr))
+								{
+									UINT programNameBufferSize;
+									LPVOID programNameBuffer;
+									if (VerQueryValue(lpVersionInfo, subBlock, &programNameBuffer, &programNameBufferSize))
+									{
+										//We got the name of the program!
+										programName = reinterpret_cast<TCHAR *>(programNameBuffer);
+									}
+								}
+							}
 						}
 					}
+					
 				}
-
+				this->AddProcessToList(&sModule, programName);
 			}
 			CloseHandle(hModulesSnapshot);
 		} while (Process32Next(hProcessesSnapshot, &sProcess));
@@ -95,11 +122,17 @@ void CAddAppDialog::LoadModules()
 	CloseHandle(hProcessesSnapshot);
 }
 
+/*
+Open dialog to browse for a program file to add
+*/
 void CAddAppDialog::BrowseFile()
 {
 }
 
-void CAddAppDialog::AddProcessToList(MODULEENTRY32 *module)
+/*
+Add process with given module name and given program name to list of programs in dialog
+*/
+void CAddAppDialog::AddProcessToList(MODULEENTRY32 *module, TCHAR *programName)
 {
 	int result = this->appsListView->AddItem(module->szModule);
 }

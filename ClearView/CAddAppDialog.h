@@ -13,7 +13,7 @@ public:
 protected:
 	ListView * appsListView;
 	void LoadModules();
-	void AddProcessToList(MODULEENTRY32 *module);
+	void AddProcessToList(MODULEENTRY32 *module, TCHAR *programName);
 	void BrowseFile();
 };
 
