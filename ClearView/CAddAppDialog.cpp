@@ -83,14 +83,18 @@ void CAddAppDialog::LoadModules()
 					LPVOID lpVersionInfo = new BYTE[dInfoSize];
 					if (GetFileVersionInfo(sModule.szExePath, dDummyHandle, dInfoSize, lpVersionInfo))
 					{
+						//Get translations of module
 						if (VerQueryValue(lpVersionInfo, TEXT("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &dwBytes))
 						{
+							//SubBlock contains name of value to retrieve
 							TCHAR subBlock[200];
 							size_t subBlockSize = 200;
 							HRESULT hr;
 
+							//Loop trough each translation
 							for (int i = 0; i < (dwBytes / sizeof(struct LANGANDCODEPAGE)); i++)
 							{
+								//Put correct path to FileDescription in subBlock
 								hr = StringCchPrintf(
 									subBlock, 
 									subBlockSize, 
@@ -102,6 +106,7 @@ void CAddAppDialog::LoadModules()
 								{
 									UINT programNameBufferSize;
 									LPVOID programNameBuffer;
+									//Try to read value of path in subBlock
 									if (VerQueryValue(lpVersionInfo, subBlock, &programNameBuffer, &programNameBufferSize))
 									{
 										//We got the name of the program!
