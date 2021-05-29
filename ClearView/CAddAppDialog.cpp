@@ -24,7 +24,7 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		this->appsListView = new ListView(hDlg, IDC_LIST_ADD_APPS);
+		this->appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_APPS);
 		LoadModules();
 		return TRUE;
 		break;
@@ -74,10 +74,10 @@ void CAddAppDialog::LoadModules()
 				this->AddProcessToList(&sModule);
 				DWORD dInfoSize = GetFileVersionInfoSize(sModule.szExePath, dwDummy);
 				if (dInfoSize){
-					LPVOID lpVersionInfo = new BYTE[dInfoSize];
-					if (GetFileVersionInfo(sModule.szExePath, dDummyHandle, dInfoSize, lpVersionInfo))
+					auto lpVersionInfo = std::unique_ptr<BYTE[]>(new BYTE[dInfoSize]);
+					if (GetFileVersionInfo(sModule.szExePath, dDummyHandle, dInfoSize, lpVersionInfo.get()))
 					{
-						if (VerQueryValue(lpVersionInfo, TEXT("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &dwBytes))
+						if (VerQueryValue(lpVersionInfo.get(), TEXT("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &dwBytes))
 						{
 
 						}

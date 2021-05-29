@@ -3,8 +3,6 @@
 #include "CAlphaSettings.h"
 #include <map>
 
-using namespace std;
-
 #pragma once
 
 class CProgramSetting
@@ -15,6 +13,6 @@ public:
 	t_string name;
 	t_string path;
 	CAlphaSettings alphaSettings;
-	map<t_string, CWindowSetting *> *windows;
+	std::map<t_string, CWindowSetting *> *windows;
 };
 

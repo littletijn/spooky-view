@@ -7,11 +7,9 @@
 #include "ISettingsManager.h"
 #include "String.h"
 #include <vector>
+#include <memory>
 
-using namespace std;
-
-extern CSettings *settings;
-extern ISettingsManager *settingsManager;
+extern std::unique_ptr<ISettingsManager> settingsManager;
 
 CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
@@ -19,8 +17,6 @@ CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 
 CSetupDialog::~CSetupDialog()
 {
-	delete this->appsListView;
-	delete this->windowsListView;
 }
 
 BOOL CSetupDialog::SetupDialog()
@@ -62,13 +58,13 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 
 	case WM_INITDIALOG:
 		//Create the listviews
-		this->appsListView = new ListView(hDlg, IDC_LIST_APPS);
-		this->windowsListView = new ListView(hDlg, IDC_LIST_WINDOWS);
+		appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_APPS);
+		windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_WINDOWS);
 
 		PopulateProcessList(hDlg);
 		SetTrackbarRanges(hDlg);
 		//Set the trackbars on the global settings
-		this->currentAlphaSettings = &settings->alphaSettings;
+		this->currentAlphaSettings = settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
 		return TRUE;
 		break;
@@ -77,22 +73,23 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		switch (LOWORD(wParam))
 		{
 			case IDAPPLY:
-				settingsManager->SaveSettings(settings);
+				settingsManager->SaveSettings();
 				return TRUE;
 			case IDOK:
-				settingsManager->SaveSettings(settings);
+				settingsManager->SaveSettings();
 			case IDCANCEL:
 				DestroyWindow(hDlg);
 				return TRUE;
 			case IDC_BUTTON_APP_ADD:
-				CAddAppDialog *appDialog = new CAddAppDialog(this->hInstance, this->hWnd);
+				auto appDialog = std::make_unique<CAddAppDialog>(this->hInstance, this->hWnd);
 				appDialog->InitInstance();
 				if (appDialog->GetResult() == 1)
 				{
 					LPWSTR programName = appDialog->GetSelectedProcess();
 
-					CProgramSetting *progSettings = new CProgramSetting();
-					settings->programs[programName] = progSettings;
+					auto progSettings = std::make_shared<CProgramSetting>();
+					auto programs = *settingsManager->GetSettings()->programs.get();
+					programs[programName] = progSettings.get();
 				}
 				return TRUE;
 		}
@@ -109,11 +106,11 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		TCHAR textBuffer[MAX_PATH];
 		LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
 
-		auto program = settings->programs->find(text);
-		if (program != settings->programs->end())
+		auto program = settingsManager->GetSettings()->programs->find(text);
+		if (program != settingsManager->GetSettings()->programs->end())
 		{
-			this->currentProgram = program->second;
-			this->currentAlphaSettings = &program->second->alphaSettings;
+			this->currentProgram = *program->second;
+			this->currentAlphaSettings = program->second->alphaSettings;
 			SetTrackbars();
 		}
 		PopulateWindowsList(program->second);
@@ -121,7 +118,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 	else
 	{
 		//When no item is selected, get the global settings
-		this->currentAlphaSettings = &settings->alphaSettings;
+		this->currentAlphaSettings = settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
 	}
 }
@@ -134,24 +131,25 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 		TCHAR textBuffer[MAX_PATH];
 		LPWSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
 
-		auto window = this->currentProgram->windows->find(text);
-		if (window != this->currentProgram->windows->end())
+		auto window = this->currentProgram.windows->find(text);
+		if (window != this->currentProgram.windows->end())
 		{
-			this->currentAlphaSettings = &window->second->alphaSettings;
+			this->currentAlphaSettings = window->second->alphaSettings;
 			SetTrackbars();
 		}
 	}
 	else
 	{
 		//When no item is selected, get the program global settings
-		this->currentAlphaSettings = &this->currentProgram->alphaSettings;
+		this->currentAlphaSettings = this->currentProgram.alphaSettings;
 		SetTrackbars();
 	}
 }
 
 void CSetupDialog::PopulateProcessList(HWND hDlg)
 {
-	for (auto const &program : *settings->programs)
+	auto programs = settingsManager->GetSettings()->programs.get();
+	for (auto const program : *programs)
 	{
 		this->appsListView->AddItem(program.first);
 	}	
@@ -178,20 +176,20 @@ void CSetupDialog::SetTrackbars()
 {
 	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)this->currentAlphaSettings->foreground);
-	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)this->currentAlphaSettings->background);
+	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)&currentAlphaSettings.foreground);
+	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)&currentAlphaSettings.background);
 }
 
-void CSetupDialog::SetAlpha(WORD value, HWND trackbar)
+void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 {
 	LONG identifier = GetWindowLong(trackbar, GWL_ID);
 	switch (identifier)
 	{
 	case IDC_SLIDER_FOREGROUND:
-		this->currentAlphaSettings->foreground = value;
+		currentAlphaSettings.foreground = value;
 		break;
 	case IDC_SLIDER_BACKGROUND:
-		this->currentAlphaSettings->background = value;
+		currentAlphaSettings.background = value;
 		break;
 	}
 }

@@ -6,9 +6,11 @@ class CRegistrySettingsManager : public ISettingsManager
 public:
 	CRegistrySettingsManager();
 	~CRegistrySettingsManager();
-	CSettings* LoadSettings();
-	bool SaveSettings(CSettings* settings);
+	void LoadSettings();
+	bool SaveSettings();
+	CSettings* GetSettings();
 protected:
+	std::unique_ptr<CSettings> settings;
 	void SaveValues(HKEY key, CAlphaSettings values);
 	HKEY registryRootKey;
 	BOOL ReadKeyValue(HKEY key, TCHAR* valueName, __out BYTE& value);

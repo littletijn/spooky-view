@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "CMainWindow.h"
-#include "CAbout.h"
 #include "ClearView.h"
 #include "Resource.h"
-#include "CSetupDialog.h"
 #include "CLimitSingleInstance.h"
 
 //Constructor
@@ -24,7 +22,7 @@ BOOL CMainWindow::InitNotifyIcon()
 	TCHAR appName[MAX_LOADSTRING];
 	LoadString(hInstance, IDS_APP_TITLE, appName, ARRAYSIZE(appName));
 	HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_CLEARVIEW));
-	cNotifyIcon = new CNotifyIcon(this->hWnd, notifyIcon, appName);
+	cNotifyIcon = std::make_unique<CNotifyIcon>(this->hWnd, notifyIcon, appName);
 	BOOL canInit = cNotifyIcon->Init();
 	notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
 	return canInit && notifyIconContextMenu != NULL;
@@ -33,7 +31,6 @@ BOOL CMainWindow::InitNotifyIcon()
 void CMainWindow::CloseWindow()
 {
 	DestroyMenu(notifyIconContextMenu);
-	delete cNotifyIcon;
 	PostQuitMessage(0);
 }
 
@@ -94,15 +91,15 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		{
 			case IDM_OPEN:
 			{
-				CSetupDialog *setup = new CSetupDialog(this->hInstance);
-				setup->InitInstance();
+				cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance);
+				cSetupDialog->InitInstance();
 			}
 			break;
 
 			case IDM_ABOUT:
 			{
-				CAbout *about = new CAbout(this->hInstance);
-				about->InitInstance();
+				cAboutDialog = std::make_unique<CAbout>(this->hInstance);
+				cAboutDialog->InitInstance();
 			}
 			break;
 

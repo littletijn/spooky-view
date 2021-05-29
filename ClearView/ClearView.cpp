@@ -9,8 +9,7 @@
 #include <Uxtheme.h>
 #include <string>
 #include "CLimitSingleInstance.h"
-
-using namespace std;
+#include <memory>
 
 typedef BOOL (WINAPI *PGNSI)(HANDLE);
 typedef BOOL (WINAPI *PGNSI2)(HWND, MARGINS*);
@@ -20,11 +19,10 @@ const TCHAR DIALOGBOXCLASSNAME[7] = _T("#32770");
 
 // Global Variables:
 HINSTANCE hInst;								// current instance
-CMainWindow* mainWindow;
+std::unique_ptr<CMainWindow> mainWindow;
 HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
-CSettings* settings;
-ISettingsManager* settingsManager;
+std::unique_ptr<ISettingsManager> settingsManager;
 BOOL isPause = false;
 CLimitSingleInstance singleInstanceObj(_T("ClearView"));
 
@@ -46,7 +44,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	InitCommonControlsEx(&init);
 
 	hInst = hInstance;
-	mainWindow = new CMainWindow(hInstance);
+	mainWindow = std::make_unique<CMainWindow>(hInstance);
 	mainWindow->RegisterWindowClass();
 	
 	// Perform application initialization:
@@ -68,8 +66,8 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		}
 		LoadFunctionAdresses();
 		CreateHook();
-		settingsManager = new CRegistrySettingsManager();
-		settings = settingsManager->LoadSettings();
+		settingsManager = std::make_unique<CRegistrySettingsManager>();
+		settingsManager->LoadSettings();
 		EnumWindows(EnumWindowsProc, NULL);
 	}
 
@@ -88,11 +86,6 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	Unhook();
 	//Reset windows
 	EnumWindows(EnumWindowsReset, NULL);
-
-	//Delete pointers
-	delete mainWindow;
-	delete settings;
-	delete settingsManager;
 
 	return (int) msg.wParam;
 }
@@ -198,7 +191,7 @@ void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 			if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 			{
 				BYTE alpha;
-				if (settings->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
+				if (settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
 				{
 					SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
 					SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);

@@ -5,11 +5,10 @@
 
 #pragma once
 
-using namespace std;
-
 
 CRegistrySettingsManager::CRegistrySettingsManager()
 {
+	settings = std::make_unique<CSettings>();
 	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
 	if (result == ERROR_SUCCESS)
 	{
@@ -24,11 +23,15 @@ CRegistrySettingsManager::~CRegistrySettingsManager()
 	}
 }
 
-CSettings* CRegistrySettingsManager::LoadSettings()
+CSettings* CRegistrySettingsManager::GetSettings()
+{
+	return settings.get();
+}
+
+void CRegistrySettingsManager::LoadSettings()
 {
 	//Create variables for return values
 	HKEY programsKey;
-	CSettings* settings = new CSettings();
 
 	LSTATUS result = RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey);
 	if (result == ERROR_SUCCESS)
@@ -43,7 +46,7 @@ CSettings* CRegistrySettingsManager::LoadSettings()
 		//Create a TCHAR buffer with the maximum allowed key name length as size, make it as a heap stored array and put it in a smart pointer on the stack
 		//so it will be delete-d when the smart pointer is going out of scope
 		programsSubKeyLength++;
-		unique_ptr<TCHAR[]> processKeyName(new TCHAR[programsSubKeyLength]);
+		std::unique_ptr<TCHAR[]> processKeyName(new TCHAR[programsSubKeyLength]);
 
 		//Enum the process sub keys in the Programs key
 		LSTATUS programsEnumResult;
@@ -76,7 +79,7 @@ CSettings* CRegistrySettingsManager::LoadSettings()
 					DWORD windowsSubKeyIndex = 0;
 					RegQueryInfoKey(windowsKey, NULL, NULL, NULL, NULL, &windowsSubKeyLength, NULL, NULL, NULL, NULL, NULL, NULL);
 					windowsSubKeyLength++;
-					unique_ptr<TCHAR[]> windowKeyName(new TCHAR[windowsSubKeyLength]);
+					std::unique_ptr<TCHAR[]> windowKeyName(new TCHAR[windowsSubKeyLength]);
 
 					LSTATUS windowsEnumResult;
 					//Enum the window sub keys in the Windows key
@@ -110,7 +113,6 @@ CSettings* CRegistrySettingsManager::LoadSettings()
 		} while (programsEnumResult != ERROR_NO_MORE_ITEMS && programsEnumResult == ERROR_SUCCESS);
 		RegCloseKey(programsKey);
 	}
-	return settings;
 }
 
 void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* settings)
@@ -126,7 +128,7 @@ void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* setting
 	}
 }
 
-bool CRegistrySettingsManager::SaveSettings(CSettings *settings)
+bool CRegistrySettingsManager::SaveSettings()
 {
 	if (RegDeleteTree(registryRootKey, _T("Programs")) == ERROR_SUCCESS)
 	{

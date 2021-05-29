@@ -2,8 +2,7 @@
 #include "ListView.h"
 #include <CommCtrl.h>
 #include <vector>
-
-using namespace std;
+#include <memory>
 
 ListView::ListView(HWND parent, int intResource)
 {
@@ -66,10 +65,9 @@ int ListView::AddItem(LPWSTR text)
 
 int ListView::AddItem(t_string text)
 {	
-	std::vector<wchar_t>* textBuffer = new std::vector<wchar_t>(text.begin(), text.end());
+	auto textBuffer = std::make_unique<std::vector<wchar_t>>(text.begin(), text.end());
 	textBuffer->push_back(0); //Add null terminator for string
 	int result = this->AddItem(textBuffer->data());
-	delete textBuffer;
 	return result;
 }
 

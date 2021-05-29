@@ -5,7 +5,7 @@
 
 CProgramSetting::CProgramSetting()
 {
-	this->windows = new map<t_string, CWindowSetting *>();
+	this->windows = new std::map<t_string, CWindowSetting *>();
 }
 
 CProgramSetting::~CProgramSetting()

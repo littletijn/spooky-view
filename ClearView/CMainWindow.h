@@ -1,5 +1,8 @@
 #include "CWindow.h"
 #include "CNotifyIcon.h"
+#include "CAbout.h"
+#include "CSetupDialog.h"
+#include <memory>
 
 class CMainWindow: public CWindow
 {
@@ -14,6 +17,8 @@ private:
 	void ShowAlreadyRunningBalloon();
 	HMENU GetContextMenu();
 	//Members
-	CNotifyIcon *cNotifyIcon;
+	std::unique_ptr<CNotifyIcon> cNotifyIcon;
 	HMENU notifyIconContextMenu;
+	std::unique_ptr<CSetupDialog> cSetupDialog;
+	std::unique_ptr<CAbout> cAboutDialog;
 };

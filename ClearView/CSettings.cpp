@@ -1,16 +1,16 @@
 #include "stdafx.h"
 #include "CSettings.h"
+#include <memory>
 
 
 CSettings::CSettings()
 {
-	this->programs = new map<t_string, CProgramSetting *>();
+	this->programs = std::make_unique<std::map<t_string, CProgramSetting*>>();
 }
 
 
 CSettings::~CSettings()
 {
-	delete this->programs;
 }
 
 // Search settings maps for alpha settings for given process and window class
