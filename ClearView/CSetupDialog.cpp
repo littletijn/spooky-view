@@ -109,7 +109,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		auto program = settingsManager->GetSettings()->programs->find(text);
 		if (program != settingsManager->GetSettings()->programs->end())
 		{
-			this->currentProgram = *program->second;
+			this->currentProgram = program->second;
 			this->currentAlphaSettings = program->second->alphaSettings;
 			SetTrackbars();
 		}
@@ -131,8 +131,8 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 		TCHAR textBuffer[MAX_PATH];
 		LPWSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
 
-		auto window = this->currentProgram.windows->find(text);
-		if (window != this->currentProgram.windows->end())
+		auto window = currentProgram->windows->find(text);
+		if (window != currentProgram->windows->end())
 		{
 			this->currentAlphaSettings = window->second->alphaSettings;
 			SetTrackbars();
@@ -141,7 +141,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 	else
 	{
 		//When no item is selected, get the program global settings
-		this->currentAlphaSettings = this->currentProgram.alphaSettings;
+		this->currentAlphaSettings = currentProgram->alphaSettings;
 		SetTrackbars();
 	}
 }

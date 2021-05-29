@@ -5,10 +5,9 @@
 
 CProgramSetting::CProgramSetting()
 {
-	this->windows = new std::map<t_string, CWindowSetting *>();
+	this->windows = std::make_unique<std::map<t_string, CWindowSetting *>>();
 }
 
 CProgramSetting::~CProgramSetting()
 {
-	delete this->windows;
 }

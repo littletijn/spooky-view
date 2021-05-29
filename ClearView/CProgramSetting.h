@@ -2,6 +2,7 @@
 #include "CWindowSetting.h"
 #include "CAlphaSettings.h"
 #include <map>
+#include <memory>
 
 #pragma once
 
@@ -13,6 +14,6 @@ public:
 	t_string name;
 	t_string path;
 	CAlphaSettings alphaSettings;
-	std::map<t_string, CWindowSetting *> *windows;
+	std::unique_ptr<std::map<t_string, CWindowSetting *>> windows;
 };
 
