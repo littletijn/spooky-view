@@ -36,6 +36,9 @@ BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, 
 	else{
 		alphaSettings = this->alphaSettings;
 	}
+	if (!alphaSettings.enabled) {
+		return false;
+	}
 
 	switch (type)
 	{

@@ -177,8 +177,8 @@ void CRegistrySettingsManager::SaveValues(HKEY key, CAlphaSettings values)
 {
 	RegSetValueEx(key, _T("AlphaForeground"), 0, REG_BINARY, &values.foreground, sizeof(values.foreground));
 	RegSetValueEx(key, _T("AlphaBackground"), 0, REG_BINARY, &values.background, sizeof(values.background));
-	BYTE enabled = values.enabled ? 1 : 0;
-	RegSetValueEx(key, _T("Enabled"), 0, REG_BINARY, &enabled, sizeof(values.enabled));
+	BYTE enabled = values.enabled ? '\x1' : '\x0';
+	RegSetValueEx(key, _T("Enabled"), 0, REG_BINARY, &enabled, sizeof(enabled));
 }
 
 BOOL CRegistrySettingsManager::ReadKeyValue(HKEY key, TCHAR* valueName, __out BYTE& value)
