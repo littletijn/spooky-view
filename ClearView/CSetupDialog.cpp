@@ -60,12 +60,15 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		//Create the listviews
 		appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_APPS);
 		windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_WINDOWS);
+		enabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_TRANSPARENCY);
+		forcedCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_FORCE);
 
 		PopulateProcessList(hDlg);
 		SetTrackbarRanges(hDlg);
 		//Set the trackbars on the global settings
 		this->currentAlphaSettings = settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
+		SetCheckboxes();
 		return TRUE;
 		break;
 
@@ -178,6 +181,10 @@ void CSetupDialog::SetTrackbars()
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
 	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)&currentAlphaSettings.foreground);
 	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)&currentAlphaSettings.background);
+}
+
+void CSetupDialog::SetCheckboxes()
+{
 }
 
 void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)

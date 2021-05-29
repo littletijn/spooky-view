@@ -4,6 +4,7 @@
 #include "CAlphaSettings.h"
 #include "CProgramSetting.h"
 #include "ListView.h"
+#include "Checkbox.h"
 #include <memory>
 
 class CSetupDialog : public CModelessDialog
@@ -18,12 +19,15 @@ protected:
 	CProgramSetting* currentProgram;
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<ListView> windowsListView;
+	std::unique_ptr<Checkbox> enabledCheckbox;
+	std::unique_ptr<Checkbox> forcedCheckbox;
 
 	void WindowsListNotified(LPARAM lParam);
 	void ProgramsListNotified(LPARAM lParam);
 	void PopulateProcessList(HWND hDlg);
 	void PopulateWindowsList(CProgramSetting* settings);
 	void SetTrackbars();
+	void SetCheckboxes();
 	void SetAlpha(BYTE value, HWND trackbar);
 	void SetTrackbarRanges(HWND hWnd);
 };

@@ -97,6 +97,7 @@
     <ClInclude Include="CAddAppDialog.h" />
     <ClInclude Include="CAlphaSettings.h" />
     <ClInclude Include="CDialog.h" />
+    <ClInclude Include="Checkbox.h" />
     <ClInclude Include="ClearView.h" />
     <ClInclude Include="CLimitSingleInstance.h" />
     <ClInclude Include="CMainWindow.h" />
@@ -123,6 +124,7 @@
     <ClCompile Include="CAbout.cpp" />
     <ClCompile Include="CAddAppDialog.cpp" />
     <ClCompile Include="CDialog.cpp" />
+    <ClCompile Include="Checkbox.cpp" />
     <ClCompile Include="ClearView.cpp" />
     <ClCompile Include="CMainWindow.cpp" />
     <ClCompile Include="CModalDialog.cpp" />
