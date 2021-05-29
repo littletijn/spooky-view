@@ -115,6 +115,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 			this->currentProgram = program->second;
 			this->currentAlphaSettings = program->second->alphaSettings;
 			SetTrackbars();
+			SetCheckboxes();
 		}
 		PopulateWindowsList(program->second);
 	}
@@ -123,6 +124,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		//When no item is selected, get the global settings
 		this->currentAlphaSettings = settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
+		SetCheckboxes();
 	}
 }
 
@@ -139,6 +141,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 		{
 			this->currentAlphaSettings = window->second->alphaSettings;
 			SetTrackbars();
+			SetCheckboxes();
 		}
 	}
 	else
@@ -146,6 +149,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 		//When no item is selected, get the program global settings
 		this->currentAlphaSettings = currentProgram->alphaSettings;
 		SetTrackbars();
+		SetCheckboxes();
 	}
 }
 
@@ -185,6 +189,7 @@ void CSetupDialog::SetTrackbars()
 
 void CSetupDialog::SetCheckboxes()
 {
+	enabledCheckbox->SetCheckState(currentAlphaSettings.enabled);
 }
 
 void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
