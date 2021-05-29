@@ -23,6 +23,7 @@ protected:
 	std::unique_ptr<Checkbox> forcedCheckbox;
 
 	void WindowsListNotified(LPARAM lParam);
+	void EnabledCheckboxNotified();
 	void ProgramsListNotified(LPARAM lParam);
 	void PopulateProcessList(HWND hDlg);
 	void PopulateWindowsList(CProgramSetting* settings);

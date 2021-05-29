@@ -8,6 +8,7 @@
 #include "String.h"
 #include <vector>
 #include <memory>
+#include <WindowsX.h>
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
 
@@ -73,8 +74,13 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		break;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
+		if (HIWORD(wParam) == BN_CLICKED)
 		{
+			switch (LOWORD(wParam))
+			{
+			case IDC_CHECKBOX_ENABLE_TRANSPARENCY:
+				EnabledCheckboxNotified();
+				return TRUE;
 			case IDAPPLY:
 				settingsManager->SaveSettings();
 				return TRUE;
@@ -95,6 +101,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					programs[programName] = progSettings.get();
 				}
 				return TRUE;
+			}
 		}
 		break;
 	}
@@ -151,6 +158,11 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 		SetTrackbars();
 		SetCheckboxes();
 	}
+}
+
+void CSetupDialog::EnabledCheckboxNotified()
+{
+	currentAlphaSettings.enabled = enabledCheckbox->GetCheckState();
 }
 
 void CSetupDialog::PopulateProcessList(HWND hDlg)

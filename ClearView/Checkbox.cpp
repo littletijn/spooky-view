@@ -19,3 +19,8 @@ void Checkbox::SetCheckState(bool state)
 		Button_SetCheck(this->hWnd, BST_UNCHECKED);
 	}
 }
+
+BOOL Checkbox::GetCheckState()
+{
+	return Button_GetCheck(this->hWnd) == BST_CHECKED;
+}
