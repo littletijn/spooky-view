@@ -1,5 +1,6 @@
 .vs/
 *.vcxproj.user
+*.cache
 bin/
 obj/
 Debug/
