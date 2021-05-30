@@ -67,11 +67,10 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		PopulateProcessList(hDlg);
 		SetTrackbarRanges(hDlg);
 		//Set the trackbars on the global settings
-		this->currentAlphaSettings = settingsManager->GetSettings()->alphaSettings;
+		this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
 		return TRUE;
-		break;
 
 	case WM_COMMAND:
 		if (HIWORD(wParam) == BN_CLICKED)
@@ -120,7 +119,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		if (program != settingsManager->GetSettings()->programs->end())
 		{
 			this->currentProgram = program->second;
-			this->currentAlphaSettings = program->second->alphaSettings;
+			this->currentAlphaSettings = &program->second->alphaSettings;
 			SetTrackbars();
 			SetCheckboxes();
 		}
@@ -129,7 +128,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 	else
 	{
 		//When no item is selected, get the global settings
-		this->currentAlphaSettings = settingsManager->GetSettings()->alphaSettings;
+		this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
 	}
@@ -146,7 +145,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 		auto window = currentProgram->windows->find(text);
 		if (window != currentProgram->windows->end())
 		{
-			this->currentAlphaSettings = window->second->alphaSettings;
+			this->currentAlphaSettings = &window->second->alphaSettings;
 			SetTrackbars();
 			SetCheckboxes();
 		}
@@ -154,7 +153,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 	else
 	{
 		//When no item is selected, get the program global settings
-		this->currentAlphaSettings = currentProgram->alphaSettings;
+		this->currentAlphaSettings = &currentProgram->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
 	}
@@ -162,7 +161,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 
 void CSetupDialog::EnabledCheckboxNotified()
 {
-	currentAlphaSettings.enabled = enabledCheckbox->GetCheckState();
+	currentAlphaSettings->enabled = enabledCheckbox->GetCheckState();
 }
 
 void CSetupDialog::PopulateProcessList(HWND hDlg)
@@ -195,13 +194,13 @@ void CSetupDialog::SetTrackbars()
 {
 	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)currentAlphaSettings.foreground);
-	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)currentAlphaSettings.background);
+	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)currentAlphaSettings->foreground);
+	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)currentAlphaSettings->background);
 }
 
 void CSetupDialog::SetCheckboxes()
 {
-	enabledCheckbox->SetCheckState(currentAlphaSettings.enabled);
+	enabledCheckbox->SetCheckState(currentAlphaSettings->enabled);
 }
 
 void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
@@ -210,10 +209,10 @@ void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 	switch (identifier)
 	{
 	case IDC_SLIDER_FOREGROUND:
-		currentAlphaSettings.foreground = value;
+		currentAlphaSettings->foreground = value;
 		break;
 	case IDC_SLIDER_BACKGROUND:
-		currentAlphaSettings.background = value;
+		currentAlphaSettings->background = value;
 		break;
 	}
 }

@@ -15,7 +15,7 @@ public:
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 protected:
-	CAlphaSettings currentAlphaSettings;
+	CAlphaSettings* currentAlphaSettings;
 	CProgramSetting* currentProgram;
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<ListView> windowsListView;
