@@ -75,3 +75,9 @@ void ListView::DeleteAllItems()
 {
 	ListView_DeleteAllItems(this->hWnd);
 }
+
+void ListView::DeleteSelectedItem()
+{
+	int index = GetSelectedIndex();
+	ListView_DeleteItem(this->hWnd, index);
+}

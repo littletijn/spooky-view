@@ -88,6 +88,10 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 			case IDCANCEL:
 				DestroyWindow(hDlg);
 				return TRUE;
+			case IDC_BUTTON_APP_REMOVE:
+				settingsManager->GetSettings()->programs->erase(this->currentProgramName);
+				this->appsListView->DeleteSelectedItem();
+				return TRUE;
 			case IDC_BUTTON_APP_ADD:
 				auto appDialog = std::make_unique<CAddAppDialog>(this->hInstance, this->hWnd);
 				appDialog->InitInstance();
@@ -118,6 +122,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		auto program = settingsManager->GetSettings()->programs->find(text);
 		if (program != settingsManager->GetSettings()->programs->end())
 		{
+			this->currentProgramName = program->first;
 			this->currentProgram = program->second;
 			this->currentAlphaSettings = &program->second->alphaSettings;
 			SetTrackbars();

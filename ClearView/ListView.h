@@ -12,6 +12,7 @@ public:
 	int AddItem(LPWSTR text);
 	int AddItem(t_string text);
 	void DeleteAllItems();
+	void DeleteSelectedItem();
 protected:
 	HWND hWnd;
 	int intResouce;
