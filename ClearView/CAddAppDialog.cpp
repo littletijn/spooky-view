@@ -2,6 +2,8 @@
 #include "CAddAppDialog.h"
 #include "Tlhelp32.h"
 #include "Commctrl.h"
+#include "strsafe.h"
+#include <string.h>
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -33,6 +35,7 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 		switch (LOWORD(wParam))
 		{
 		case IDOK:
+			StoreSelectedProcess();
 			EndDialog(hDlg, 1);
 			return TRUE;
 		case IDCANCEL:
@@ -100,12 +103,18 @@ void CAddAppDialog::BrowseFile()
 {
 }
 
-LPWSTR CAddAppDialog::GetSelectedProcess()
+void CAddAppDialog::StoreSelectedProcess()
 {
 	int index = this->appsListView->GetSelectedIndex();
 	TCHAR textBuffer[MAX_PATH];
 	LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
-	return text;
+	this->selectedProcess = std::unique_ptr<TCHAR[]>(new TCHAR[MAX_PATH]);
+	StringCchCopy(this->selectedProcess.get(), MAX_PATH, textBuffer);
+}
+
+LPWSTR CAddAppDialog::GetSelectedProcess()
+{
+	return this->selectedProcess.get();
 }
 
 void CAddAppDialog::AddProcessToList(MODULEENTRY32 *module)

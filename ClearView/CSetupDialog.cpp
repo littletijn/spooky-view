@@ -95,9 +95,9 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				{
 					LPWSTR programName = appDialog->GetSelectedProcess();
 
-					auto progSettings = std::make_shared<CProgramSetting>();
-					auto programs = *settingsManager->GetSettings()->programs.get();
-					programs[programName] = progSettings.get();
+					auto progSettings = new CProgramSetting();
+					settingsManager->GetSettings()->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
+					this->appsListView->AddItem(programName);
 				}
 				return TRUE;
 			}
@@ -170,7 +170,7 @@ void CSetupDialog::PopulateProcessList(HWND hDlg)
 	for (auto const program : *programs)
 	{
 		this->appsListView->AddItem(program.first);
-	}	
+	}
 }
 
 void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)

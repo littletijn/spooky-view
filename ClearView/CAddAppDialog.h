@@ -13,9 +13,11 @@ public:
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 	LPWSTR GetSelectedProcess();
 protected:
+	std::unique_ptr<TCHAR[]> selectedProcess;
 	std::unique_ptr<ListView> appsListView;
 	void LoadModules();
 	void AddProcessToList(MODULEENTRY32 *module);
 	void BrowseFile();
+	void StoreSelectedProcess();
 };
 
