@@ -10,6 +10,7 @@
 #include <vector>
 #include <memory>
 #include <WindowsX.h>
+#include "Defines.h"
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
 
@@ -165,7 +166,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 	int index = this->windowsListView->GetSelectedIndex(lParam);
 	if (index > -1)
 	{
-		TCHAR textBuffer[MAX_PATH];
+		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
 		LPWSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
 
 		auto window = currentProgram->windows->find(text);
