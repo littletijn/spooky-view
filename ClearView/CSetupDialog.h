@@ -27,7 +27,7 @@ protected:
 	void EnabledCheckboxNotified();
 	void ProgramsListNotified(LPARAM lParam);
 	void PopulateProcessList(HWND hDlg);
-	void PopulateWindowsList(CProgramSetting* settings);
+	void PopulateWindowsList(CProgramSetting* settings = 0);
 	void SetTrackbars();
 	void SetCheckboxes();
 	void SetAlpha(BYTE value, HWND trackbar);

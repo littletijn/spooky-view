@@ -157,6 +157,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
+		PopulateWindowsList();
 	}
 }
 
@@ -206,9 +207,11 @@ void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)
 {
 	this->windowsListView->DeleteAllItems();
 	this->windowsListView->AddItem(_T("[All other windows]"));
-	for (auto const &window : *settings->windows)
-	{
-		this->windowsListView->AddItem(window.first);
+	if (settings) {
+		for (auto const& window : *settings->windows)
+		{
+			this->windowsListView->AddItem(window.first);
+		}
 	}
 }
 
