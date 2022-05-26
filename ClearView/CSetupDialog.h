@@ -22,7 +22,6 @@ protected:
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<ListView> windowsListView;
 	std::unique_ptr<Checkbox> enabledCheckbox;
-	std::unique_ptr<Checkbox> forcedCheckbox;
 
 	void WindowsListNotified(LPARAM lParam);
 	void EnabledCheckboxNotified();

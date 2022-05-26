@@ -64,7 +64,6 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_APPS);
 		windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_WINDOWS);
 		enabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_TRANSPARENCY);
-		forcedCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_FORCE);
 
 		PopulateProcessList(hDlg);
 		SetTrackbarRanges(hDlg);
