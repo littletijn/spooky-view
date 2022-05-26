@@ -167,7 +167,10 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		this->SetFormVisibility(FALSE);
 		this->windowsListView->DeleteAllItems();
 	}
-	this->windowsListView->SetSelectedItem(0);
+	if (index >= 0) {
+		//Select the first item available
+		this->windowsListView->SetSelectedItem(0);
+	}
 }
 
 void CSetupDialog::WindowsListNotified(LPARAM lParam)

@@ -28,7 +28,7 @@ LPWSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
 
 void ListView::SetSelectedItem(int index)
 {
-	ListView_SetItemState(this->hWnd, index, LVIS_SELECTED, LVIS_STATEIMAGEMASK);
+	ListView_SetItemState(this->hWnd, index,  LVIS_SELECTED,  LVIS_SELECTED);
 }
 
 int ListView::GetSelectedIndex()
