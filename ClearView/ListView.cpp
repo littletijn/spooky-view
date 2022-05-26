@@ -26,33 +26,14 @@ LPWSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
 	return item.pszText;
 }
 
-int ListView::GetSelectedIndex(LPARAM lParam)
+void ListView::SetSelectedItem(int index)
 {
-	LPNMHDR notifyMessage = (LPNMHDR)lParam;
-	int index = -1;
-	switch (notifyMessage->code)
-	{
-	case NM_CLICK:
-	{
-		LPNMITEMACTIVATE item = (LPNMITEMACTIVATE)lParam;
-		index = item->iItem;
-	}
-	break;
-
-	case LVN_ITEMACTIVATE:
-		index = ListView_GetNextItem(notifyMessage->hwndFrom, -1, LVNI_SELECTED);
-		break;
-
-	case LVN_ITEMCHANGED:
-		LPNMLISTVIEW item = (LPNMLISTVIEW)lParam;
-		index = item->iItem;
-	}
-	return index;
+	ListView_SetItemState(this->hWnd, index, LVIS_SELECTED, LVIS_STATEIMAGEMASK);
 }
 
 int ListView::GetSelectedIndex()
 {
-	return  ListView_GetNextItem(this->hWnd, -1, LVNI_SELECTED);
+	return ListView_GetNextItem(this->hWnd, -1, LVNI_SELECTED);
 }
 
 int ListView::AddItem(LPWSTR text)

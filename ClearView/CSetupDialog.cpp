@@ -134,7 +134,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 
 void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 {
-	int index = this->appsListView->GetSelectedIndex(lParam);
+	int index = this->appsListView->GetSelectedIndex();
 	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_PATH];
@@ -150,20 +150,29 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 			SetCheckboxes();
 		}
 		PopulateWindowsList(program->second);
+		this->SetFormVisibility(TRUE);
 	}
-	else
+	else if (index == 0)
 	{
-		//When no item is selected, get the global settings
+		//When first item (all programs) is selected, get the global settings
 		this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
 		PopulateWindowsList();
+		this->SetFormVisibility(TRUE);
+	} 
+	else
+	{
+		//When no item is selected, hide the controls and clear windows list
+		this->SetFormVisibility(FALSE);
+		this->windowsListView->DeleteAllItems();
 	}
+	this->windowsListView->SetSelectedItem(0);
 }
 
 void CSetupDialog::WindowsListNotified(LPARAM lParam)
 {
-	int index = this->windowsListView->GetSelectedIndex(lParam);
+	int index = this->windowsListView->GetSelectedIndex();
 	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
@@ -177,14 +186,19 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 			SetTrackbars();
 			SetCheckboxes();
 		}
-		this->SetFormVisibility();
+		this->SetFormVisibility(TRUE);
 	}
-	else
+	else if (index == 0)
 	{
-		//When no item is selected, get the program global settings
+		//When first item (all windows) is selected, get the program global settings
 		this->currentAlphaSettings = &currentProgram->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
+		this->SetFormVisibility(TRUE);
+	}
+	else
+	{
+		this->SetFormVisibility(FALSE);
 	}
 }
 
@@ -250,11 +264,11 @@ void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 	}
 }
 
-void CSetupDialog::SetFormVisibility()
+void CSetupDialog::SetFormVisibility(bool show)
 {
-	const int itemIds[] = {IDC_CHECKBOX_ENABLE_TRANSPARENCY, IDC_STATIC_TRANSPARENCY};
+	const int itemIds[] = {IDC_CHECKBOX_ENABLE_TRANSPARENCY, IDC_STATIC_TRANSPARENCY, IDC_STATIC_FOREGROUND, IDC_SLIDER_FOREGROUND, IDC_STATIC_BACKGROUND, IDC_SLIDER_BACKGROUND };
 	for (const auto& itemId : itemIds) {
 		auto item = GetDlgItem(this->hWnd, itemId);
-		ShowWindow(item, SW_SHOW);
+		ShowWindow(item, show ? SW_SHOW : SW_HIDE);
 	}
 }

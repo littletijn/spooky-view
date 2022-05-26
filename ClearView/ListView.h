@@ -7,8 +7,8 @@ public:
 	ListView(HWND parent, int intResource);
 	~ListView();
 	LPWSTR GetTextByIndex(int index, TCHAR* textBuffer);
-	int GetSelectedIndex(LPARAM lParam);
 	int GetSelectedIndex();
+	void SetSelectedItem(int index);
 	int AddItem(LPWSTR text);
 	int AddItem(t_string text);
 	void DeleteAllItems();
