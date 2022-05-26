@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CSetupDialog.h"
 #include "CAddAppDialog.h"
+#include "CAddWindowDialog.h"
 #include <CommCtrl.h>
 #include "CSettings.h"
 #include "CProgramSetting.h"
@@ -93,15 +94,31 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				this->appsListView->DeleteSelectedItem();
 				return TRUE;
 			case IDC_BUTTON_APP_ADD:
-				auto appDialog = std::make_unique<CAddAppDialog>(this->hInstance, this->hWnd);
-				appDialog->InitInstance();
-				if (appDialog->GetResult() == 1)
 				{
-					LPWSTR programName = appDialog->GetSelectedProcess();
+					auto appDialog = std::make_unique<CAddAppDialog>(this->hInstance, this->hWnd);
+					appDialog->InitInstance();
+					if (appDialog->GetResult() == 1)
+					{
+						LPWSTR programName = appDialog->GetSelectedProcess();
 
-					auto progSettings = new CProgramSetting();
-					settingsManager->GetSettings()->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
-					this->appsListView->AddItem(programName);
+						auto progSettings = new CProgramSetting();
+						settingsManager->GetSettings()->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
+						this->appsListView->AddItem(programName);
+					}
+				}
+				return TRUE;
+			case IDC_BUTTON_WINDOW_ADD:
+				{
+					auto windowDialog = std::make_unique<CAddWindowDialog>(this->hInstance, this->hWnd);
+					windowDialog->InitInstance(this->currentProgramName);
+					if (windowDialog->GetResult() == 1)
+					{
+						LPWSTR windowClassName = windowDialog->GetSelectedWindowClass();
+
+						auto windowSettings = new CWindowSetting();
+						this->currentProgram->windows->insert(std::pair<t_string, CWindowSetting*>(windowClassName, windowSettings));
+						this->windowsListView->AddItem(windowClassName);
+					}
 				}
 				return TRUE;
 			}

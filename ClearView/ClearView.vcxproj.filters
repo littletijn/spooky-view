@@ -126,6 +126,12 @@
     <ClInclude Include="Checkbox.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="CAddWindowDialog.h">
+      <Filter>Header Files\Classes\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="Defines.h">
+      <Filter>Header Files\Declarations</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -184,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="Checkbox.cpp">
       <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CAddWindowDialog.cpp">
+      <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

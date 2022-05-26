@@ -10,6 +10,9 @@
 #include <string>
 #include "CLimitSingleInstance.h"
 #include <memory>
+#include <list>
+#include <strsafe.h>
+#include "Defines.h"
 
 typedef BOOL (WINAPI *PGNSI)(HANDLE);
 typedef BOOL (WINAPI *PGNSI2)(HWND, MARGINS*);
@@ -26,9 +29,14 @@ std::unique_ptr<ISettingsManager> settingsManager;
 BOOL isPause = false;
 CLimitSingleInstance singleInstanceObj(_T("ClearView"));
 
-//http://msdn.microsoft.com/en-us/library/windows/desktop/ms633577(v=vs.85).aspx
-//Max length of className is 256 characters
-TCHAR windowClassName[256];
+TCHAR windowClassName[MAX_WINDOW_CLASS_NAME];
+TCHAR* fileName;
+//Buffer for complete path of a file
+TCHAR filePathName[MAX_PATH];
+
+//Global variables for EnumWindowsForProcess
+t_string processNameOfWindowsToFind;
+std::list<TCHAR*> foundWindowClasses;
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -164,8 +172,37 @@ BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam)
 	return TRUE;
 }
 
+BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
+{
+	if (IsWindowUsable(hwnd))
+	{
+		GetWindowProcessAndClass(hwnd);
+		if (_wcsicmp(fileName, processNameOfWindowsToFind.c_str()) == 0)
+		{
+			//TODO: Fix memory leak
+			auto windowClassNameCopy = new TCHAR[MAX_WINDOW_CLASS_NAME];
+			StringCchCopy(windowClassNameCopy, MAX_WINDOW_CLASS_NAME, windowClassName);
+			foundWindowClasses.push_back(windowClassNameCopy);
+		}
+	}
+	return TRUE;
+}
+
 void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 {
+	if (GetWindowProcessAndClass(hwnd)) {
+		BYTE alpha;
+		if (settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
+		{
+			SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
+			SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
+		}
+	}
+}
+
+BOOL GetWindowProcessAndClass(HWND hwnd)
+{
+	BOOL result = FALSE;
 	DWORD processId;
 	GetWindowThreadProcessId(hwnd, &processId);
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, processId);
@@ -174,12 +211,9 @@ void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 		//Check if current process is not a Windows Store App or Explorer
 		//if (isImmersive == NULL || !isImmersive(hProcess))
 		{
-			//Create buffers
-			TCHAR filePathName[MAX_PATH];
-
 			//Get process image file name
 			GetProcessImageFileName(hProcess, filePathName, ARRAYSIZE(filePathName));
-			TCHAR *fileName = _tcsrchr(filePathName, '\\');
+			fileName = _tcsrchr(filePathName, '\\');
 			fileName++;
 
 			//Output debug data
@@ -190,16 +224,12 @@ void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 
 			if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 			{
-				BYTE alpha;
-				if (settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
-				{
-					SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
-					SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
-				}
+				result = TRUE;
 			}
 		}
 		CloseHandle(hProcess);
 	}
+	return result;
 }
 
 
