@@ -43,6 +43,9 @@ int ListView::GetSelectedIndex(LPARAM lParam)
 		index = ListView_GetNextItem(notifyMessage->hwndFrom, -1, LVNI_SELECTED);
 		break;
 
+	case LVN_ITEMCHANGED:
+		LPNMLISTVIEW item = (LPNMLISTVIEW)lParam;
+		index = item->iItem;
 	}
 	return index;
 }

@@ -35,7 +35,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	case WM_NOTIFY:
 	{
 		LPNMHDR notifyMessage = (LPNMHDR)lParam;
-		if (notifyMessage->code == NM_CLICK)
+		if (notifyMessage->code == LVN_ITEMCHANGED)
 		{
 			switch (notifyMessage->idFrom)
 			{
@@ -135,7 +135,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 {
 	int index = this->appsListView->GetSelectedIndex(lParam);
-	if (index > -1)
+	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_PATH];
 		LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
@@ -163,7 +163,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 void CSetupDialog::WindowsListNotified(LPARAM lParam)
 {
 	int index = this->windowsListView->GetSelectedIndex(lParam);
-	if (index > -1)
+	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
 		LPWSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
@@ -176,6 +176,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 			SetTrackbars();
 			SetCheckboxes();
 		}
+		this->SetFormVisibility();
 	}
 	else
 	{
@@ -194,6 +195,7 @@ void CSetupDialog::EnabledCheckboxNotified()
 void CSetupDialog::PopulateProcessList(HWND hDlg)
 {
 	auto programs = settingsManager->GetSettings()->programs.get();
+	this->appsListView->AddItem(_T("[All other programs]"));
 	for (auto const program : *programs)
 	{
 		this->appsListView->AddItem(program.first);
@@ -203,6 +205,7 @@ void CSetupDialog::PopulateProcessList(HWND hDlg)
 void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)
 {
 	this->windowsListView->DeleteAllItems();
+	this->windowsListView->AddItem(_T("[All other windows]"));
 	for (auto const &window : *settings->windows)
 	{
 		this->windowsListView->AddItem(window.first);
@@ -241,5 +244,14 @@ void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 	case IDC_SLIDER_BACKGROUND:
 		currentAlphaSettings->background = value;
 		break;
+	}
+}
+
+void CSetupDialog::SetFormVisibility()
+{
+	const int itemIds[] = {IDC_CHECKBOX_ENABLE_TRANSPARENCY, IDC_STATIC_TRANSPARENCY};
+	for (const auto& itemId : itemIds) {
+		auto item = GetDlgItem(this->hWnd, itemId);
+		ShowWindow(item, SW_SHOW);
 	}
 }
