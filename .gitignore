@@ -2,6 +2,7 @@
 *.vcxproj.user
 *.wapproj.user
 *.cache
+*.aps
 bin/
 obj/
 Debug/
