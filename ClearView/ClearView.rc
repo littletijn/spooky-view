@@ -46,7 +46,7 @@ CAPTION "About ClearView"
 FONT 8, "MS Shell Dlg", 0, 0, 1
 {
     LTEXT           "Test build. Do not distribute.", IDC_STATIC, 17, 32, 130, 8, SS_LEFT, WS_EX_LEFT
-    LTEXT           "http://www.tyndomyn.net", IDC_STATIC, 17, 67, 130, 8, SS_LEFT, WS_EX_LEFT
+    LTEXT           "https://www.tyndomyn.net", IDC_STATIC, 17, 67, 130, 8, SS_LEFT, WS_EX_LEFT
     LTEXT           "Based on an idea by Mikey", IDC_STATIC, 17, 102, 130, 8, SS_LEFT, WS_EX_LEFT
     LTEXT           "ClearView", IDC_STATIC, 17, 12, 130, 8, SS_LEFT | SS_NOPREFIX, WS_EX_LEFT
     LTEXT           "0.0.3.0 Alpha (Get it (at) once build)", IDC_STATIC, 17, 22, 130, 8, SS_LEFT, WS_EX_LEFT
