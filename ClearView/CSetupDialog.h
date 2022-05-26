@@ -18,6 +18,7 @@ protected:
 	CAlphaSettings* currentAlphaSettings;
 	CProgramSetting* currentProgram;
 	t_string currentProgramName;
+	t_string currentWindowClassName;
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<ListView> windowsListView;
 	std::unique_ptr<Checkbox> enabledCheckbox;
