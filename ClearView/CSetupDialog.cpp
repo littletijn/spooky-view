@@ -155,6 +155,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 	else if (index == 0)
 	{
 		//When first item (all programs) is selected, get the global settings
+		this->currentProgram = 0;
 		this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
@@ -194,7 +195,13 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 	else if (index == 0)
 	{
 		//When first item (all windows) is selected, get the program global settings
-		this->currentAlphaSettings = &currentProgram->alphaSettings;
+		//If no program is selected, get the global settings
+		if (this->currentProgram) {
+			this->currentAlphaSettings = &currentProgram->alphaSettings;
+		}
+		else {
+			this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
+		}
 		SetTrackbars();
 		SetCheckboxes();
 		this->SetFormVisibility(TRUE);
