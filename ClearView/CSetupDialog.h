@@ -32,6 +32,7 @@ protected:
 	void SetCheckboxes();
 	void SetAlpha(BYTE value, HWND trackbar);
 	void SetFormVisibility(bool show);
+	void SetButtonEnableState(int controlId, bool show);
 	void SetTrackbarRanges(HWND hWnd);
 };
 

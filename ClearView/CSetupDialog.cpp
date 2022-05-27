@@ -148,8 +148,8 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 			this->currentAlphaSettings = &program->second->alphaSettings;
 			SetTrackbars();
 			SetCheckboxes();
+			PopulateWindowsList(program->second);
 		}
-		PopulateWindowsList(program->second);
 		this->SetFormVisibility(TRUE);
 	}
 	else if (index == 0)
@@ -167,11 +167,15 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		//When no item is selected, hide the controls and clear windows list
 		this->SetFormVisibility(FALSE);
 		this->windowsListView->DeleteAllItems();
+		SetButtonEnableState(IDC_BUTTON_WINDOW_ADD, false);
+		SetButtonEnableState(IDC_BUTTON_WINDOW_REMOVE, false);
 	}
 	if (index >= 0) {
 		//Select the first item available
 		this->windowsListView->SetSelectedItem(0);
 	}
+	//Enable the remove button when a program is selected
+	SetButtonEnableState(IDC_BUTTON_APP_REMOVE, index > 0);
 }
 
 void CSetupDialog::WindowsListNotified(LPARAM lParam)
@@ -208,7 +212,18 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 	}
 	else
 	{
+		//When no item is selected, hide the form
 		this->SetFormVisibility(FALSE);
+	}
+	//Enable the remove button when a window is selected
+	SetButtonEnableState(IDC_BUTTON_WINDOW_REMOVE, index > 0);
+	//When a program is selected, enable the add button
+	if (this->currentProgram) {
+		SetButtonEnableState(IDC_BUTTON_WINDOW_ADD, true);
+	}
+	else
+	{
+		SetButtonEnableState(IDC_BUTTON_WINDOW_ADD, false);
 	}
 }
 
@@ -281,4 +296,10 @@ void CSetupDialog::SetFormVisibility(bool show)
 		auto item = GetDlgItem(this->hWnd, itemId);
 		ShowWindow(item, show ? SW_SHOW : SW_HIDE);
 	}
+}
+
+void CSetupDialog::SetButtonEnableState(int controlId, bool show)
+{
+	auto item = GetDlgItem(this->hWnd, controlId);
+	EnableWindow(item, show);
 }
