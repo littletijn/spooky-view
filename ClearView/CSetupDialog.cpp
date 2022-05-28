@@ -41,11 +41,11 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 			switch (notifyMessage->idFrom)
 			{
 			case IDC_LIST_APPS:
-				ProgramsListNotified(lParam);
+				ProgramsListNotified();
 				return TRUE;
 
 			case IDC_LIST_WINDOWS:
-				WindowsListNotified(lParam);
+				WindowsListNotified();
 				return TRUE;
 			}
 		}
@@ -152,7 +152,7 @@ void CSetupDialog::CopySettings()
 	newSettings = std::make_unique<CSettings>(*settingsManager->GetSettings());
 }
 
-void CSetupDialog::ProgramsListNotified(LPARAM lParam)
+void CSetupDialog::ProgramsListNotified()
 {
 	int index = this->appsListView->GetSelectedIndex();
 	if (index > 0)
@@ -198,7 +198,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 	SetButtonEnableState(IDC_BUTTON_APP_REMOVE, index > 0);
 }
 
-void CSetupDialog::WindowsListNotified(LPARAM lParam)
+void CSetupDialog::WindowsListNotified()
 {
 	int index = this->windowsListView->GetSelectedIndex();
 	if (index > 0)

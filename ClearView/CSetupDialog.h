@@ -26,9 +26,9 @@ protected:
 	std::unique_ptr<Checkbox> enabledCheckbox;
 
 	void CopySettings();
-	void WindowsListNotified(LPARAM lParam);
+	void WindowsListNotified();
 	void EnabledCheckboxNotified();
-	void ProgramsListNotified(LPARAM lParam);
+	void ProgramsListNotified();
 	void PopulateProcessList(HWND hDlg);
 	void PopulateWindowsList(CProgramSetting* settings = 0);
 	void SetTrackbars();
