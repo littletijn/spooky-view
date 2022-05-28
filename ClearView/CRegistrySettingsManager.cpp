@@ -28,12 +28,13 @@ CSettings* CRegistrySettingsManager::GetSettings()
 	return settings.get();
 }
 
-void CRegistrySettingsManager::ApplyNewSettings(std::unique_ptr<CSettings> settings)
+void CRegistrySettingsManager::ApplyNewSettings(CSettings* newSettings)
 {
-	if (this->settings) {
-		this->settings.release();
-		this->settings = std::move(settings);
+	if (settings) {
+		settings.release();
 	}
+	//Copy the newSettings to our settings
+	settings = std::make_unique<CSettings>(*newSettings);
 }
 
 void CRegistrySettingsManager::LoadSettings()

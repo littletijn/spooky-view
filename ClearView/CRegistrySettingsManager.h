@@ -9,7 +9,7 @@ public:
 	void LoadSettings();
 	bool SaveSettings();
 	CSettings* GetSettings();
-	void ApplyNewSettings(std::unique_ptr<CSettings> settings);
+	void ApplyNewSettings(CSettings *newSettings);
 protected:
 	std::unique_ptr<CSettings> settings;
 	void SaveValues(HKEY key, CAlphaSettings values);
