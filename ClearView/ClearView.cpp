@@ -76,7 +76,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		CreateHook();
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		settingsManager->LoadSettings();
-		EnumWindows(EnumWindowsProc, NULL);
+		SetWindowsTransparency();
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
@@ -93,7 +93,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	//Remove event hooks
 	Unhook();
 	//Reset windows
-	EnumWindows(EnumWindowsReset, NULL);
+	ResetWindowsTransparency();
 
 	return (int) msg.wParam;
 }
@@ -111,8 +111,18 @@ void TogglePause()
 	}
 	else{
 		CreateHook();
-		EnumWindows(EnumWindowsProc, NULL);
+		SetWindowsTransparency();
 	}
+}
+
+void SetWindowsTransparency()
+{
+	EnumWindows(EnumWindowsProc, NULL);
+}
+
+void ResetWindowsTransparency()
+{
+	EnumWindows(EnumWindowsReset, NULL);
 }
 
 BOOL IsWindowUsable(HWND hwnd)
@@ -136,7 +146,7 @@ void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, 
 	{
 		//This is a top-level window, enumerate all windows
 		OutputDebugString(_T("Enuming...\r\n"));
-		EnumWindows(EnumWindowsProc, NULL);
+		SetWindowsTransparency();
 		OutputDebugString(_T("-------------------------------------\r\n"));
 	}
 }
@@ -144,7 +154,7 @@ void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, 
 void CALLBACK WinEventProcForeground(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
 {
 	//When the foreground window has changed, always reset transparency values
-	EnumWindows(EnumWindowsProc, NULL);
+	SetWindowsTransparency();
 }
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)

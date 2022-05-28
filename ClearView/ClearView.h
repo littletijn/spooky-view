@@ -18,6 +18,7 @@ void LoadFunctionAdresses();
 void CreateHook();
 void Unhook();
 BOOL IsPaused();
+void SetWindowsTransparency();
+void ResetWindowsTransparency();
 void TogglePause();
-void ExitProgram();
 void SendAlreadyRunningNotify();
