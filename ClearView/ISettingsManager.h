@@ -11,4 +11,5 @@ public:
 	virtual CSettings* GetSettings() = 0;
 	virtual void LoadSettings() = 0;
 	virtual bool SaveSettings() = 0;
+	virtual void ApplyNewSettings(std::unique_ptr<CSettings> settings) = 0;
 };

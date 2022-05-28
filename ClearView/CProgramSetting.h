@@ -10,6 +10,7 @@ class CProgramSetting
 {
 public:
 	CProgramSetting();
+	CProgramSetting(const CProgramSetting& c);
 	~CProgramSetting();
 	t_string name;
 	t_string path;

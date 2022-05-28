@@ -16,6 +16,7 @@ extern std::unique_ptr<ISettingsManager> settingsManager;
 
 CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
+	this->CopySettings();
 }
 
 CSetupDialog::~CSetupDialog()
@@ -68,7 +69,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		PopulateProcessList(hDlg);
 		SetTrackbarRanges(hDlg);
 		//Set the trackbars on the global settings
-		this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
+		this->currentAlphaSettings = &this->newSettings->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
 		return TRUE;
@@ -82,15 +83,19 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				EnabledCheckboxNotified();
 				return TRUE;
 			case IDAPPLY:
+				settingsManager->ApplyNewSettings(std::move(newSettings));
+				this->CopySettings();
 				settingsManager->SaveSettings();
 				return TRUE;
 			case IDOK:
+				settingsManager->ApplyNewSettings(std::move(newSettings));
+				this->CopySettings();
 				settingsManager->SaveSettings();
 			case IDCANCEL:
 				DestroyWindow(hDlg);
 				return TRUE;
 			case IDC_BUTTON_APP_REMOVE:
-				settingsManager->GetSettings()->programs->erase(this->currentProgramName);
+				this->newSettings->programs->erase(this->currentProgramName);
 				this->appsListView->DeleteSelectedItem();
 				return TRUE;
 			case IDC_BUTTON_WINDOW_REMOVE:
@@ -106,7 +111,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 						LPWSTR programName = appDialog->GetSelectedProcess();
 
 						auto progSettings = new CProgramSetting();
-						settingsManager->GetSettings()->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
+						this->newSettings->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
 						this->appsListView->AddItem(programName);
 					}
 				}
@@ -132,6 +137,11 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	return FALSE;
 }
 
+void CSetupDialog::CopySettings()
+{
+	this->newSettings = std::make_unique<CSettings>(*settingsManager->GetSettings());
+}
+
 void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 {
 	int index = this->appsListView->GetSelectedIndex();
@@ -140,8 +150,8 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 		TCHAR textBuffer[MAX_PATH];
 		LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
 
-		auto program = settingsManager->GetSettings()->programs->find(text);
-		if (program != settingsManager->GetSettings()->programs->end())
+		auto program = this->newSettings->programs->find(text);
+		if (program != this->newSettings->programs->end())
 		{
 			this->currentProgramName = program->first;
 			this->currentProgram = program->second;
@@ -156,7 +166,7 @@ void CSetupDialog::ProgramsListNotified(LPARAM lParam)
 	{
 		//When first item (all programs) is selected, get the global settings
 		this->currentProgram = 0;
-		this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
+		this->currentAlphaSettings = &this->newSettings->alphaSettings;
 		SetTrackbars();
 		SetCheckboxes();
 		PopulateWindowsList();
@@ -204,7 +214,7 @@ void CSetupDialog::WindowsListNotified(LPARAM lParam)
 			this->currentAlphaSettings = &currentProgram->alphaSettings;
 		}
 		else {
-			this->currentAlphaSettings = &settingsManager->GetSettings()->alphaSettings;
+			this->currentAlphaSettings = &this->newSettings->alphaSettings;
 		}
 		SetTrackbars();
 		SetCheckboxes();
@@ -234,7 +244,7 @@ void CSetupDialog::EnabledCheckboxNotified()
 
 void CSetupDialog::PopulateProcessList(HWND hDlg)
 {
-	auto programs = settingsManager->GetSettings()->programs.get();
+	auto programs = this->newSettings->programs.get();
 	this->appsListView->AddItem(_T("[All other programs]"));
 	for (auto const program : *programs)
 	{

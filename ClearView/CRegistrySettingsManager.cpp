@@ -28,6 +28,14 @@ CSettings* CRegistrySettingsManager::GetSettings()
 	return settings.get();
 }
 
+void CRegistrySettingsManager::ApplyNewSettings(std::unique_ptr<CSettings> settings)
+{
+	if (this->settings) {
+		this->settings.release();
+		this->settings = std::move(settings);
+	}
+}
+
 void CRegistrySettingsManager::LoadSettings()
 {
 	//Create variables for return values
@@ -68,7 +76,7 @@ void CRegistrySettingsManager::LoadSettings()
 
 				//Make process name lower case
 				ToLowerCase(processKeyName.get(), programsSubKeyLength);
-				(*settings->programs)[processKeyName.get()] = progSettings;
+				settings->programs->insert(std::pair<t_string, CProgramSetting*>(processKeyName.get(), progSettings));
 
 				//Open the Programs\PROCESSNAME\Windows key
 				LSTATUS windowsKeyResult = RegOpenKeyEx(processKey, _T("Windows"), 0, KEY_READ, &windowsKey);
@@ -99,7 +107,7 @@ void CRegistrySettingsManager::LoadSettings()
 						{
 							CWindowSetting *windowSettings = new CWindowSetting();
 							ReadAlphaValues(windowKey, &windowSettings->alphaSettings);
-							(*progSettings->windows)[windowKeyName.get()] = windowSettings;
+							progSettings->windows->insert(std::pair<t_string, CWindowSetting*>(windowKeyName.get(), windowSettings));
 							RegCloseKey(windowKey);
 						}
 						

@@ -6,6 +6,7 @@
 #include "ListView.h"
 #include "Checkbox.h"
 #include <memory>
+#include "CSettings.h"
 
 class CSetupDialog : public CModelessDialog
 {
@@ -19,10 +20,12 @@ protected:
 	CProgramSetting* currentProgram;
 	t_string currentProgramName;
 	t_string currentWindowClassName;
+	std::unique_ptr<CSettings> newSettings;
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<ListView> windowsListView;
 	std::unique_ptr<Checkbox> enabledCheckbox;
 
+	void CopySettings();
 	void WindowsListNotified(LPARAM lParam);
 	void EnabledCheckboxNotified();
 	void ProgramsListNotified(LPARAM lParam);

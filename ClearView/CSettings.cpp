@@ -8,6 +8,16 @@ CSettings::CSettings()
 	this->programs = std::make_unique<std::map<t_string, CProgramSetting*>>();
 }
 
+CSettings::CSettings(const CSettings& c) : CSettings::CSettings()
+{
+	this->alphaSettings = CAlphaSettings(c.alphaSettings);
+	for (auto program = c.programs.get()->begin(); program != c.programs.get()->end(); ++program)
+	{
+		t_string firstCopy = t_string(program->first);
+		CProgramSetting* secondCopy = new CProgramSetting (*program->second);
+		this->programs->insert(std::pair<t_string, CProgramSetting*>(firstCopy, secondCopy));
+	}
+}
 
 CSettings::~CSettings()
 {
