@@ -2,6 +2,7 @@
 #include "CNotifyIcon.h"
 #include "CAbout.h"
 #include "CSetupDialog.h"
+#include "CSettingsDialog.h"
 #include <memory>
 
 class CMainWindow: public CWindow
@@ -20,5 +21,6 @@ private:
 	std::unique_ptr<CNotifyIcon> cNotifyIcon;
 	HMENU notifyIconContextMenu;
 	std::unique_ptr<CSetupDialog> cSetupDialog;
+	std::unique_ptr<CSettingsDialog> cSettingsDialog;
 	std::unique_ptr<CAbout> cAboutDialog;
 };

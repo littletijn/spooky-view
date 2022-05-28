@@ -132,6 +132,9 @@
     <ClInclude Include="Defines.h">
       <Filter>Header Files\Declarations</Filter>
     </ClInclude>
+    <ClInclude Include="CSettingsDialog.h">
+      <Filter>Header Files\Classes\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -192,6 +195,9 @@
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
     <ClCompile Include="CAddWindowDialog.cpp">
+      <Filter>Source Files\Classes\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="CSettingsDialog.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
   </ItemGroup>

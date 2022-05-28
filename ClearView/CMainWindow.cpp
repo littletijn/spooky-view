@@ -3,6 +3,7 @@
 #include "ClearView.h"
 #include "Resource.h"
 #include "CLimitSingleInstance.h"
+#include "CSettingsDialog.h"
 
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
@@ -89,6 +90,11 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		//Handles the Context Menu of the Notification Area Icon
 		switch (LOWORD(wParam))
 		{
+		case IDM_SETTINGS:
+			cSettingsDialog = std::make_unique<CSettingsDialog>(this->hInstance);
+			cSettingsDialog->InitInstance();
+			break;
+
 			case IDM_OPEN:
 			{
 				cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance);

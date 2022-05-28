@@ -24,13 +24,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -95,6 +95,7 @@
   <ItemGroup>
     <ClInclude Include="CAbout.h" />
     <ClInclude Include="CAddAppDialog.h" />
+    <ClInclude Include="CAddWindowDialog.h" />
     <ClInclude Include="CAlphaSettings.h" />
     <ClInclude Include="CDialog.h" />
     <ClInclude Include="Checkbox.h" />
@@ -106,10 +107,12 @@
     <ClInclude Include="CPtrMap.h" />
     <ClInclude Include="CRegistrySettingsManager.h" />
     <ClInclude Include="CSettings.h" />
+    <ClInclude Include="CSettingsDialog.h" />
     <ClInclude Include="CWindow.h" />
     <ClInclude Include="CWindowSetting.h" />
     <ClInclude Include="CWnd.h" />
     <ClInclude Include="CModelessDialog.h" />
+    <ClInclude Include="Defines.h" />
     <ClInclude Include="ISettingsManager.h" />
     <ClInclude Include="CProgramSetting.h" />
     <ClInclude Include="ListView.h" />
@@ -123,6 +126,7 @@
   <ItemGroup>
     <ClCompile Include="CAbout.cpp" />
     <ClCompile Include="CAddAppDialog.cpp" />
+    <ClCompile Include="CAddWindowDialog.cpp" />
     <ClCompile Include="CDialog.cpp" />
     <ClCompile Include="Checkbox.cpp" />
     <ClCompile Include="ClearView.cpp" />
@@ -133,6 +137,7 @@
     <ClCompile Include="CPtrMap.cpp" />
     <ClCompile Include="CRegistrySettingsManager.cpp" />
     <ClCompile Include="CSettings.cpp" />
+    <ClCompile Include="CSettingsDialog.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="CWnd.cpp" />
     <ClCompile Include="CSetupDialog.cpp" />

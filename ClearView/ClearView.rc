@@ -94,8 +94,7 @@ STYLE DS_3DLOOK | DS_CENTER | DS_MODALFRAME | DS_SHELLFONT | WS_CAPTION | WS_VIS
 CAPTION "Settings"
 FONT 8, "Ms Shell Dlg"
 {
-    AUTOCHECKBOX    "Start program when this user logs in", IDC_CHECKBOX_AUTO_STARTUP, 7, 22, 127, 8, 0, WS_EX_LEFT
-    AUTOCHECKBOX    "Detect foreground changes only", IDC_CHECKBOX_FOREGOUND_ONLY, 7, 7, 117, 8, 0, WS_EX_LEFT
+    AUTOCHECKBOX    "Start program when this user logs in", IDC_CHECKBOX_AUTO_STARTUP, 7, 7, 127, 8, 0, WS_EX_LEFT
     PUSHBUTTON      "Cancel", IDCANCEL, 232, 162, 50, 14, 0, WS_EX_LEFT
     DEFPUSHBUTTON   "OK", IDOK, 177, 162, 50, 14, 0, WS_EX_LEFT
 }
