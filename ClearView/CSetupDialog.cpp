@@ -53,12 +53,24 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	break;
 
 	case WM_HSCROLL:
-		if (LOWORD(wParam) == TB_THUMBPOSITION || LOWORD(wParam) == TB_THUMBTRACK)
+	{
+		auto senderHwnd = (HWND)lParam;
+		LONG identifier = GetWindowLong(senderHwnd, GWL_ID);
+		if (identifier == IDC_SLIDER_FOREGROUND || identifier == IDC_SLIDER_BACKGROUND)
 		{
-			WORD value = HIWORD(wParam);
-			SetAlpha(value, (HWND)lParam);
+			if (LOWORD(wParam) == TB_THUMBPOSITION || LOWORD(wParam) == TB_THUMBTRACK)
+			{
+				WORD value = HIWORD(wParam);
+				SetAlpha(value, senderHwnd);
+			}
+			else
+			{
+				auto value = SendMessage(senderHwnd, TBM_GETPOS, 0, 0);
+				SetAlpha(value, senderHwnd);
+			}
 		}
 		return TRUE;
+	}
 
 	case WM_INITDIALOG:
 		//Create the listviews
