@@ -13,6 +13,7 @@
 #include "Defines.h"
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
+extern void SetWindowsTransparency();
 
 CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
@@ -97,10 +98,12 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 			case IDAPPLY:
 				settingsManager->ApplyNewSettings(newSettings.get());
 				settingsManager->SaveSettings();
+				SetWindowsTransparency();
 				return TRUE;
 			case IDOK:
 				settingsManager->ApplyNewSettings(newSettings.get());
 				settingsManager->SaveSettings();
+				SetWindowsTransparency();
 			case IDCANCEL:
 				DestroyWindow(hDlg);
 				return TRUE;
