@@ -61,7 +61,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -93,6 +93,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AutoUpdater.h" />
     <ClInclude Include="CAbout.h" />
     <ClInclude Include="CAddAppDialog.h" />
     <ClInclude Include="CAddWindowDialog.h" />
@@ -113,6 +114,8 @@
     <ClInclude Include="CWnd.h" />
     <ClInclude Include="CModelessDialog.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="Unicode.h" />
+    <ClInclude Include="UpdateResponse.h" />
     <ClInclude Include="ISettingsManager.h" />
     <ClInclude Include="CProgramSetting.h" />
     <ClInclude Include="ListView.h" />
@@ -124,6 +127,7 @@
     <ClInclude Include="WndProc.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AutoUpdater.cpp" />
     <ClCompile Include="CAbout.cpp" />
     <ClCompile Include="CAddAppDialog.cpp" />
     <ClCompile Include="CAddWindowDialog.cpp" />
@@ -160,7 +164,18 @@
   <ItemGroup>
     <Manifest Include="ClearView.exe.manifest" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets" Condition="Exists('..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets'))" />
+  </Target>
 </Project>

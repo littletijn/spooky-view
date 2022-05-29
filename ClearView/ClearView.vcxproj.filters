@@ -135,6 +135,15 @@
     <ClInclude Include="CSettingsDialog.h">
       <Filter>Header Files\Classes\Windows</Filter>
     </ClInclude>
+    <ClInclude Include="AutoUpdater.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="UpdateResponse.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="Unicode.h">
+      <Filter>Header Files\Declarations</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -200,6 +209,9 @@
     <ClCompile Include="CSettingsDialog.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
+    <ClCompile Include="AutoUpdater.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ClearView.rc">
@@ -221,5 +233,9 @@
     <Manifest Include="ClearView.exe.manifest">
       <Filter>Resource Files</Filter>
     </Manifest>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

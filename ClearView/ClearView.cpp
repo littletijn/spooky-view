@@ -13,6 +13,7 @@
 #include <list>
 #include <strsafe.h>
 #include "Defines.h"
+#include "AutoUpdater.h"
 
 typedef BOOL (WINAPI *PGNSI)(HANDLE);
 typedef BOOL (WINAPI *PGNSI2)(HWND, MARGINS*);
@@ -26,6 +27,7 @@ std::unique_ptr<CMainWindow> mainWindow;
 HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
 std::unique_ptr<ISettingsManager> settingsManager;
+std::unique_ptr<AutoUpdater> autoUpdater;
 BOOL isPause = false;
 CLimitSingleInstance singleInstanceObj(_T("ClearView"));
 
@@ -77,6 +79,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		settingsManager->LoadSettings();
 		SetWindowsTransparency();
+		autoUpdater->CheckForNewerVersion();
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
