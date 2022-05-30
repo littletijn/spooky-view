@@ -2,13 +2,15 @@
 #include "nlohmann/json.hpp"
 #include "Unicode.h"
 
-class AutoUpdater
+void CreateUpdateCheckerThread();
+DWORD WINAPI UpdateCheckerThread(LPVOID lpParam);
+
+class UpdateChecker
 {
 public:
 	void CheckForNewerVersion();
 	bool GetProductVersion(tstring* version);
 protected:
 	void DownloadAndParseJson();
-	void AsyncCallback(WINHTTP_STATUS_CALLBACK test);
 };
 

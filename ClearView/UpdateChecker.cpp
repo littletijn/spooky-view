@@ -1,17 +1,35 @@
 #include "stdafx.h"
-#include "AutoUpdater.h"
+#include "UpdateChecker.h"
 #include <winhttp.h>
 #include <stdio.h>
 #include <nlohmann/json.hpp>
 #include "UpdateResponse.h"
 #include "Unicode.h"
+#include "CMainWindow.h"
+#include "Defines.h"
 
-void AutoUpdater::CheckForNewerVersion()
+extern std::unique_ptr<CMainWindow> mainWindow;
+extern UpdateResponse updateResponse;
+
+void CreateUpdateCheckerThread()
+{
+	DWORD threadId;
+	auto hThread = CreateThread(NULL, 0, UpdateCheckerThread, NULL, 0, &threadId);
+}
+
+DWORD WINAPI UpdateCheckerThread(LPVOID lpParam)
+{
+	std::unique_ptr<UpdateChecker> autoUpdater;
+	autoUpdater->CheckForNewerVersion();
+	return 0;
+}
+
+void UpdateChecker::CheckForNewerVersion()
 {
 	DownloadAndParseJson();
 }
 
-bool AutoUpdater::GetProductVersion(tstring* version)
+bool UpdateChecker::GetProductVersion(tstring* version)
 {
 	// get the filename of the executable containing the version resource
 	TCHAR szFilename[MAX_PATH + 1] = { 0 };
@@ -49,10 +67,10 @@ bool AutoUpdater::GetProductVersion(tstring* version)
 	return TRUE;
 }
 
-void AutoUpdater::DownloadAndParseJson()
+void UpdateChecker::DownloadAndParseJson()
 {
 	tstring version;
-	tstring url(_T("/updates/clearview/status?version="));
+	tstring url(_T("clearview/status?version="));
 	GetProductVersion(&version);
 
 	DWORD dwSize = 0;
@@ -73,7 +91,7 @@ void AutoUpdater::DownloadAndParseJson()
 	// Specify an HTTP server.
 	if (hSession)
 	{
-		hConnect = WinHttpConnect(hSession, _T("www.tyndomyn.net"), INTERNET_DEFAULT_HTTPS_PORT, 0);
+		hConnect = WinHttpConnect(hSession, _T("updates.tyndomyn.net"), INTERNET_DEFAULT_HTTPS_PORT, 0);
 	}
 
 	// Create an HTTP request handle.
@@ -84,13 +102,6 @@ void AutoUpdater::DownloadAndParseJson()
 			WINHTTP_DEFAULT_ACCEPT_TYPES,
 			WINHTTP_FLAG_SECURE);
 	}
-
-	//Set callback
-	WINHTTP_STATUS_CALLBACK callBack = WinHttpSetStatusCallback(hRequest,
-		(WINHTTP_STATUS_CALLBACK)AsyncCallback,
-		WINHTTP_CALLBACK_FLAG_ALL_COMPLETIONS |
-		WINHTTP_CALLBACK_FLAG_REDIRECT,
-		NULL);
 
 	// Send a request.
 	if (hRequest)
@@ -163,14 +174,15 @@ void AutoUpdater::DownloadAndParseJson()
 		try
 		{
 			auto j = nlohmann::json::parse(response);
-			auto updateResponse = j.get<UpdateResponse>();
+			updateResponse = j.get<UpdateResponse>();
+			if (updateResponse.update_available)
+			{
+				PostMessage(mainWindow->GetHwnd(), WM_UPDATE_AVAILABLE, NULL, NULL);
+			}
 		}
 		catch (nlohmann::json::exception& e)
 		{
+			auto test = e;
 		}
 	}
-}
-
-void AutoUpdater::AsyncCallback(WINHTTP_STATUS_CALLBACK test)
-{
 }

@@ -4,6 +4,10 @@
 #include "Resource.h"
 #include "CLimitSingleInstance.h"
 #include "CSettingsDialog.h"
+#include "Defines.h"
+#include "UpdateResponse.h"
+
+extern UpdateResponse updateResponse;
 
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
@@ -50,6 +54,23 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 {
 	switch (message)
 	{
+		case WM_UPDATE_AVAILABLE:
+		{
+			auto message = updateResponse.message.c_str();
+#ifdef UNICODE
+			// Convert char* string to a wchar_t* string.
+			size_t newsize = strlen(message) + 1;
+			wchar_t* wcstring = new wchar_t[newsize];
+			size_t convertedChars = 0;
+			mbstowcs_s(&convertedChars, wcstring, newsize, message, _TRUNCATE);
+			MessageBox(NULL, wcstring, _T("ClearView update available"), MB_OK);
+			delete[]wcstring;
+#else
+			MessageBox(NULL, message, _T("ClearView update available"), MB_OK);
+#endif // UNICODE
+			break;
+		}
+
 		case WM_COPYDATA:
 		{
 			PCOPYDATASTRUCT dataCopy = (PCOPYDATASTRUCT)lParam;

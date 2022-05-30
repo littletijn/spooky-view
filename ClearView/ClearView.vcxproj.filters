@@ -135,7 +135,7 @@
     <ClInclude Include="CSettingsDialog.h">
       <Filter>Header Files\Classes\Windows</Filter>
     </ClInclude>
-    <ClInclude Include="AutoUpdater.h">
+    <ClInclude Include="UpdateChecker.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="UpdateResponse.h">
@@ -209,7 +209,7 @@
     <ClCompile Include="CSettingsDialog.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="AutoUpdater.cpp">
+    <ClCompile Include="UpdateChecker.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
   </ItemGroup>

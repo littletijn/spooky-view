@@ -93,7 +93,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AutoUpdater.h" />
+    <ClInclude Include="UpdateChecker.h" />
     <ClInclude Include="CAbout.h" />
     <ClInclude Include="CAddAppDialog.h" />
     <ClInclude Include="CAddWindowDialog.h" />
@@ -127,7 +127,7 @@
     <ClInclude Include="WndProc.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AutoUpdater.cpp" />
+    <ClCompile Include="UpdateChecker.cpp" />
     <ClCompile Include="CAbout.cpp" />
     <ClCompile Include="CAddAppDialog.cpp" />
     <ClCompile Include="CAddWindowDialog.cpp" />
