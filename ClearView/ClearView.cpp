@@ -299,3 +299,15 @@ void SendAlreadyRunningNotify()
 		DWORD error = GetLastError();
 	}
 }
+
+#ifdef UNICODE
+// Convert std::string to a wchar_t* string.
+wchar_t* string_to_wchar_t(std::string string)
+{
+	size_t newsize = strlen(string.c_str()) + 1;
+	wchar_t* wcstring = new wchar_t[newsize];
+	size_t convertedChars = 0;
+	mbstowcs_s(&convertedChars, wcstring, newsize, string.c_str(), _TRUNCATE);
+	return wcstring;
+}
+#endif // UNICODE

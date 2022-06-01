@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by ClearView.rc
 //
+#define IDD_UPDATE_AVAILABLE            101
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
@@ -13,6 +14,11 @@
 #define IDD_SETUP                       118
 #define IDD_ADD_WINDOW                  120
 #define IDB_DINO                        122
+#define ID_DOWNLOAD                     1000
+#define IDC_SKIP_VERSION                1001
+#define ID_CLOSE                        1002
+#define IDC_MESSAGE                     1003
+#define IDC_UPDATE_MESSAGE              1003
 #define IDC_LIST_ADD_APPS               40000
 #define IDC_LIST_ADD_WINDOWS            40000
 #define IDC_LIST_APPS                   40000
@@ -47,9 +53,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        101
+#define _APS_NEXT_RESOURCE_VALUE        102
 #define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

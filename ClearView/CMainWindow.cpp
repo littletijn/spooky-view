@@ -8,6 +8,9 @@
 #include "UpdateResponse.h"
 
 extern UpdateResponse updateResponse;
+#ifdef UNICODE
+extern wchar_t* string_to_wchar_t(std::string string);
+#endif // UNICODE
 
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
@@ -56,18 +59,19 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 	{
 		case WM_UPDATE_AVAILABLE:
 		{
-			auto message = updateResponse.message.c_str();
+			cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance);
 #ifdef UNICODE
-			// Convert char* string to a wchar_t* string.
-			size_t newsize = strlen(message) + 1;
-			wchar_t* wcstring = new wchar_t[newsize];
-			size_t convertedChars = 0;
-			mbstowcs_s(&convertedChars, wcstring, newsize, message, _TRUNCATE);
-			MessageBox(NULL, wcstring, _T("ClearView update available"), MB_OK);
-			delete[]wcstring;
+			auto convertedMessage = string_to_wchar_t(updateResponse.message);
+			cUpdateAvailableDialog->SetMessage(convertedMessage);
+			delete[] convertedMessage;
+			auto convertedDownloadUrl = string_to_wchar_t(updateResponse.download_url);
+			cUpdateAvailableDialog->SetDownloadUrl(convertedDownloadUrl);
+			delete[] convertedDownloadUrl;
 #else
-			MessageBox(NULL, message, _T("ClearView update available"), MB_OK);
+			cUpdateAvailableDialog->setMessage(updateResponse.message);
+			cUpdateAvailableDialog->SetDownloadUrl(updateResponse.download_url);
 #endif // UNICODE
+			cUpdateAvailableDialog->InitInstance();
 			break;
 		}
 

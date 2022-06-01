@@ -1,4 +1,5 @@
-#pragma once
+#include <string>
+
 #ifdef UNICODE
 #define tstring std::wstring
 #define to_tstring std::to_wstring

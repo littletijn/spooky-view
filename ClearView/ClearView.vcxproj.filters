@@ -43,6 +43,9 @@
     <Filter Include="Source Files\Classes\Settings">
       <UniqueIdentifier>{94e6c2a0-8d9f-4c76-a4c9-c806faf5ae5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Classes\Controls">
+      <UniqueIdentifier>{8fe401a5-afe8-4fe6-b01e-06686b4cb645}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -144,6 +147,9 @@
     <ClInclude Include="Unicode.h">
       <Filter>Header Files\Declarations</Filter>
     </ClInclude>
+    <ClInclude Include="CUpdateAvailableDialog.h">
+      <Filter>Header Files\Classes\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -197,12 +203,6 @@
     <ClCompile Include="CAddAppDialog.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="ListView.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
-    <ClCompile Include="Checkbox.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
     <ClCompile Include="CAddWindowDialog.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
@@ -211,6 +211,15 @@
     </ClCompile>
     <ClCompile Include="UpdateChecker.cpp">
       <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CUpdateAvailableDialog.cpp">
+      <Filter>Source Files\Classes\Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="Checkbox.cpp">
+      <Filter>Source Files\Classes\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="ListView.cpp">
+      <Filter>Source Files\Classes\Controls</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
