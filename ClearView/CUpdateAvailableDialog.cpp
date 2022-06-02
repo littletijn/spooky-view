@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "CUpdateAvailableDialog.h"
 #include <shellapi.h>
+#include <memory>
+#include "ISettingsManager.h"
+
+extern std::unique_ptr<ISettingsManager> settingsManager;
 
 CUpdateAvailableDialog::CUpdateAvailableDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
@@ -23,11 +27,17 @@ INT_PTR CALLBACK CUpdateAvailableDialog::DlgProc(HWND hDlg, UINT message, WPARAM
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
 		{
+		case IDC_SKIP_VERSION:
+			settingsManager->AddSkipVersionKey(versionNumber);
+			DestroyWindow(hDlg);
+			return TRUE;
+			break;
 		case ID_DOWNLOAD:
 			ShellExecute(NULL, L"open", this->downloadUrl.c_str(), NULL, NULL, SW_SHOWNORMAL);
+			DestroyWindow(hDlg);
+			return TRUE;
 		case IDCANCEL:
 		case ID_CLOSE:
-			ShowMessage();
 			DestroyWindow(hDlg);
 			return TRUE;
 		}
@@ -54,6 +64,11 @@ void CUpdateAvailableDialog::SetMessage(tstring message)
 void CUpdateAvailableDialog::SetDownloadUrl(tstring url)
 {
 	this->downloadUrl = url;
+}
+
+void CUpdateAvailableDialog::SetVersionNumber(tstring versionNumber)
+{
+	this->versionNumber = versionNumber;
 }
 
 void CUpdateAvailableDialog::ShowMessage()

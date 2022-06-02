@@ -226,11 +226,9 @@ void CRegistrySettingsManager::ToLowerCase(TCHAR* string, size_t length)
 void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
 {
 	HKEY hKey;
-	TCHAR programPath[MAX_PATH];
-	GetModuleFileName(0, programPath, sizeof(programPath));
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
 	{
-		if (RegSetValueEx(hKey, L"ClearView", 0, REG_SZ, (LPBYTE)programPath, sizeof(programPath)) != ERROR_SUCCESS)
+		if (RegSetValueEx(hKey, _T("SkipVersion"), 0, REG_SZ, (LPBYTE)versionNumber.c_str(), versionNumber.size() * sizeof(TCHAR)) != ERROR_SUCCESS)
 		{
 			//Show error message
 		}
@@ -240,6 +238,13 @@ void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
 
 BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
 {
-	auto result = RegGetValue(HKEY_CURRENT_USER, _T("Software\\ClearView"), L"SkipVersion", RRF_RT_REG_SZ, NULL, NULL, NULL);
-	return result == ERROR_SUCCESS;
+	DWORD keyType;
+	TCHAR keyData[100];
+	DWORD keyDataSize = sizeof(keyData);
+	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\ClearView"), _T("SkipVersion"), &keyType, keyData, &keyDataSize);
+	if (result == ERROR_SUCCESS && keyType == REG_SZ)
+	{
+		return versionNumber.compare(keyData) == 0;
+	}
+	return FALSE;
 }
