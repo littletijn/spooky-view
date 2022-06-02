@@ -2,6 +2,8 @@
 #include <memory>
 #include <algorithm>
 #include "CRegistrySettingsManager.h"
+#include "Unicode.h"
+#include <shlwapi.h>
 
 #pragma once
 
@@ -127,15 +129,15 @@ void CRegistrySettingsManager::LoadSettings()
 void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* settings)
 {
 	BYTE value;
-	if (ReadKeyValue(key, _T("AlphaForeground"), value))
+	if (ReadKeyByteValue(key, _T("AlphaForeground"), value))
 	{
 		settings->foreground = value;
 	}
-	if (ReadKeyValue(key, _T("AlphaBackground"), value))
+	if (ReadKeyByteValue(key, _T("AlphaBackground"), value))
 	{
 		settings->background = value;
 	}
-	if (ReadKeyValue(key, _T("Enabled"), value))
+	if (ReadKeyByteValue(key, _T("Enabled"), value))
 	{
 		settings->enabled = value != 0;
 	}
@@ -143,7 +145,7 @@ void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* setting
 
 bool CRegistrySettingsManager::SaveSettings()
 {
-	if (RegDeleteTree(registryRootKey, _T("Programs")) == ERROR_SUCCESS)
+	if (SHDeleteKey(registryRootKey, _T("Programs")) == ERROR_SUCCESS)
 	{
 		//Recreate keys
 		//Create the Programs key
@@ -190,7 +192,7 @@ void CRegistrySettingsManager::SaveValues(HKEY key, CAlphaSettings values)
 	RegSetValueEx(key, _T("Enabled"), 0, REG_BINARY, &enabled, sizeof(enabled));
 }
 
-BOOL CRegistrySettingsManager::ReadKeyValue(HKEY key, TCHAR* valueName, __out BYTE& value)
+BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, __out BYTE& value)
 {
 	//Create buffer and variables for return values
 	BOOL readResult = FALSE;
@@ -219,4 +221,25 @@ void CRegistrySettingsManager::ToLowerCase(TCHAR* string, size_t length)
 	for (size_t i = 0; i < _tcsnlen(string, length); i++){
 		string[i] = tolower(string[i]);
 	}
+}
+
+void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
+{
+	HKEY hKey;
+	TCHAR programPath[MAX_PATH];
+	GetModuleFileName(0, programPath, sizeof(programPath));
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	{
+		if (RegSetValueEx(hKey, L"ClearView", 0, REG_SZ, (LPBYTE)programPath, sizeof(programPath)) != ERROR_SUCCESS)
+		{
+			//Show error message
+		}
+		RegCloseKey(hKey);
+	}
+}
+
+BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
+{
+	auto result = RegGetValue(HKEY_CURRENT_USER, _T("Software\\ClearView"), L"SkipVersion", RRF_RT_REG_SZ, NULL, NULL, NULL);
+	return result == ERROR_SUCCESS;
 }

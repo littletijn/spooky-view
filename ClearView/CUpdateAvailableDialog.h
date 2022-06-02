@@ -14,5 +14,6 @@ protected:
 	BOOL Create();
 	BOOL SetupDialog();
 	void ShowMessage();
+	void AddSkipVersionKey();
 };
 

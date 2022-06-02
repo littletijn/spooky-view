@@ -6,7 +6,7 @@ CNotifyIcon::CNotifyIcon(HWND hWnd, HICON hIcon, TCHAR *tooltipText)
 {
 	SecureZeroMemory(&m_sNotifyIcon, sizeof(m_sNotifyIcon));
 	//Create NOTIFYICON struc
-	m_sNotifyIcon.cbSize = NOTIFYICONDATA_V2_SIZE;
+	m_sNotifyIcon.cbSize = NOTIFYICONDATA_V1_SIZE;
 	//Make sure we use the Windows 2000 and newer version
 	m_sNotifyIcon.uVersion = NOTIFYICON_VERSION;
 	m_sNotifyIcon.hWnd = hWnd;
