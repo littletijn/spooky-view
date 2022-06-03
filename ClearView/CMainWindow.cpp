@@ -4,6 +4,15 @@
 #include "Resource.h"
 #include "CLimitSingleInstance.h"
 #include "CSettingsDialog.h"
+#include "Defines.h"
+#include "UpdateResponse.h"
+#include "ISettingsManager.h"
+
+extern UpdateResponse updateResponse;
+extern std::unique_ptr<ISettingsManager> settingsManager;
+#ifdef UNICODE
+extern wchar_t* string_to_wchar_t(std::string string);
+#endif // UNICODE
 
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
@@ -50,6 +59,36 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 {
 	switch (message)
 	{
+		case WM_UPDATE_AVAILABLE:
+		{
+#ifdef UNICODE
+			auto versionNumber = string_to_wchar_t(updateResponse.version);
+#else
+			auto versionNumber = updateResponse.version;
+#endif // UNICODE
+			if (!settingsManager->ShouldSkipVersion(versionNumber))
+			{
+#ifdef UNICODE
+				auto message = string_to_wchar_t(updateResponse.message);
+				auto downloadUrl = string_to_wchar_t(updateResponse.download_url);
+				auto versionNumber = string_to_wchar_t(updateResponse.version);
+#else
+				auto message = updateResponse.message;
+				auto downloadUrl = updateResponse.download_url;
+				auto versionNumber = updateResponse.version;
+#endif // UNICODE
+				cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance);
+				cUpdateAvailableDialog->SetMessage(message);
+				cUpdateAvailableDialog->SetDownloadUrl(downloadUrl);
+				cUpdateAvailableDialog->SetVersionNumber(versionNumber);
+				cUpdateAvailableDialog->InitInstance();
+				delete[] message;
+				delete[] downloadUrl;
+				delete[] versionNumber;
+			}
+			break;
+		}
+
 		case WM_COPYDATA:
 		{
 			PCOPYDATASTRUCT dataCopy = (PCOPYDATASTRUCT)lParam;

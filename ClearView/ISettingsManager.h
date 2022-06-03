@@ -1,4 +1,5 @@
 #include "CSettings.h"
+#include "Unicode.h"
 #pragma once
 
 class ISettingsManager
@@ -12,4 +13,6 @@ public:
 	virtual void LoadSettings() = 0;
 	virtual bool SaveSettings() = 0;
 	virtual void ApplyNewSettings(CSettings* newSettings) = 0;
+	virtual void AddSkipVersionKey(tstring versionNumber) = 0;
+	virtual BOOL ShouldSkipVersion(tstring versionNumber) = 0;
 };

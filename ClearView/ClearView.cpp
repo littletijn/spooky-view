@@ -13,6 +13,8 @@
 #include <list>
 #include <strsafe.h>
 #include "Defines.h"
+#include "UpdateChecker.h"
+#include "UpdateResponse.h"
 
 typedef BOOL (WINAPI *PGNSI)(HANDLE);
 typedef BOOL (WINAPI *PGNSI2)(HWND, MARGINS*);
@@ -28,6 +30,7 @@ PGNSI isImmersive;
 std::unique_ptr<ISettingsManager> settingsManager;
 BOOL isPause = false;
 CLimitSingleInstance singleInstanceObj(_T("ClearView"));
+UpdateResponse updateResponse;
 
 TCHAR windowClassName[MAX_WINDOW_CLASS_NAME];
 TCHAR* fileName;
@@ -77,6 +80,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		settingsManager->LoadSettings();
 		SetWindowsTransparency();
+		CreateUpdateCheckerThread();
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
@@ -295,3 +299,15 @@ void SendAlreadyRunningNotify()
 		DWORD error = GetLastError();
 	}
 }
+
+#ifdef UNICODE
+// Convert std::string to a wchar_t* string.
+wchar_t* string_to_wchar_t(std::string string)
+{
+	size_t newsize = strlen(string.c_str()) + 1;
+	wchar_t* wcstring = new wchar_t[newsize];
+	size_t convertedChars = 0;
+	mbstowcs_s(&convertedChars, wcstring, newsize, string.c_str(), _TRUNCATE);
+	return wcstring;
+}
+#endif // UNICODE
