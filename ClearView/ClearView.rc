@@ -98,7 +98,6 @@ BEGIN
     LTEXT           "0.0.3.0 Alpha (Get it (at) once build)",IDC_STATIC,17,22,130,8
     LTEXT           "Copyright (c) Martijn van Antwerpen",IDC_STATIC,17,57,130,8
     DEFPUSHBUTTON   "Close",IDOK,177,117,50,14,WS_GROUP
-    CONTROL         IDB_DINO,IDC_STATIC,"\016",0xa2,12,59,41,0
 END
 
 IDD_ADD_APP DIALOG 0, 0, 284, 268
