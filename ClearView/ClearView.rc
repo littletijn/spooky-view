@@ -98,6 +98,7 @@ BEGIN
     LTEXT           "0.0.3.0 Alpha (Get it (at) once build)",IDC_STATIC,17,22,130,8
     LTEXT           "Copyright (c) Martijn van Antwerpen",IDC_STATIC,17,57,130,8
     DEFPUSHBUTTON   "Close",IDOK,177,117,50,14,WS_GROUP
+    CONTROL         IDB_DINO,IDC_DINO_IMAGE,"Static",SS_BITMAP,165,9,59,41
 END
 
 IDD_ADD_APP DIALOG 0, 0, 284, 268
@@ -233,6 +234,10 @@ END
 #ifdef APSTUDIO_INVOKED
 GUIDELINES DESIGNINFO
 BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+    END
+
     IDD_SETUP, DIALOG
     BEGIN
     END
