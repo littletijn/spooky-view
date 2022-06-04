@@ -1,64 +1,74 @@
-0.0.0.1 (Funky Build!)
-Initial release
-- Read transparency values from registry
-- Apply transparency
-
-0.0.0.2 (Diet Build)
-- Fixed HKEY leaks
-- Added check for top-level, invisible and pop-up windows (WS_CHILD and WS_POPUP)
-	- Reduces CPU load
-	- Fixed crashes with SQL Server Manager Studio
-- Added when exiting app, remove layered window style from top-level windows (EnumWindows)
-- Added debug logging
-
-0.0.0.3 (Pop Build)
-- Added check for minimized windows and dialog boxes
-	- Changed check for WS_VISIBLE to API call IsWindowVisible()
-	- Changed check for top-level window from WS_CHILD to call to GetAncestor()
-- Fixed transparent pop-up menus (WS_POPUP)
-
-0.0.0.4 (Blur Build)
-- Added experimental Aero Glass option
-- Added reading more settings from registry
-
-0.0.0.5 (Tidy Build)
-- Fixed bug with applying transparency (CSettings::GetAlphaSetting did not return TRUE when succeeded)
-
-0.0.1.0 (Revive Build)
-- When closing program, only change windows that ClearView might have modified. 
-- Added generic function to check usability of a window. 
-- Removed check for Windows Store apps (IsImmersiveProcess)
-- Added hack for SHELL_DEFVIEW window class, for clicking on desktop
-
-0.0.1.1 (Desktop build)
-- Removed hack for desktop focus change that checked window class SHELL_DEFVIEW
-- When foregound window has changed (EVENT_SYSTEM_FOREGROUND), always enum windows again. (Fix for clicking on the desktop)
-
-0.0.1.2 (Suspend build)
-- Added a option to pause the program
-
-0.0.1.3 (Suspend the Second Build)
-- Fix registry handles leak
-
-0.0.1.4 (Dump Build)
-- Removed experimental Aero Glass option to fix registry key handles leak
-
-0.0.1.5 (Dump DLL Build)
-- Changed Runtime Library to Multi-threaded (/MT) to remove dependency of Visual C++ Runtime
-
-0.0.2.0 (A Dialog about Me Build)
-- Added a About dialog
-- Many changes to internal working of processing window messages to support dialog boxes
-
-0.0.2.1 (Aware Build)
-- Added High DPI aware in manifest
-- Fixed missing text on static controls when using High DPI
-- Scaled image in About box
-- Removed unneeded info from manifest
-
-0.0.2.2 (New hope Build)
-- Keep main registry key open, instead of "Programs" key
-
-0.0.3.0 (Get it (at) once Build)
-- Rewrote loading of settings from registry. Settings are now loaded at program start-up and stored in memory to improve performance
+0.0.0.1 (Funky Build!)
+Initial release
+- Read transparency values from registry
+- Apply transparency
+
+0.0.0.2 (Diet Build)
+- Fixed HKEY leaks
+- Added check for top-level, invisible and pop-up windows (WS_CHILD and WS_POPUP)
+	- Reduces CPU load
+	- Fixed crashes with SQL Server Manager Studio
+- Added when exiting app, remove layered window style from top-level windows (EnumWindows)
+- Added debug logging
+
+0.0.0.3 (Pop Build)
+- Added check for minimized windows and dialog boxes
+	- Changed check for WS_VISIBLE to API call IsWindowVisible()
+	- Changed check for top-level window from WS_CHILD to call to GetAncestor()
+- Fixed transparent pop-up menus (WS_POPUP)
+
+0.0.0.4 (Blur Build)
+- Added experimental Aero Glass option
+- Added reading more settings from registry
+
+0.0.0.5 (Tidy Build)
+- Fixed bug with applying transparency (CSettings::GetAlphaSetting did not return TRUE when succeeded)
+
+0.0.1.0 (Revive Build)
+- When closing program, only change windows that ClearView might have modified. 
+- Added generic function to check usability of a window. 
+- Removed check for Windows Store apps (IsImmersiveProcess)
+- Added hack for SHELL_DEFVIEW window class, for clicking on desktop
+
+0.0.1.1 (Desktop build)
+- Removed hack for desktop focus change that checked window class SHELL_DEFVIEW
+- When foregound window has changed (EVENT_SYSTEM_FOREGROUND), always enum windows again. (Fix for clicking on the desktop)
+
+0.0.1.2 (Suspend build)
+- Added a option to pause the program
+
+0.0.1.3 (Suspend the Second Build)
+- Fix registry handles leak
+
+0.0.1.4 (Dump Build)
+- Removed experimental Aero Glass option to fix registry key handles leak
+
+0.0.1.5 (Dump DLL Build)
+- Changed Runtime Library to Multi-threaded (/MT) to remove dependency of Visual C++ Runtime
+
+0.0.2.0 (A Dialog about Me Build)
+- Added a About dialog
+- Many changes to internal working of processing window messages to support dialog boxes
+
+0.0.2.1 (Aware Build)
+- Added High DPI aware in manifest
+- Fixed missing text on static controls when using High DPI
+- Scaled image in About box
+- Removed unneeded info from manifest
+
+0.0.2.2 (New hope Build)
+- Keep main registry key open, instead of "Programs" key
+
+0.0.3.0 (Get it (at) once Build)
+- Rewrote loading of settings from registry. Settings are now loaded at program start-up and stored in memory to improve performance
 and for preparation of the GUI.
+
+0.0.4.0 (Pretty looking build)
+- Added GUI:
+	- Setup dialog with apps and windows
+	- Settings dialog with option to start app when user logs in
+	- Update checker
+- Use Smart pointer to prevent memory leaks
+- Make build Unicode and ANSI compatible
+- Set build target to Windows 2000 and changed implementation of registry functions
+- Added UWP packaging project for UWP version of app

@@ -95,7 +95,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,17,67,130,8
     LTEXT           "Based on an idea by Mikey",IDC_STATIC,17,102,130,8
     LTEXT           "ClearView",IDC_STATIC,17,12,130,8,SS_NOPREFIX
-    LTEXT           "0.0.3.0 Alpha (Get it (at) once build)",IDC_STATIC,17,22,130,8
+    LTEXT           "0.0.4.0 Alpha (Pretty looking build)",IDC_STATIC,17,22,130,8
     LTEXT           "Copyright (c) Martijn van Antwerpen",IDC_STATIC,17,57,130,8
     DEFPUSHBUTTON   "Close",IDOK,177,117,50,14,WS_GROUP
     CONTROL         IDB_DINO,IDC_DINO_IMAGE,"Static",SS_BITMAP,165,9,59,41
@@ -211,12 +211,12 @@ BEGIN
             VALUE "Comments", "Test build. Do not distribute."
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "ClearView"
-            VALUE "FileVersion", "0.0.3.0 Alpha (Get it (at) once build)"
+            VALUE "FileVersion", "0.0.4.0 Alpha (Pretty looking build)"
             VALUE "InternalName", "ClearView"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "OriginalFilename", "ClearView.exe"
             VALUE "ProductName", "ClearView"
-            VALUE "ProductVersion", "0.0.3.0 Alpha (Get it (at) once build)"
+            VALUE "ProductVersion", "0.0.4.0 Alpha (Pretty looking build)"
         END
     END
     BLOCK "VarFileInfo"
