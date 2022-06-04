@@ -54,45 +54,15 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 
 void CAddAppDialog::LoadModules()
 {
-	PROCESSENTRY32 sProcess = { sizeof(PROCESSENTRY32) };
-	MODULEENTRY32 sModule = { sizeof(MODULEENTRY32) };
-
-	struct LANGANDCODEPAGE {
-		WORD wLanguage;
-		WORD wCodePage;
-	} *lpTranslate;
-
-	LPDWORD dwDummy = 0;
-	DWORD dDummyHandle = 0;
-	UINT dwBytes;
+	PROCESSENTRY32 sProcess;
+	sProcess.dwSize = sizeof(PROCESSENTRY32);
 
 	HANDLE hProcessesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (Process32First(hProcessesSnapshot, &sProcess))
 	{
 		do
 		{
-			HANDLE hModulesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, sProcess.th32ProcessID);
-			if (Module32First(hModulesSnapshot, &sModule))
-			{
-				this->AddProcessToList(&sModule);
-				DWORD dInfoSize = GetFileVersionInfoSize(sModule.szExePath, dwDummy);
-				if (dInfoSize){
-					auto lpVersionInfo = std::unique_ptr<BYTE[]>(new BYTE[dInfoSize]);
-					if (GetFileVersionInfo(sModule.szExePath, dDummyHandle, dInfoSize, lpVersionInfo.get()))
-					{
-						if (VerQueryValue(lpVersionInfo.get(), TEXT("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &dwBytes))
-						{
-
-						}
-						else
-						{
-							MessageBox(this->hWnd, _T("Function <VerQueryValue> for Translation unsuccessful!"), _T("ERROR!"), IDOK);
-						}
-					}
-				}
-
-			}
-			CloseHandle(hModulesSnapshot);
+			this->AddProcessToList(sProcess.szExeFile);
 		} while (Process32Next(hProcessesSnapshot, &sProcess));
 	}
 
@@ -117,7 +87,7 @@ LPWSTR CAddAppDialog::GetSelectedProcess()
 	return this->selectedProcess.get();
 }
 
-void CAddAppDialog::AddProcessToList(MODULEENTRY32 *module)
+void CAddAppDialog::AddProcessToList(WCHAR *exeName)
 {
-	this->appsListView->AddItem(module->szModule);
+	this->appsListView->AddItem(exeName);
 }
