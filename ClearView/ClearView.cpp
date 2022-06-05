@@ -288,8 +288,8 @@ void GetIsWindows8()
 
 	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
 	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-	osvi.dwMajorVersion = 8;
-	osvi.dwMinorVersion = 0;
+	osvi.dwMajorVersion = 6;
+	osvi.dwMinorVersion = 2;
 	osvi.wServicePackMajor = 0;
 	osvi.wServicePackMinor = 0;
 
@@ -308,6 +308,7 @@ void GetIsWindows8()
 		VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR,
 		dwlConditionMask
 	);
+	OutputDebugString(isWindows8 ? _T("Running on Windows 8 or 8.1\r\n") : _T("Not running on Windows 8 or 8.1\r\n"));
 }
 
 void SendAlreadyRunningNotify()
