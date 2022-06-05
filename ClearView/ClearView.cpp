@@ -31,6 +31,7 @@ std::unique_ptr<ISettingsManager> settingsManager;
 BOOL isPause = false;
 CLimitSingleInstance singleInstanceObj(_T("ClearView"));
 UpdateResponse updateResponse;
+BOOL isWindows8;
 
 TCHAR windowClassName[MAX_WINDOW_CLASS_NAME];
 TCHAR* fileName;
@@ -75,6 +76,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		{
 			return FALSE;
 		}
+		GetIsWindows8();
 		LoadFunctionAdresses();
 		CreateHook();
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
@@ -222,8 +224,9 @@ BOOL GetWindowProcessAndClass(HWND hwnd)
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, processId);
 	if (hProcess != NULL)
 	{
-		//Check if current process is not a Windows Store App or Explorer
-		//if (isImmersive == NULL || !isImmersive(hProcess))
+		//Check if current process is not a Windows Store App on Windows 8 or Windows 8.1.
+		//They should not be transparent because they are always running full-screen
+		if (!isWindows8 || isImmersive == NULL || !isImmersive(hProcess))
 		{
 			//Get process image file name
 			GetProcessImageFileName(hProcess, filePathName, ARRAYSIZE(filePathName));
@@ -274,6 +277,37 @@ Load addresses of function that do not exist on certain version of Windows
 void LoadFunctionAdresses()
 {
 	isImmersive = (PGNSI)GetProcAddress(GetModuleHandle(_T("user32.dll")), "IsImmersiveProcess");
+}
+
+void GetIsWindows8()
+{
+	OSVERSIONINFOEX osvi;
+	DWORDLONG dwlConditionMask = 0;
+
+	// Initialize the OSVERSIONINFOEX structure.
+
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	osvi.dwMajorVersion = 8;
+	osvi.dwMinorVersion = 0;
+	osvi.wServicePackMajor = 0;
+	osvi.wServicePackMinor = 0;
+
+	// Initialize the condition mask.
+
+	VER_SET_CONDITION(dwlConditionMask, VER_MAJORVERSION, VER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_MINORVERSION, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMINOR, VER_GREATER_EQUAL);
+
+	// Perform the test.
+
+	isWindows8 = VerifyVersionInfo(
+		&osvi,
+		VER_MAJORVERSION | VER_MINORVERSION |
+		VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR,
+		dwlConditionMask
+	);
 }
 
 void SendAlreadyRunningNotify()

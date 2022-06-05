@@ -22,3 +22,4 @@ void SetWindowsTransparency();
 void ResetWindowsTransparency();
 void TogglePause();
 void SendAlreadyRunningNotify();
+void GetIsWindows8();
