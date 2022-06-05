@@ -72,3 +72,6 @@ and for preparation of the GUI.
 - Make build Unicode and ANSI compatible
 - Set build target to Windows 2000 and changed implementation of registry functions
 - Added UWP packaging project for UWP version of app
+
+0.0.4.1 (No Home, Phone Build)
+- Added option to disable auto-update check
