@@ -79,7 +79,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_WINDOWS);
 		enabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_TRANSPARENCY);
 
-		PopulateProcessList(hDlg);
+		PopulateProcessList();
 		SetTrackbarRanges(hDlg);
 		//Set the trackbars on the global settings
 		this->currentAlphaSettings = &newSettings->alphaSettings;
@@ -255,7 +255,7 @@ void CSetupDialog::EnabledCheckboxNotified()
 	currentAlphaSettings->enabled = enabledCheckbox->GetCheckState();
 }
 
-void CSetupDialog::PopulateProcessList(HWND hDlg)
+void CSetupDialog::PopulateProcessList()
 {
 	auto programs = newSettings->programs.get();
 	this->appsListView->AddItem(_T("[All other programs]"));

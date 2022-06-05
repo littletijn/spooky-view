@@ -29,7 +29,7 @@ protected:
 	void WindowsListNotified();
 	void EnabledCheckboxNotified();
 	void ProgramsListNotified();
-	void PopulateProcessList(HWND hDlg);
+	void PopulateProcessList();
 	void PopulateWindowsList(CProgramSetting* settings = 0);
 	void SetTrackbars();
 	void SetCheckboxes();

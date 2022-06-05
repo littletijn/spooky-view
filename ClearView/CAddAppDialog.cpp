@@ -20,6 +20,9 @@ BOOL CAddAppDialog::SetupDialog()
 	return TRUE;
 }
 
+/*
+Handles Window Messages
+*/
 INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	this->hWnd = hDlg;
@@ -51,7 +54,9 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	return FALSE;
 }
 
-
+/*
+Load the list of programs currently running
+*/
 void CAddAppDialog::LoadModules()
 {
 	PROCESSENTRY32 sProcess;
@@ -67,6 +72,10 @@ void CAddAppDialog::LoadModules()
 	}
 
 	CloseHandle(hProcessesSnapshot);
+}
+
+void CAddAppDialog::BrowseFile()
+{
 }
 
 void CAddAppDialog::BrowseFile()

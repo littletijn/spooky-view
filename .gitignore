@@ -5,5 +5,6 @@
 *.aps
 bin/
 obj/
-Debug/
 packages/
+Debug/
+Release/
