@@ -2,6 +2,10 @@
 #include "CSettingsDialog.h"
 #include <WindowsX.h>
 #include <Shlwapi.h>
+#include <memory>
+#include "ISettingsManager.h"
+
+extern std::unique_ptr<ISettingsManager> settingsManager;
 
 CSettingsDialog::CSettingsDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
@@ -46,6 +50,8 @@ void CSettingsDialog::ApplySettings()
 	{
 		RemoveAutoRun();
 	}
+	HWND disableUpdateCheck = GetDlgItem(hWnd, IDC_CHECKBOX_DISABLE_UPDATE_CHECK);
+	settingsManager->SetDisableUpdateCheck(Button_GetCheck(disableUpdateCheck));
 }
 
 void CSettingsDialog::SetFormValues(HWND hDlg)
@@ -54,6 +60,11 @@ void CSettingsDialog::SetFormValues(HWND hDlg)
 	{
 		HWND autoStartupCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_AUTO_STARTUP);
 		Button_SetCheck(autoStartupCheckbox, TRUE);
+	}
+	if (settingsManager->GetDisableUpdateCheck())
+	{
+		HWND disableUpdateCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_DISABLE_UPDATE_CHECK);
+		Button_SetCheck(disableUpdateCheckbox, TRUE);
 	}
 }
 

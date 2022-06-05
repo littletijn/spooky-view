@@ -80,7 +80,10 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		settingsManager->LoadSettings();
 		SetWindowsTransparency();
-		CreateUpdateCheckerThread();
+		if (!settingsManager->GetDisableUpdateCheck())
+		{
+			CreateUpdateCheckerThread();
+		}
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));

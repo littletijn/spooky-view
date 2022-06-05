@@ -248,3 +248,30 @@ BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
 	}
 	return FALSE;
 }
+
+BOOL CRegistrySettingsManager::GetDisableUpdateCheck()
+{
+	DWORD keyType;
+	BYTE keyData[1];
+	DWORD keyDataSize = sizeof(keyData);
+	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\ClearView"), _T("DisableUpdateCheck"), &keyType, keyData, &keyDataSize);
+	if (result == ERROR_SUCCESS && keyType == REG_BINARY)
+	{
+		return keyData[0];
+	}
+	return FALSE;
+}
+
+void CRegistrySettingsManager::SetDisableUpdateCheck(BOOL state)
+{
+	HKEY hKey;
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	{
+		BYTE stateByte = state ? '\x1' : '\x0';
+		if (RegSetValueEx(hKey, _T("DisableUpdateCheck"), 0, REG_BINARY, &stateByte, sizeof(stateByte)) != ERROR_SUCCESS)
+		{
+			//Show error message
+		}
+		RegCloseKey(hKey);
+	}
+}
