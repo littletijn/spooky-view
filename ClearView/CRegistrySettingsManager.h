@@ -13,6 +13,8 @@ public:
 	void ApplyNewSettings(CSettings *newSettings);
 	void AddSkipVersionKey(tstring versionNumber);
 	BOOL ShouldSkipVersion(tstring versionNumber);
+	BOOL GetDisableUpdateCheck();
+	void SetDisableUpdateCheck(BOOL state);
 protected:
 	std::unique_ptr<CSettings> settings;
 	void SaveValues(HKEY key, CAlphaSettings values);

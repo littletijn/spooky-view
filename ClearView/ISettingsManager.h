@@ -15,4 +15,6 @@ public:
 	virtual void ApplyNewSettings(CSettings* newSettings) = 0;
 	virtual void AddSkipVersionKey(tstring versionNumber) = 0;
 	virtual BOOL ShouldSkipVersion(tstring versionNumber) = 0;
+	virtual BOOL GetDisableUpdateCheck() = 0;
+	virtual void SetDisableUpdateCheck(BOOL state) = 0;
 };
