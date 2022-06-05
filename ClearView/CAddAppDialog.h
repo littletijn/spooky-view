@@ -19,5 +19,6 @@ protected:
 	void AddProcessToList(WCHAR* exeName);
 	void BrowseFile();
 	void StoreSelectedProcess();
+	void GetProcessProgramName(PROCESSENTRY32 sProcess);
 };
 
