@@ -1,7 +1,7 @@
 #include <string>
 #include <map>
 #include "CProgramSetting.h"
-using namespace std;
+#include <memory>
 #pragma once
 
 
@@ -15,10 +15,10 @@ public:
 	};
 
 	CAlphaSettings alphaSettings;
-
 	BOOL GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, __out BYTE& alpha);
-	map<t_string, CProgramSetting *> *programs;
+	std::unique_ptr<std::map<t_string, CProgramSetting*>> programs;
 	CSettings();
+	CSettings(const CSettings& c);
 	~CSettings();
 protected:
 	void ToLowerCase(TCHAR* string, size_t length);

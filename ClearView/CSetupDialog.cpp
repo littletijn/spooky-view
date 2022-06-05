@@ -1,26 +1,27 @@
 #include "stdafx.h"
 #include "CSetupDialog.h"
 #include "CAddAppDialog.h"
+#include "CAddWindowDialog.h"
 #include <CommCtrl.h>
 #include "CSettings.h"
 #include "CProgramSetting.h"
 #include "ISettingsManager.h"
 #include "String.h"
 #include <vector>
+#include <memory>
+#include <WindowsX.h>
+#include "Defines.h"
 
-using namespace std;
-
-extern CSettings *settings;
-extern ISettingsManager *settingsManager;
+extern std::unique_ptr<ISettingsManager> settingsManager;
+extern void SetWindowsTransparency();
 
 CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
+	this->CopySettings();
 }
 
 CSetupDialog::~CSetupDialog()
 {
-	delete this->appsListView;
-	delete this->windowsListView;
 }
 
 BOOL CSetupDialog::SetupDialog()
@@ -36,16 +37,16 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	case WM_NOTIFY:
 	{
 		LPNMHDR notifyMessage = (LPNMHDR)lParam;
-		if (notifyMessage->code == NM_CLICK)
+		if (notifyMessage->code == LVN_ITEMCHANGED)
 		{
 			switch (notifyMessage->idFrom)
 			{
 			case IDC_LIST_APPS:
-				ProgramsListNotified(lParam);
+				ProgramsListNotified();
 				return TRUE;
 
 			case IDC_LIST_WINDOWS:
-				WindowsListNotified(lParam);
+				WindowsListNotified();
 				return TRUE;
 			}
 		}
@@ -53,113 +54,226 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	break;
 
 	case WM_HSCROLL:
-		if (LOWORD(wParam) == TB_THUMBPOSITION || LOWORD(wParam) == TB_THUMBTRACK)
+	{
+		auto senderHwnd = (HWND)lParam;
+		LONG identifier = GetWindowLong(senderHwnd, GWL_ID);
+		if (identifier == IDC_SLIDER_FOREGROUND || identifier == IDC_SLIDER_BACKGROUND)
 		{
-			WORD value = HIWORD(wParam);
-			SetAlpha(value, (HWND)lParam);
+			if (LOWORD(wParam) == TB_THUMBPOSITION || LOWORD(wParam) == TB_THUMBTRACK)
+			{
+				WORD value = HIWORD(wParam);
+				SetAlpha(value, senderHwnd);
+			}
+			else
+			{
+				auto value = SendMessage(senderHwnd, TBM_GETPOS, 0, 0);
+				SetAlpha(value, senderHwnd);
+			}
 		}
 		return TRUE;
+	}
 
 	case WM_INITDIALOG:
 		//Create the listviews
-		this->appsListView = new ListView(hDlg, IDC_LIST_APPS);
-		this->windowsListView = new ListView(hDlg, IDC_LIST_WINDOWS);
+		appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_APPS);
+		windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_WINDOWS);
+		enabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_TRANSPARENCY);
 
 		PopulateProcessList();
 		SetTrackbarRanges(hDlg);
 		//Set the trackbars on the global settings
-		this->currentAlphaSettings = &settings->alphaSettings;
+		this->currentAlphaSettings = &newSettings->alphaSettings;
 		SetTrackbars();
+		SetCheckboxes();
 		return TRUE;
-		break;
 
 	case WM_COMMAND:
-		switch (LOWORD(wParam))
+		if (HIWORD(wParam) == BN_CLICKED)
 		{
+			switch (LOWORD(wParam))
+			{
+			case IDC_CHECKBOX_ENABLE_TRANSPARENCY:
+				EnabledCheckboxNotified();
+				return TRUE;
 			case IDAPPLY:
-				settingsManager->SaveSettings(settings);
+				settingsManager->ApplyNewSettings(newSettings.get());
+				settingsManager->SaveSettings();
+				SetWindowsTransparency();
 				return TRUE;
 			case IDOK:
-				settingsManager->SaveSettings(settings);
+				settingsManager->ApplyNewSettings(newSettings.get());
+				settingsManager->SaveSettings();
+				SetWindowsTransparency();
 			case IDCANCEL:
 				DestroyWindow(hDlg);
 				return TRUE;
+			case IDC_BUTTON_APP_REMOVE:
+				newSettings->programs->erase(this->currentProgramName);
+				this->appsListView->DeleteSelectedItem();
+				return TRUE;
+			case IDC_BUTTON_WINDOW_REMOVE:
+				this->currentProgram->windows->erase(this->currentWindowClassName);
+				this->windowsListView->DeleteSelectedItem();
+				return TRUE;
 			case IDC_BUTTON_APP_ADD:
-				CAddAppDialog *appDialog = new CAddAppDialog(this->hInstance, this->hWnd);
-				appDialog->InitInstance();
-				if (appDialog->GetResult() == 1)
 				{
+					auto appDialog = std::make_unique<CAddAppDialog>(this->hInstance, this->hWnd);
+					appDialog->InitInstance();
+					if (appDialog->GetResult() == 1)
+					{
+						LPWSTR programName = appDialog->GetSelectedProcess();
 
+						auto progSettings = new CProgramSetting();
+						newSettings->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
+						this->appsListView->AddItem(programName);
+					}
 				}
 				return TRUE;
+			case IDC_BUTTON_WINDOW_ADD:
+				{
+					auto windowDialog = std::make_unique<CAddWindowDialog>(this->hInstance, this->hWnd);
+					windowDialog->InitInstance(this->currentProgramName);
+					if (windowDialog->GetResult() == 1)
+					{
+						LPWSTR windowClassName = windowDialog->GetSelectedWindowClass();
+
+						auto windowSettings = new CWindowSetting();
+						this->currentProgram->windows->insert(std::pair<t_string, CWindowSetting*>(windowClassName, windowSettings));
+						this->windowsListView->AddItem(windowClassName);
+					}
+				}
+				return TRUE;
+			}
 		}
 		break;
 	}
 	return FALSE;
 }
 
-void CSetupDialog::ProgramsListNotified(LPARAM lParam)
+void CSetupDialog::CopySettings()
 {
-	int index = this->appsListView->GetSelectedIndex(lParam);
-	if (index > -1)
+	newSettings = std::make_unique<CSettings>(*settingsManager->GetSettings());
+}
+
+void CSetupDialog::ProgramsListNotified()
+{
+	int index = this->appsListView->GetSelectedIndex();
+	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_PATH];
 		LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
 
-		auto program = settings->programs->find(text);
-		if (program != settings->programs->end())
+		auto program = newSettings->programs->find(text);
+		if (program != newSettings->programs->end())
 		{
+			this->currentProgramName = program->first;
 			this->currentProgram = program->second;
 			this->currentAlphaSettings = &program->second->alphaSettings;
 			SetTrackbars();
+			SetCheckboxes();
+			PopulateWindowsList(program->second);
 		}
-		PopulateWindowsList(program->second);
+		this->SetFormVisibility(TRUE);
+	}
+	else if (index == 0)
+	{
+		//When first item (all programs) is selected, get the global settings
+		this->currentProgram = 0;
+		this->currentAlphaSettings = &newSettings->alphaSettings;
+		SetTrackbars();
+		SetCheckboxes();
+		PopulateWindowsList();
+		this->SetFormVisibility(TRUE);
+	} 
+	else
+	{
+		//When no item is selected, hide the controls and clear windows list
+		this->SetFormVisibility(FALSE);
+		this->windowsListView->DeleteAllItems();
+		SetButtonEnableState(IDC_BUTTON_WINDOW_ADD, false);
+		SetButtonEnableState(IDC_BUTTON_WINDOW_REMOVE, false);
+	}
+	if (index >= 0) {
+		//Select the first item available
+		this->windowsListView->SetSelectedItem(0);
+	}
+	//Enable the remove button when a program is selected
+	SetButtonEnableState(IDC_BUTTON_APP_REMOVE, index > 0);
+}
+
+void CSetupDialog::WindowsListNotified()
+{
+	int index = this->windowsListView->GetSelectedIndex();
+	if (index > 0)
+	{
+		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
+		LPWSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
+
+		auto window = currentProgram->windows->find(text);
+		if (window != currentProgram->windows->end())
+		{
+			this->currentWindowClassName = window->first;
+			this->currentAlphaSettings = &window->second->alphaSettings;
+			SetTrackbars();
+			SetCheckboxes();
+		}
+		this->SetFormVisibility(TRUE);
+	}
+	else if (index == 0)
+	{
+		//When first item (all windows) is selected, get the program global settings
+		//If no program is selected, get the global settings
+		if (this->currentProgram) {
+			this->currentAlphaSettings = &currentProgram->alphaSettings;
+		}
+		else {
+			this->currentAlphaSettings = &newSettings->alphaSettings;
+		}
+		SetTrackbars();
+		SetCheckboxes();
+		this->SetFormVisibility(TRUE);
 	}
 	else
 	{
-		//When no item is selected, get the global settings
-		this->currentAlphaSettings = &settings->alphaSettings;
-		SetTrackbars();
+		//When no item is selected, hide the form
+		this->SetFormVisibility(FALSE);
+	}
+	//Enable the remove button when a window is selected
+	SetButtonEnableState(IDC_BUTTON_WINDOW_REMOVE, index > 0);
+	//When a program is selected, enable the add button
+	if (this->currentProgram) {
+		SetButtonEnableState(IDC_BUTTON_WINDOW_ADD, true);
+	}
+	else
+	{
+		SetButtonEnableState(IDC_BUTTON_WINDOW_ADD, false);
 	}
 }
 
-void CSetupDialog::WindowsListNotified(LPARAM lParam)
+void CSetupDialog::EnabledCheckboxNotified()
 {
-	int index = this->windowsListView->GetSelectedIndex(lParam);
-	if (index > -1)
-	{
-		TCHAR textBuffer[MAX_PATH];
-		LPWSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
-
-		auto window = this->currentProgram->windows->find(text);
-		if (window != this->currentProgram->windows->end())
-		{
-			this->currentAlphaSettings = &window->second->alphaSettings;
-			SetTrackbars();
-		}
-	}
-	else
-	{
-		//When no item is selected, get the program global settings
-		this->currentAlphaSettings = &this->currentProgram->alphaSettings;
-		SetTrackbars();
-	}
+	currentAlphaSettings->enabled = enabledCheckbox->GetCheckState();
 }
 
 void CSetupDialog::PopulateProcessList()
 {
-	for (auto const &program : *settings->programs)
+	auto programs = newSettings->programs.get();
+	this->appsListView->AddItem(_T("[All other programs]"));
+	for (auto const program : *programs)
 	{
 		this->appsListView->AddItem(program.first);
-	}	
+	}
 }
 
 void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)
 {
 	this->windowsListView->DeleteAllItems();
-	for (auto const &window : *settings->windows)
-	{
-		this->windowsListView->AddItem(window.first);
+	this->windowsListView->AddItem(_T("[All other windows]"));
+	if (settings) {
+		for (auto const& window : *settings->windows)
+		{
+			this->windowsListView->AddItem(window.first);
+		}
 	}
 }
 
@@ -175,20 +289,40 @@ void CSetupDialog::SetTrackbars()
 {
 	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)this->currentAlphaSettings->foreground);
-	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)this->currentAlphaSettings->background);
+	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)currentAlphaSettings->foreground);
+	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)currentAlphaSettings->background);
 }
 
-void CSetupDialog::SetAlpha(WORD value, HWND trackbar)
+void CSetupDialog::SetCheckboxes()
+{
+	enabledCheckbox->SetCheckState(currentAlphaSettings->enabled);
+}
+
+void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 {
 	LONG identifier = GetWindowLong(trackbar, GWL_ID);
 	switch (identifier)
 	{
 	case IDC_SLIDER_FOREGROUND:
-		this->currentAlphaSettings->foreground = value;
+		currentAlphaSettings->foreground = value;
 		break;
 	case IDC_SLIDER_BACKGROUND:
-		this->currentAlphaSettings->background = value;
+		currentAlphaSettings->background = value;
 		break;
 	}
+}
+
+void CSetupDialog::SetFormVisibility(bool show)
+{
+	const int itemIds[] = {IDC_CHECKBOX_ENABLE_TRANSPARENCY, IDC_STATIC_TRANSPARENCY, IDC_STATIC_FOREGROUND, IDC_SLIDER_FOREGROUND, IDC_STATIC_BACKGROUND, IDC_SLIDER_BACKGROUND };
+	for (const auto& itemId : itemIds) {
+		auto item = GetDlgItem(this->hWnd, itemId);
+		ShowWindow(item, show ? SW_SHOW : SW_HIDE);
+	}
+}
+
+void CSetupDialog::SetButtonEnableState(int controlId, bool show)
+{
+	auto item = GetDlgItem(this->hWnd, controlId);
+	EnableWindow(item, show);
 }

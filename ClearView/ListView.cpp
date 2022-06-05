@@ -2,8 +2,7 @@
 #include "ListView.h"
 #include <CommCtrl.h>
 #include <vector>
-
-using namespace std;
+#include <memory>
 
 ListView::ListView(HWND parent, int intResource)
 {
@@ -27,25 +26,14 @@ LPWSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
 	return item.pszText;
 }
 
-int ListView::GetSelectedIndex(LPARAM lParam)
+void ListView::SetSelectedItem(int index)
 {
-	LPNMHDR notifyMessage = (LPNMHDR)lParam;
-	int index = -1;
-	switch (notifyMessage->code)
-	{
-	case NM_CLICK:
-	{
-		LPNMITEMACTIVATE item = (LPNMITEMACTIVATE)lParam;
-		index = item->iItem;
-	}
-	break;
+	ListView_SetItemState(this->hWnd, index,  LVIS_SELECTED,  LVIS_SELECTED);
+}
 
-	case LVN_ITEMACTIVATE:
-		index = ListView_GetNextItem(notifyMessage->hwndFrom, -1, LVNI_SELECTED);
-		break;
-
-	}
-	return index;
+int ListView::GetSelectedIndex()
+{
+	return ListView_GetNextItem(this->hWnd, -1, LVNI_SELECTED);
 }
 
 int ListView::AddItem(LPWSTR text)
@@ -61,14 +49,19 @@ int ListView::AddItem(LPWSTR text)
 
 int ListView::AddItem(t_string text)
 {	
-	std::vector<wchar_t>* textBuffer = new std::vector<wchar_t>(text.begin(), text.end());
+	auto textBuffer = std::make_unique<std::vector<wchar_t>>(text.begin(), text.end());
 	textBuffer->push_back(0); //Add null terminator for string
 	int result = this->AddItem(textBuffer->data());
-	delete textBuffer;
 	return result;
 }
 
 void ListView::DeleteAllItems()
 {
 	ListView_DeleteAllItems(this->hWnd);
+}
+
+void ListView::DeleteSelectedItem()
+{
+	int index = GetSelectedIndex();
+	ListView_DeleteItem(this->hWnd, index);
 }

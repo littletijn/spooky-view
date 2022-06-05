@@ -1,10 +1,18 @@
 #include "stdafx.h"
 #include "CMainWindow.h"
-#include "CAbout.h"
 #include "ClearView.h"
 #include "Resource.h"
-#include "CSetupDialog.h"
 #include "CLimitSingleInstance.h"
+#include "CSettingsDialog.h"
+#include "Defines.h"
+#include "UpdateResponse.h"
+#include "ISettingsManager.h"
+
+extern UpdateResponse updateResponse;
+extern std::unique_ptr<ISettingsManager> settingsManager;
+#ifdef UNICODE
+extern wchar_t* string_to_wchar_t(std::string string);
+#endif // UNICODE
 
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
@@ -24,7 +32,7 @@ BOOL CMainWindow::InitNotifyIcon()
 	TCHAR appName[MAX_LOADSTRING];
 	LoadString(hInstance, IDS_APP_TITLE, appName, ARRAYSIZE(appName));
 	HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_CLEARVIEW));
-	cNotifyIcon = new CNotifyIcon(this->hWnd, notifyIcon, appName);
+	cNotifyIcon = std::make_unique<CNotifyIcon>(this->hWnd, notifyIcon, appName);
 	BOOL canInit = cNotifyIcon->Init();
 	notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
 	return canInit && notifyIconContextMenu != NULL;
@@ -33,7 +41,6 @@ BOOL CMainWindow::InitNotifyIcon()
 void CMainWindow::CloseWindow()
 {
 	DestroyMenu(notifyIconContextMenu);
-	delete cNotifyIcon;
 	PostQuitMessage(0);
 }
 
@@ -52,6 +59,36 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 {
 	switch (message)
 	{
+		case WM_UPDATE_AVAILABLE:
+		{
+#ifdef UNICODE
+			auto versionNumber = string_to_wchar_t(updateResponse.version);
+#else
+			auto versionNumber = updateResponse.version;
+#endif // UNICODE
+			if (!settingsManager->ShouldSkipVersion(versionNumber))
+			{
+#ifdef UNICODE
+				auto message = string_to_wchar_t(updateResponse.message);
+				auto downloadUrl = string_to_wchar_t(updateResponse.download_url);
+				auto versionNumber = string_to_wchar_t(updateResponse.version);
+#else
+				auto message = updateResponse.message;
+				auto downloadUrl = updateResponse.download_url;
+				auto versionNumber = updateResponse.version;
+#endif // UNICODE
+				cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance);
+				cUpdateAvailableDialog->SetMessage(message);
+				cUpdateAvailableDialog->SetDownloadUrl(downloadUrl);
+				cUpdateAvailableDialog->SetVersionNumber(versionNumber);
+				cUpdateAvailableDialog->InitInstance();
+				delete[] message;
+				delete[] downloadUrl;
+				delete[] versionNumber;
+			}
+			break;
+		}
+
 		case WM_COPYDATA:
 		{
 			PCOPYDATASTRUCT dataCopy = (PCOPYDATASTRUCT)lParam;
@@ -92,17 +129,22 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		//Handles the Context Menu of the Notification Area Icon
 		switch (LOWORD(wParam))
 		{
+		case IDM_SETTINGS:
+			cSettingsDialog = std::make_unique<CSettingsDialog>(this->hInstance);
+			cSettingsDialog->InitInstance();
+			break;
+
 			case IDM_OPEN:
 			{
-				CSetupDialog *setup = new CSetupDialog(this->hInstance);
-				setup->InitInstance();
+				cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance);
+				cSetupDialog->InitInstance();
 			}
 			break;
 
 			case IDM_ABOUT:
 			{
-				CAbout *about = new CAbout(this->hInstance);
-				about->InitInstance();
+				cAboutDialog = std::make_unique<CAbout>(this->hInstance);
+				cAboutDialog->InitInstance();
 			}
 			break;
 

@@ -1,16 +1,26 @@
 #include "stdafx.h"
 #include "CSettings.h"
+#include <memory>
 
 
 CSettings::CSettings()
 {
-	this->programs = new map<t_string, CProgramSetting *>();
+	this->programs = std::make_unique<std::map<t_string, CProgramSetting*>>();
 }
 
+CSettings::CSettings(const CSettings& c) : CSettings::CSettings()
+{
+	this->alphaSettings = CAlphaSettings(c.alphaSettings);
+	for (auto program = c.programs.get()->begin(); program != c.programs.get()->end(); ++program)
+	{
+		t_string firstCopy = t_string(program->first);
+		CProgramSetting* secondCopy = new CProgramSetting (*program->second);
+		this->programs->insert(std::pair<t_string, CProgramSetting*>(firstCopy, secondCopy));
+	}
+}
 
 CSettings::~CSettings()
 {
-	delete this->programs;
 }
 
 // Search settings maps for alpha settings for given process and window class
@@ -35,6 +45,9 @@ BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, 
 	}
 	else{
 		alphaSettings = this->alphaSettings;
+	}
+	if (!alphaSettings.enabled) {
+		return false;
 	}
 
 	switch (type)

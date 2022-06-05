@@ -2,6 +2,7 @@
 #include "CModalDialog.h"
 #include "Tlhelp32.h"
 #include "ListView.h"
+#include <memory>
 
 class CAddAppDialog : public CModalDialog
 {
@@ -10,10 +11,14 @@ public:
 	~CAddAppDialog();
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+	LPWSTR GetSelectedProcess();
 protected:
-	ListView * appsListView;
+	std::unique_ptr<TCHAR[]> selectedProcess;
+	std::unique_ptr<ListView> appsListView;
 	void LoadModules();
-	void AddProcessToList(MODULEENTRY32 *module, TCHAR *programName);
+	void AddProcessToList(WCHAR* exeName);
 	void BrowseFile();
+	void StoreSelectedProcess();
+	void GetProcessProgramName(PROCESSENTRY32 sProcess);
 };
 

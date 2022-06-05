@@ -1,4 +1,10 @@
 .vs/
 *.vcxproj.user
+*.wapproj.user
+*.cache
+*.aps
+bin/
+obj/
+packages/
 Debug/
 Release/

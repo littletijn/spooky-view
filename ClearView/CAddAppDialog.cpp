@@ -2,8 +2,8 @@
 #include "CAddAppDialog.h"
 #include "Tlhelp32.h"
 #include "Commctrl.h"
-#include "ListView.h"
 #include "strsafe.h"
+#include <string.h>
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -29,7 +29,7 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		this->appsListView = new ListView(hDlg, IDC_LIST_APPS);
+		this->appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_APPS);
 		LoadModules();
 		return TRUE;
 		break;
@@ -38,9 +38,12 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 		switch (LOWORD(wParam))
 		{
 		case IDOK:
+			StoreSelectedProcess();
+			EndDialog(hDlg, 1);
+			return TRUE;
 		case IDCANCEL:
-			EndDialog(hDlg, 0);
-			return FALSE;
+			EndDialog(hDlg, 2);
+			return TRUE;
 
 		}
 		case IDC_BUTTON_BROWSE:
@@ -56,8 +59,49 @@ Load the list of programs currently running
 */
 void CAddAppDialog::LoadModules()
 {
-	PROCESSENTRY32 sProcess = { sizeof(PROCESSENTRY32) };
-	MODULEENTRY32 sModule = { sizeof(MODULEENTRY32) };
+	PROCESSENTRY32 sProcess;
+	sProcess.dwSize = sizeof(PROCESSENTRY32);
+
+	HANDLE hProcessesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (Process32First(hProcessesSnapshot, &sProcess))
+	{
+		do
+		{
+			AddProcessToList(sProcess.szExeFile);
+			GetProcessProgramName(sProcess);
+		} while (Process32Next(hProcessesSnapshot, &sProcess));
+	}
+
+	CloseHandle(hProcessesSnapshot);
+}
+
+void CAddAppDialog::BrowseFile()
+{
+}
+
+void CAddAppDialog::StoreSelectedProcess()
+{
+	int index = this->appsListView->GetSelectedIndex();
+	TCHAR textBuffer[MAX_PATH];
+	LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
+	this->selectedProcess = std::unique_ptr<TCHAR[]>(new TCHAR[MAX_PATH]);
+	StringCchCopy(this->selectedProcess.get(), MAX_PATH, textBuffer);
+}
+
+LPWSTR CAddAppDialog::GetSelectedProcess()
+{
+	return this->selectedProcess.get();
+}
+
+void CAddAppDialog::AddProcessToList(WCHAR *exeName)
+{
+	this->appsListView->AddItem(exeName);
+}
+
+void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess)
+{
+	MODULEENTRY32 sModule;
+	sModule.dwSize = sizeof(MODULEENTRY32);
 
 	struct LANGANDCODEPAGE {
 		WORD wLanguage;
@@ -68,76 +112,51 @@ void CAddAppDialog::LoadModules()
 	DWORD dDummyHandle = 0;
 	UINT dwBytes;
 
-	HANDLE hProcessesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-	if (Process32First(hProcessesSnapshot, &sProcess))
+	HANDLE hModulesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, sProcess.th32ProcessID);
+	if (Module32First(hModulesSnapshot, &sModule))
 	{
-		do
+		TCHAR* programName = NULL;
+		DWORD dInfoSize = GetFileVersionInfoSize(sModule.szExePath, dwDummy);
+		if (dInfoSize)
 		{
-			HANDLE hModulesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, sProcess.th32ProcessID);
-			if (Module32First(hModulesSnapshot, &sModule))
+			//Create buffer for storing versionInfo
+			std::unique_ptr<BYTE[]> versionInfoBuffer(new BYTE[dInfoSize]);
+			if (GetFileVersionInfo(sModule.szExePath, dDummyHandle, dInfoSize, versionInfoBuffer.get()))
 			{
-				TCHAR *programName = NULL;
-				DWORD dInfoSize = GetFileVersionInfoSize(sModule.szExePath, dwDummy);
-				if (dInfoSize)
+				//Get translations of module
+				if (VerQueryValue(versionInfoBuffer.get(), _T("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &dwBytes))
 				{
-					LPVOID lpVersionInfo = new BYTE[dInfoSize];
-					if (GetFileVersionInfo(sModule.szExePath, dDummyHandle, dInfoSize, lpVersionInfo))
-					{
-						//Get translations of module
-						if (VerQueryValue(lpVersionInfo, TEXT("\\VarFileInfo\\Translation"), (LPVOID*)&lpTranslate, &dwBytes))
-						{
-							//SubBlock contains name of value to retrieve
-							TCHAR subBlock[200];
-							size_t subBlockSize = 200;
-							HRESULT hr;
+					//SubBlock contains name of value to retrieve
+					TCHAR subBlock[200];
+					size_t subBlockSize = 200;
+					HRESULT hr;
 
-							//Loop trough each translation
-							for (int i = 0; i < (dwBytes / sizeof(struct LANGANDCODEPAGE)); i++)
+					//Loop trough each translation
+					for (UINT i = 0; i < (dwBytes / sizeof(struct LANGANDCODEPAGE)); i++)
+					{
+						//Put correct path to FileDescription in subBlock
+						hr = StringCchPrintf(
+							subBlock,
+							subBlockSize,
+							_T("\\StringFileInfo\\%04x%04x\\FileDescription"),
+							lpTranslate[i].wLanguage,
+							lpTranslate[i].wCodePage
+						);
+						if (!FAILED(hr))
+						{
+							UINT programNameBufferSize;
+							LPVOID programNameBuffer;
+							//Try to read value of path in subBlock
+							if (VerQueryValue(versionInfoBuffer.get(), subBlock, &programNameBuffer, &programNameBufferSize))
 							{
-								//Put correct path to FileDescription in subBlock
-								hr = StringCchPrintf(
-									subBlock, 
-									subBlockSize, 
-									TEXT("\\StringFileInfo\\%04x%04x\\FileDescription"),
-									lpTranslate[i].wLanguage,
-									lpTranslate[i].wCodePage
-								);
-								if (!FAILED(hr))
-								{
-									UINT programNameBufferSize;
-									LPVOID programNameBuffer;
-									//Try to read value of path in subBlock
-									if (VerQueryValue(lpVersionInfo, subBlock, &programNameBuffer, &programNameBufferSize))
-									{
-										//We got the name of the program!
-										programName = reinterpret_cast<TCHAR *>(programNameBuffer);
-									}
-								}
+								//We got the name of the program!
+								programName = reinterpret_cast<TCHAR*>(programNameBuffer);
 							}
 						}
 					}
-					
 				}
-				this->AddProcessToList(&sModule, programName);
 			}
-			CloseHandle(hModulesSnapshot);
-		} while (Process32Next(hProcessesSnapshot, &sProcess));
+
+		}
 	}
-
-	CloseHandle(hProcessesSnapshot);
-}
-
-/*
-Open dialog to browse for a program file to add
-*/
-void CAddAppDialog::BrowseFile()
-{
-}
-
-/*
-Add process with given module name and given program name to list of programs in dialog
-*/
-void CAddAppDialog::AddProcessToList(MODULEENTRY32 *module, TCHAR *programName)
-{
-	int result = this->appsListView->AddItem(module->szModule);
 }

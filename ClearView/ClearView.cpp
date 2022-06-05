@@ -9,8 +9,12 @@
 #include <Uxtheme.h>
 #include <string>
 #include "CLimitSingleInstance.h"
-
-using namespace std;
+#include <memory>
+#include <list>
+#include <strsafe.h>
+#include "Defines.h"
+#include "UpdateChecker.h"
+#include "UpdateResponse.h"
 
 typedef BOOL (WINAPI *PGNSI)(HANDLE);
 typedef BOOL (WINAPI *PGNSI2)(HWND, MARGINS*);
@@ -20,17 +24,22 @@ const TCHAR DIALOGBOXCLASSNAME[7] = _T("#32770");
 
 // Global Variables:
 HINSTANCE hInst;								// current instance
-CMainWindow* mainWindow;
+std::unique_ptr<CMainWindow> mainWindow;
 HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
-CSettings* settings;
-ISettingsManager* settingsManager;
+std::unique_ptr<ISettingsManager> settingsManager;
 BOOL isPause = false;
 CLimitSingleInstance singleInstanceObj(_T("ClearView"));
+UpdateResponse updateResponse;
 
-//http://msdn.microsoft.com/en-us/library/windows/desktop/ms633577(v=vs.85).aspx
-//Max length of className is 256 characters
-TCHAR windowClassName[256];
+TCHAR windowClassName[MAX_WINDOW_CLASS_NAME];
+TCHAR* fileName;
+//Buffer for complete path of a file
+TCHAR filePathName[MAX_PATH];
+
+//Global variables for EnumWindowsForProcess
+t_string processNameOfWindowsToFind;
+std::list<TCHAR*> foundWindowClasses;
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -46,7 +55,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	InitCommonControlsEx(&init);
 
 	hInst = hInstance;
-	mainWindow = new CMainWindow(hInstance);
+	mainWindow = std::make_unique<CMainWindow>(hInstance);
 	mainWindow->RegisterWindowClass();
 	
 	// Perform application initialization:
@@ -68,9 +77,10 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		}
 		LoadFunctionAdresses();
 		CreateHook();
-		settingsManager = new CRegistrySettingsManager();
-		settings = settingsManager->LoadSettings();
-		EnumWindows(EnumWindowsProc, NULL);
+		settingsManager = std::make_unique<CRegistrySettingsManager>();
+		settingsManager->LoadSettings();
+		SetWindowsTransparency();
+		CreateUpdateCheckerThread();
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
@@ -87,12 +97,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	//Remove event hooks
 	Unhook();
 	//Reset windows
-	EnumWindows(EnumWindowsReset, NULL);
-
-	//Delete pointers
-	delete mainWindow;
-	delete settings;
-	delete settingsManager;
+	ResetWindowsTransparency();
 
 	return (int) msg.wParam;
 }
@@ -110,8 +115,18 @@ void TogglePause()
 	}
 	else{
 		CreateHook();
-		EnumWindows(EnumWindowsProc, NULL);
+		SetWindowsTransparency();
 	}
+}
+
+void SetWindowsTransparency()
+{
+	EnumWindows(EnumWindowsProc, NULL);
+}
+
+void ResetWindowsTransparency()
+{
+	EnumWindows(EnumWindowsReset, NULL);
 }
 
 BOOL IsWindowUsable(HWND hwnd)
@@ -135,7 +150,7 @@ void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, 
 	{
 		//This is a top-level window, enumerate all windows
 		OutputDebugString(_T("Enuming...\r\n"));
-		EnumWindows(EnumWindowsProc, NULL);
+		SetWindowsTransparency();
 		OutputDebugString(_T("-------------------------------------\r\n"));
 	}
 }
@@ -143,7 +158,7 @@ void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, 
 void CALLBACK WinEventProcForeground(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
 {
 	//When the foreground window has changed, always reset transparency values
-	EnumWindows(EnumWindowsProc, NULL);
+	SetWindowsTransparency();
 }
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
@@ -171,8 +186,37 @@ BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam)
 	return TRUE;
 }
 
+BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
+{
+	if (IsWindowUsable(hwnd))
+	{
+		GetWindowProcessAndClass(hwnd);
+		if (_wcsicmp(fileName, processNameOfWindowsToFind.c_str()) == 0)
+		{
+			//TODO: Fix memory leak
+			auto windowClassNameCopy = new TCHAR[MAX_WINDOW_CLASS_NAME];
+			StringCchCopy(windowClassNameCopy, MAX_WINDOW_CLASS_NAME, windowClassName);
+			foundWindowClasses.push_back(windowClassNameCopy);
+		}
+	}
+	return TRUE;
+}
+
 void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 {
+	if (GetWindowProcessAndClass(hwnd)) {
+		BYTE alpha;
+		if (settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
+		{
+			SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
+			SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
+		}
+	}
+}
+
+BOOL GetWindowProcessAndClass(HWND hwnd)
+{
+	BOOL result = FALSE;
 	DWORD processId;
 	GetWindowThreadProcessId(hwnd, &processId);
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, processId);
@@ -181,12 +225,9 @@ void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 		//Check if current process is not a Windows Store App or Explorer
 		//if (isImmersive == NULL || !isImmersive(hProcess))
 		{
-			//Create buffers
-			TCHAR filePathName[MAX_PATH];
-
 			//Get process image file name
 			GetProcessImageFileName(hProcess, filePathName, ARRAYSIZE(filePathName));
-			TCHAR *fileName = _tcsrchr(filePathName, '\\');
+			fileName = _tcsrchr(filePathName, '\\');
 			fileName++;
 
 			//Output debug data
@@ -197,16 +238,12 @@ void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 
 			if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 			{
-				BYTE alpha;
-				if (settings->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
-				{
-					SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
-					SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
-				}
+				result = TRUE;
 			}
 		}
 		CloseHandle(hProcess);
 	}
+	return result;
 }
 
 
@@ -262,3 +299,15 @@ void SendAlreadyRunningNotify()
 		DWORD error = GetLastError();
 	}
 }
+
+#ifdef UNICODE
+// Convert std::string to a wchar_t* string.
+wchar_t* string_to_wchar_t(std::string string)
+{
+	size_t newsize = strlen(string.c_str()) + 1;
+	wchar_t* wcstring = new wchar_t[newsize];
+	size_t convertedChars = 0;
+	mbstowcs_s(&convertedChars, wcstring, newsize, string.c_str(), _TRUNCATE);
+	return wcstring;
+}
+#endif // UNICODE

@@ -30,7 +30,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140_xp</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -61,7 +61,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -93,10 +93,14 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CUpdateAvailableDialog.h" />
+    <ClInclude Include="UpdateChecker.h" />
     <ClInclude Include="CAbout.h" />
     <ClInclude Include="CAddAppDialog.h" />
+    <ClInclude Include="CAddWindowDialog.h" />
     <ClInclude Include="CAlphaSettings.h" />
     <ClInclude Include="CDialog.h" />
+    <ClInclude Include="Checkbox.h" />
     <ClInclude Include="ClearView.h" />
     <ClInclude Include="CLimitSingleInstance.h" />
     <ClInclude Include="CMainWindow.h" />
@@ -105,10 +109,14 @@
     <ClInclude Include="CPtrMap.h" />
     <ClInclude Include="CRegistrySettingsManager.h" />
     <ClInclude Include="CSettings.h" />
+    <ClInclude Include="CSettingsDialog.h" />
     <ClInclude Include="CWindow.h" />
     <ClInclude Include="CWindowSetting.h" />
     <ClInclude Include="CWnd.h" />
     <ClInclude Include="CModelessDialog.h" />
+    <ClInclude Include="Defines.h" />
+    <ClInclude Include="Unicode.h" />
+    <ClInclude Include="UpdateResponse.h" />
     <ClInclude Include="ISettingsManager.h" />
     <ClInclude Include="CProgramSetting.h" />
     <ClInclude Include="ListView.h" />
@@ -120,9 +128,13 @@
     <ClInclude Include="WndProc.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CUpdateAvailableDialog.cpp" />
+    <ClCompile Include="UpdateChecker.cpp" />
     <ClCompile Include="CAbout.cpp" />
     <ClCompile Include="CAddAppDialog.cpp" />
+    <ClCompile Include="CAddWindowDialog.cpp" />
     <ClCompile Include="CDialog.cpp" />
+    <ClCompile Include="Checkbox.cpp" />
     <ClCompile Include="ClearView.cpp" />
     <ClCompile Include="CMainWindow.cpp" />
     <ClCompile Include="CModalDialog.cpp" />
@@ -131,6 +143,7 @@
     <ClCompile Include="CPtrMap.cpp" />
     <ClCompile Include="CRegistrySettingsManager.cpp" />
     <ClCompile Include="CSettings.cpp" />
+    <ClCompile Include="CSettingsDialog.cpp" />
     <ClCompile Include="CWindow.cpp" />
     <ClCompile Include="CWnd.cpp" />
     <ClCompile Include="CSetupDialog.cpp" />
@@ -153,7 +166,18 @@
   <ItemGroup>
     <Manifest Include="ClearView.exe.manifest" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets" Condition="Exists('..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets'))" />
+  </Target>
 </Project>

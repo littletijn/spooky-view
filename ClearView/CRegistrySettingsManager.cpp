@@ -2,14 +2,15 @@
 #include <memory>
 #include <algorithm>
 #include "CRegistrySettingsManager.h"
+#include "Unicode.h"
+#include <shlwapi.h>
 
 #pragma once
-
-using namespace std;
 
 
 CRegistrySettingsManager::CRegistrySettingsManager()
 {
+	settings = std::make_unique<CSettings>();
 	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
 	if (result == ERROR_SUCCESS)
 	{
@@ -24,11 +25,24 @@ CRegistrySettingsManager::~CRegistrySettingsManager()
 	}
 }
 
-CSettings* CRegistrySettingsManager::LoadSettings()
+CSettings* CRegistrySettingsManager::GetSettings()
+{
+	return settings.get();
+}
+
+void CRegistrySettingsManager::ApplyNewSettings(CSettings* newSettings)
+{
+	if (settings) {
+		settings.release();
+	}
+	//Copy the newSettings to our settings
+	settings = std::make_unique<CSettings>(*newSettings);
+}
+
+void CRegistrySettingsManager::LoadSettings()
 {
 	//Create variables for return values
 	HKEY programsKey;
-	CSettings* settings = new CSettings();
 
 	LSTATUS result = RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey);
 	if (result == ERROR_SUCCESS)
@@ -43,7 +57,7 @@ CSettings* CRegistrySettingsManager::LoadSettings()
 		//Create a TCHAR buffer with the maximum allowed key name length as size, make it as a heap stored array and put it in a smart pointer on the stack
 		//so it will be delete-d when the smart pointer is going out of scope
 		programsSubKeyLength++;
-		unique_ptr<TCHAR[]> processKeyName(new TCHAR[programsSubKeyLength]);
+		std::unique_ptr<TCHAR[]> processKeyName(new TCHAR[programsSubKeyLength]);
 
 		//Enum the process sub keys in the Programs key
 		LSTATUS programsEnumResult;
@@ -65,7 +79,7 @@ CSettings* CRegistrySettingsManager::LoadSettings()
 
 				//Make process name lower case
 				ToLowerCase(processKeyName.get(), programsSubKeyLength);
-				(*settings->programs)[processKeyName.get()] = progSettings;
+				settings->programs->insert(std::pair<t_string, CProgramSetting*>(processKeyName.get(), progSettings));
 
 				//Open the Programs\PROCESSNAME\Windows key
 				LSTATUS windowsKeyResult = RegOpenKeyEx(processKey, _T("Windows"), 0, KEY_READ, &windowsKey);
@@ -76,7 +90,7 @@ CSettings* CRegistrySettingsManager::LoadSettings()
 					DWORD windowsSubKeyIndex = 0;
 					RegQueryInfoKey(windowsKey, NULL, NULL, NULL, NULL, &windowsSubKeyLength, NULL, NULL, NULL, NULL, NULL, NULL);
 					windowsSubKeyLength++;
-					unique_ptr<TCHAR[]> windowKeyName(new TCHAR[windowsSubKeyLength]);
+					std::unique_ptr<TCHAR[]> windowKeyName(new TCHAR[windowsSubKeyLength]);
 
 					LSTATUS windowsEnumResult;
 					//Enum the window sub keys in the Windows key
@@ -96,7 +110,7 @@ CSettings* CRegistrySettingsManager::LoadSettings()
 						{
 							CWindowSetting *windowSettings = new CWindowSetting();
 							ReadAlphaValues(windowKey, &windowSettings->alphaSettings);
-							(*progSettings->windows)[windowKeyName.get()] = windowSettings;
+							progSettings->windows->insert(std::pair<t_string, CWindowSetting*>(windowKeyName.get(), windowSettings));
 							RegCloseKey(windowKey);
 						}
 						
@@ -110,25 +124,28 @@ CSettings* CRegistrySettingsManager::LoadSettings()
 		} while (programsEnumResult != ERROR_NO_MORE_ITEMS && programsEnumResult == ERROR_SUCCESS);
 		RegCloseKey(programsKey);
 	}
-	return settings;
 }
 
 void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* settings)
 {
-	BYTE alphaValue;
-	if (ReadKeyValue(key, _T("AlphaForeground"), alphaValue))
+	BYTE value;
+	if (ReadKeyByteValue(key, _T("AlphaForeground"), value))
 	{
-		settings->foreground = alphaValue;
+		settings->foreground = value;
 	}
-	if (ReadKeyValue(key, _T("AlphaBackground"), alphaValue))
+	if (ReadKeyByteValue(key, _T("AlphaBackground"), value))
 	{
-		settings->background = alphaValue;
+		settings->background = value;
+	}
+	if (ReadKeyByteValue(key, _T("Enabled"), value))
+	{
+		settings->enabled = value != 0;
 	}
 }
 
-bool CRegistrySettingsManager::SaveSettings(CSettings *settings)
+bool CRegistrySettingsManager::SaveSettings()
 {
-	if (RegDeleteTree(registryRootKey, _T("Programs")) == ERROR_SUCCESS)
+	if (SHDeleteKey(registryRootKey, _T("Programs")) == ERROR_SUCCESS)
 	{
 		//Recreate keys
 		//Create the Programs key
@@ -171,9 +188,11 @@ void CRegistrySettingsManager::SaveValues(HKEY key, CAlphaSettings values)
 {
 	RegSetValueEx(key, _T("AlphaForeground"), 0, REG_BINARY, &values.foreground, sizeof(values.foreground));
 	RegSetValueEx(key, _T("AlphaBackground"), 0, REG_BINARY, &values.background, sizeof(values.background));
+	BYTE enabled = values.enabled ? '\x1' : '\x0';
+	RegSetValueEx(key, _T("Enabled"), 0, REG_BINARY, &enabled, sizeof(enabled));
 }
 
-BOOL CRegistrySettingsManager::ReadKeyValue(HKEY key, TCHAR* valueName, __out BYTE& value)
+BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, __out BYTE& value)
 {
 	//Create buffer and variables for return values
 	BOOL readResult = FALSE;
@@ -202,4 +221,30 @@ void CRegistrySettingsManager::ToLowerCase(TCHAR* string, size_t length)
 	for (size_t i = 0; i < _tcsnlen(string, length); i++){
 		string[i] = tolower(string[i]);
 	}
+}
+
+void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
+{
+	HKEY hKey;
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	{
+		if (RegSetValueEx(hKey, _T("SkipVersion"), 0, REG_SZ, (LPBYTE)versionNumber.c_str(), versionNumber.size() * sizeof(TCHAR)) != ERROR_SUCCESS)
+		{
+			//Show error message
+		}
+		RegCloseKey(hKey);
+	}
+}
+
+BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
+{
+	DWORD keyType;
+	TCHAR keyData[100];
+	DWORD keyDataSize = sizeof(keyData);
+	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\ClearView"), _T("SkipVersion"), &keyType, keyData, &keyDataSize);
+	if (result == ERROR_SUCCESS && keyType == REG_SZ)
+	{
+		return versionNumber.compare(keyData) == 0;
+	}
+	return FALSE;
 }
