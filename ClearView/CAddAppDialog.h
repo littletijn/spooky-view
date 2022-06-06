@@ -11,7 +11,7 @@ public:
 	~CAddAppDialog();
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-	LPWSTR GetSelectedProcess();
+	LPTSTR GetSelectedProcess();
 protected:
 	std::unique_ptr<TCHAR[]> selectedProcess;
 	std::unique_ptr<ListView> appsListView;

@@ -61,12 +61,12 @@ void CAddWindowDialog::StoreSelectedWindow()
 {
 	int index = this->windowsListView->GetSelectedIndex();
 	TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
-	LPWSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
+	LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
 	this->selectedWindowClass = std::unique_ptr<TCHAR[]>(new TCHAR[MAX_PATH]);
 	StringCchCopy(this->selectedWindowClass.get(), MAX_PATH, textBuffer);
 }
 
-LPWSTR CAddWindowDialog::GetSelectedWindowClass()
+LPTSTR CAddWindowDialog::GetSelectedWindowClass()
 {
 	return this->selectedWindowClass.get();
 }

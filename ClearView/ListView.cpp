@@ -14,7 +14,7 @@ ListView::~ListView()
 {
 }
 
-LPWSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
+LPTSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
 {
 	LVITEM item;
 	SecureZeroMemory(&item, sizeof(item));
@@ -36,7 +36,7 @@ int ListView::GetSelectedIndex()
 	return ListView_GetNextItem(this->hWnd, -1, LVNI_SELECTED);
 }
 
-int ListView::AddItem(LPWSTR text)
+int ListView::AddItem(LPTSTR text)
 {
 	LVITEM item;
 	SecureZeroMemory(&item, sizeof(item));
