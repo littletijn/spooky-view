@@ -61,12 +61,12 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		{
 			if (LOWORD(wParam) == TB_THUMBPOSITION || LOWORD(wParam) == TB_THUMBTRACK)
 			{
-				WORD value = HIWORD(wParam);
+				BYTE value = HIWORD(wParam) & 0xff;
 				SetAlpha(value, senderHwnd);
 			}
 			else
 			{
-				auto value = SendMessage(senderHwnd, TBM_GETPOS, 0, 0);
+				BYTE value = SendMessage(senderHwnd, TBM_GETPOS, 0, 0) & 0xff;
 				SetAlpha(value, senderHwnd);
 			}
 		}
