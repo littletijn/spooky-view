@@ -8,7 +8,7 @@ class CWnd
 public:
 	//Methods
 	CWnd(HINSTANCE hInstance);
-	virtual BOOL CWnd::InitInstance() = 0;
+	virtual BOOL InitInstance() = 0;
 protected:
 	//members
 	HINSTANCE hInstance;
