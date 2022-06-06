@@ -11,7 +11,7 @@ class CWindow : protected CWnd
 public:
 	CWindow(HINSTANCE hInstance, HWND hParent = NULL);
 	ATOM RegisterWindowClass();
-	virtual BOOL CWindow::InitInstance(int nCmdShow);
+	virtual BOOL InitInstance(int nCmdShow);
 	virtual LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
 protected:
 	//Members
