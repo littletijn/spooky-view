@@ -19,7 +19,7 @@ protected:
 	std::unique_ptr<CSettings> settings;
 	void SaveValues(HKEY key, CAlphaSettings values);
 	HKEY registryRootKey;
-	BOOL ReadKeyByteValue(HKEY key, TCHAR* valueName, __out BYTE& value);
+	BOOL ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value);
 	void ReadAlphaValues(HKEY key, CAlphaSettings* settings);
 	void ToLowerCase(TCHAR* string, size_t length);
 };

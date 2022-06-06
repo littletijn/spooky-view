@@ -192,7 +192,7 @@ void CRegistrySettingsManager::SaveValues(HKEY key, CAlphaSettings values)
 	RegSetValueEx(key, _T("Enabled"), 0, REG_BINARY, &enabled, sizeof(enabled));
 }
 
-BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, __out BYTE& value)
+BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value)
 {
 	//Create buffer and variables for return values
 	BOOL readResult = FALSE;
