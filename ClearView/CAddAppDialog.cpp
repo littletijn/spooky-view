@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CAddAppDialog.h"
-#include "Tlhelp32.h"
-#include "Commctrl.h"
+#include "tlhelp32.h"
+#include "commctrl.h"
 #include "strsafe.h"
 #include <string.h>
 

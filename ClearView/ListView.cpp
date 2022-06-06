@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ListView.h"
-#include <CommCtrl.h>
+#include <commctrl.h>
 #include <vector>
 #include <memory>
 

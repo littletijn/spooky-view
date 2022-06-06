@@ -2,14 +2,14 @@
 #include "CSetupDialog.h"
 #include "CAddAppDialog.h"
 #include "CAddWindowDialog.h"
-#include <CommCtrl.h>
+#include <commctrl.h>
 #include "CSettings.h"
 #include "CProgramSetting.h"
 #include "ISettingsManager.h"
 #include "String.h"
 #include <vector>
 #include <memory>
-#include <WindowsX.h>
+#include <windowsx.h>
 #include "Defines.h"
 
 extern std::unique_ptr<ISettingsManager> settingsManager;

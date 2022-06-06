@@ -1,6 +1,6 @@
 #pragma once
 #include "CModalDialog.h"
-#include "Tlhelp32.h"
+#include "tlhelp32.h"
 #include "ListView.h"
 #include <memory>
 
