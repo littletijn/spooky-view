@@ -15,7 +15,7 @@ public:
 	};
 
 	CAlphaSettings alphaSettings;
-	BOOL GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, __out BYTE& alpha);
+	BOOL GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, BYTE& alpha);
 	std::unique_ptr<std::map<t_string, CProgramSetting*>> programs;
 	CSettings();
 	CSettings(const CSettings& c);

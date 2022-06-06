@@ -24,7 +24,7 @@ CSettings::~CSettings()
 }
 
 // Search settings maps for alpha settings for given process and window class
-BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, __out BYTE& alpha)
+BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, BYTE& alpha)
 {
 	CAlphaSettings alphaSettings;
 	ToLowerCase(processFileName, MAX_PATH);

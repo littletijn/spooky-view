@@ -196,7 +196,7 @@ BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 	if (IsWindowUsable(hwnd))
 	{
 		GetWindowProcessAndClass(hwnd);
-		if (_wcsicmp(fileName, processNameOfWindowsToFind.c_str()) == 0)
+		if (_tcsicmp(fileName, processNameOfWindowsToFind.c_str()) == 0)
 		{
 			//TODO: Fix memory leak
 			auto windowClassNameCopy = new TCHAR[MAX_WINDOW_CLASS_NAME];
@@ -268,7 +268,7 @@ void CreateHook()
 
 void Unhook()
 {
-	for each (HWINEVENTHOOK hook in hWinEventHook)
+	for (HWINEVENTHOOK hook : hWinEventHook)
 	{
 		UnhookWinEvent(hook);
 	}
