@@ -268,7 +268,7 @@ void CreateHook()
 
 void Unhook()
 {
-	for each (HWINEVENTHOOK hook in hWinEventHook)
+	for (HWINEVENTHOOK hook : hWinEventHook)
 	{
 		UnhookWinEvent(hook);
 	}
