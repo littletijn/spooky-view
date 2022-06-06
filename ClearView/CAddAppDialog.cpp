@@ -93,7 +93,7 @@ LPWSTR CAddAppDialog::GetSelectedProcess()
 	return this->selectedProcess.get();
 }
 
-void CAddAppDialog::AddProcessToList(WCHAR *exeName)
+void CAddAppDialog::AddProcessToList(TCHAR *exeName)
 {
 	this->appsListView->AddItem(exeName);
 }
