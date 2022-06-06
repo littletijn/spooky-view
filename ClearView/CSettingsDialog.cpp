@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CSettingsDialog.h"
 #include <windowsx.h>
-#include <Shlwapi.h>
+#include <shlwapi.h>
 #include <memory>
 #include "ISettingsManager.h"
 
