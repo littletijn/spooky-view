@@ -1,9 +1,10 @@
 #include "CSettings.h"
 #include <list>
+#include <unordered_set>
 
 //Globals variables
 extern t_string processNameOfWindowsToFind;
-extern std::list<TCHAR*> foundWindowClasses;
+extern std::unordered_set<TCHAR*> foundWindowClasses;
 
 //Callbacks
 void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);

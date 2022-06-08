@@ -15,6 +15,7 @@
 #include "Defines.h"
 #include "UpdateChecker.h"
 #include "UpdateResponse.h"
+#include <unordered_set>
 
 typedef BOOL (WINAPI *PGNSI)(HANDLE);
 typedef BOOL (WINAPI *PGNSI2)(HWND, MARGINS*);
@@ -40,7 +41,7 @@ TCHAR filePathName[MAX_PATH];
 
 //Global variables for EnumWindowsForProcess
 t_string processNameOfWindowsToFind;
-std::list<TCHAR*> foundWindowClasses;
+std::unordered_set<TCHAR*> foundWindowClasses;
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -201,7 +202,7 @@ BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 			//TODO: Fix memory leak
 			auto windowClassNameCopy = new TCHAR[MAX_WINDOW_CLASS_NAME];
 			StringCchCopy(windowClassNameCopy, MAX_WINDOW_CLASS_NAME, windowClassName);
-			foundWindowClasses.push_back(windowClassNameCopy);
+			foundWindowClasses.insert(windowClassNameCopy);
 		}
 	}
 	return TRUE;
