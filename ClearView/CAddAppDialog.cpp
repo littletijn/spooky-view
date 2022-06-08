@@ -4,6 +4,8 @@
 #include "commctrl.h"
 #include "strsafe.h"
 #include <string.h>
+#include "Unicode.h"
+#include <unordered_set>
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -65,11 +67,16 @@ void CAddAppDialog::LoadModules()
 	HANDLE hProcessesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (Process32First(hProcessesSnapshot, &sProcess))
 	{
+		std::unordered_set<tstring> programsList;
 		do
 		{
-			AddProcessToList(sProcess.szExeFile);
 			GetProcessProgramName(sProcess);
+			programsList.insert(tstring(sProcess.szExeFile));
 		} while (Process32Next(hProcessesSnapshot, &sProcess));
+		for (auto program = programsList.begin(); program != programsList.end(); ++program)
+		{
+			this->appsListView->AddItem(program->c_str());
+		}
 	}
 
 	CloseHandle(hProcessesSnapshot);
@@ -91,11 +98,6 @@ void CAddAppDialog::StoreSelectedProcess()
 LPTSTR CAddAppDialog::GetSelectedProcess()
 {
 	return this->selectedProcess.get();
-}
-
-void CAddAppDialog::AddProcessToList(TCHAR *exeName)
-{
-	this->appsListView->AddItem(exeName);
 }
 
 void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess)
