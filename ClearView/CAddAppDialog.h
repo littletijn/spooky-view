@@ -16,7 +16,6 @@ protected:
 	std::unique_ptr<TCHAR[]> selectedProcess;
 	std::unique_ptr<ListView> appsListView;
 	void LoadModules();
-	void AddProcessToList(TCHAR* exeName);
 	void BrowseFile();
 	void StoreSelectedProcess();
 	void GetProcessProgramName(PROCESSENTRY32 sProcess);
