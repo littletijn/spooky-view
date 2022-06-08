@@ -5,8 +5,8 @@
 #include "CMainWindow.h"
 #include "ISettingsManager.h"
 #include "CRegistrySettingsManager.h"
-#include <Psapi.h>
-#include <Uxtheme.h>
+#include <psapi.h>
+#include <uxtheme.h>
 #include <string>
 #include "CLimitSingleInstance.h"
 #include <memory>

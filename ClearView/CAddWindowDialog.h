@@ -10,7 +10,7 @@ public:
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 	BOOL InitInstance(t_string programName);
-	LPWSTR GetSelectedWindowClass();
+	LPTSTR GetSelectedWindowClass();
 protected:
 	t_string programName;
 	std::unique_ptr<TCHAR[]> selectedWindowClass;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
-#include "Shellapi.h"
+#include "shellapi.h"
 
 #define WM_NOTIFYICON WM_USER
 

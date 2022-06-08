@@ -1,5 +1,5 @@
 #include "CModelessDialog.h"
-#include <CommCtrl.h>
+#include <commctrl.h>
 #include "String.h"
 #include "CAlphaSettings.h"
 #include "CProgramSetting.h"

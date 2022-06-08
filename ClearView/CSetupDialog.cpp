@@ -2,14 +2,14 @@
 #include "CSetupDialog.h"
 #include "CAddAppDialog.h"
 #include "CAddWindowDialog.h"
-#include <CommCtrl.h>
+#include <commctrl.h>
 #include "CSettings.h"
 #include "CProgramSetting.h"
 #include "ISettingsManager.h"
 #include "String.h"
 #include <vector>
 #include <memory>
-#include <WindowsX.h>
+#include <windowsx.h>
 #include "Defines.h"
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
@@ -121,7 +121,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					appDialog->InitInstance();
 					if (appDialog->GetResult() == 1)
 					{
-						LPWSTR programName = appDialog->GetSelectedProcess();
+						LPTSTR programName = appDialog->GetSelectedProcess();
 
 						auto progSettings = new CProgramSetting();
 						newSettings->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
@@ -135,7 +135,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					windowDialog->InitInstance(this->currentProgramName);
 					if (windowDialog->GetResult() == 1)
 					{
-						LPWSTR windowClassName = windowDialog->GetSelectedWindowClass();
+						LPTSTR windowClassName = windowDialog->GetSelectedWindowClass();
 
 						auto windowSettings = new CWindowSetting();
 						this->currentProgram->windows->insert(std::pair<t_string, CWindowSetting*>(windowClassName, windowSettings));
@@ -161,7 +161,7 @@ void CSetupDialog::ProgramsListNotified()
 	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_PATH];
-		LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
+		LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
 
 		auto program = newSettings->programs->find(text);
 		if (program != newSettings->programs->end())
@@ -207,7 +207,7 @@ void CSetupDialog::WindowsListNotified()
 	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
-		LPWSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
+		LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
 
 		auto window = currentProgram->windows->find(text);
 		if (window != currentProgram->windows->end())
