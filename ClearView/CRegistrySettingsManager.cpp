@@ -78,7 +78,7 @@ void CRegistrySettingsManager::LoadSettings()
 				CProgramSetting *progSettings = new CProgramSetting();
 
 				//Make process name lower case
-				ToLowerCase(processKeyName.get(), programsSubKeyLength);
+				settings->ToLowerCase(processKeyName.get());
 				settings->programs->insert(std::pair<t_string, CProgramSetting*>(processKeyName.get(), progSettings));
 
 				//Open the Programs\PROCESSNAME\Windows key
@@ -225,14 +225,6 @@ BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE
 		readResult = TRUE;
 	}
 	return readResult;
-}
-
-void CRegistrySettingsManager::ToLowerCase(TCHAR* string, size_t length)
-{
-	//Make process name lower case
-	for (size_t i = 0; i < _tcsnlen(string, length); i++){
-		string[i] = tolower(string[i]);
-	}
 }
 
 void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
