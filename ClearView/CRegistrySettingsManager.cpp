@@ -78,7 +78,7 @@ void CRegistrySettingsManager::LoadSettings()
 				CProgramSetting *progSettings = new CProgramSetting();
 
 				//Make process name lower case
-				ToLowerCase(processKeyName.get(), programsSubKeyLength);
+				settings->ToLowerCase(processKeyName.get());
 				settings->programs->insert(std::pair<t_string, CProgramSetting*>(processKeyName.get(), progSettings));
 
 				//Open the Programs\PROCESSNAME\Windows key
@@ -143,38 +143,50 @@ void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* setting
 	}
 }
 
+LSTATUS CRegistrySettingsManager::ClearProgramSettings()
+{
+	HKEY programsKey;
+	auto result = RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey);
+	if (result == ERROR_SUCCESS)
+	{
+		RegCloseKey(programsKey);
+		//Remove current Programs key
+		return SHDeleteKey(registryRootKey, _T("Programs"));
+	}
+	return result;
+}
+
 bool CRegistrySettingsManager::SaveSettings()
 {
-	if (SHDeleteKey(registryRootKey, _T("Programs")) == ERROR_SUCCESS)
+	//Remove programs key
+	CRegistrySettingsManager::ClearProgramSettings();
+	//Recreate keys
+	//Create the Programs key
+	HKEY programsKey;
+	if (RegCreateKeyEx(registryRootKey, _T("Programs"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programsKey, NULL) == ERROR_SUCCESS)
 	{
-		//Recreate keys
-		//Create the Programs key
-		HKEY programsKey;
-		if (RegCreateKeyEx(registryRootKey, _T("Programs"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programsKey, NULL) == ERROR_SUCCESS)
+		//Save global settings
+		this->SaveValues(programsKey, settings->alphaSettings);
+		for (auto const &program : *settings->programs)
 		{
-			//Save global settings
-			this->SaveValues(programsKey, settings->alphaSettings);
-			for (auto const &program : *settings->programs)
+			//Create key for program
+			HKEY programKey;
+			if (RegCreateKeyEx(programsKey, program.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programKey, NULL) == ERROR_SUCCESS)
 			{
-				//Create key for program
-				HKEY programKey;
-				if (RegCreateKeyEx(programsKey, program.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programKey, NULL) == ERROR_SUCCESS)
+				//Create Windows key of program
+				HKEY windowsKey;
+				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
 				{
-					//Create Windows key of program
-					HKEY windowsKey;
-					if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
-					{
-						//Save global settings of program
-						this->SaveValues(windowsKey, program.second->alphaSettings);
+					//Save global settings of program
+					this->SaveValues(windowsKey, program.second->alphaSettings);
 
-						for (auto const &window : *program.second->windows)
+					for (auto const &window : *program.second->windows)
+					{
+						HKEY windowKey;
+						//Create key of window
+						if (RegCreateKeyEx(windowsKey, window.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowKey, NULL) == ERROR_SUCCESS)
 						{
-							HKEY windowKey;
-							//Create key of window
-							if (RegCreateKeyEx(windowsKey, window.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowKey, NULL) == ERROR_SUCCESS)
-							{
-								this->SaveValues(windowKey, window.second->alphaSettings);
-							}
+							this->SaveValues(windowKey, window.second->alphaSettings);
 						}
 					}
 				}
@@ -213,14 +225,6 @@ BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE
 		readResult = TRUE;
 	}
 	return readResult;
-}
-
-void CRegistrySettingsManager::ToLowerCase(TCHAR* string, size_t length)
-{
-	//Make process name lower case
-	for (size_t i = 0; i < _tcsnlen(string, length); i++){
-		string[i] = tolower(string[i]);
-	}
 }
 
 void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)

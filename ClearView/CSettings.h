@@ -20,7 +20,7 @@ public:
 	CSettings();
 	CSettings(const CSettings& c);
 	~CSettings();
+	void ToLowerCase(TCHAR* string);
 protected:
-	void ToLowerCase(TCHAR* string, size_t length);
 };
 

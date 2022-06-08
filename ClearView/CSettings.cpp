@@ -27,7 +27,7 @@ CSettings::~CSettings()
 BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, BYTE& alpha)
 {
 	CAlphaSettings alphaSettings;
-	ToLowerCase(processFileName, MAX_PATH);
+	ToLowerCase(processFileName);
 
 	auto result = this->programs->find(processFileName);
 	if (result != this->programs->end())
@@ -63,10 +63,7 @@ BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, 
 	return true;
 }
 
-void CSettings::ToLowerCase(TCHAR* string, size_t length)
+void CSettings::ToLowerCase(TCHAR* string)
 {
-	//Make process name lower case
-	for (size_t i = 0; i < _tcsnlen(string, length); i++){
-		string[i] = tolower(string[i]);
-	}
+	_tcslwr_s(string = _tcsdup(string), _tcslen(string) + 1);
 }
