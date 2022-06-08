@@ -338,7 +338,7 @@ void SendAlreadyRunningNotify()
 	}
 }
 
-#ifdef _UNICODE
+#ifdef UNICODE
 // Convert std::string to a wchar_t* string.
 wchar_t* string_to_wchar_t(std::string string)
 {
@@ -348,4 +348,4 @@ wchar_t* string_to_wchar_t(std::string string)
 	mbstowcs_s(&convertedChars, wcstring, newsize, string.c_str(), _TRUNCATE);
 	return wcstring;
 }
-#endif // _UNICODE
+#endif // UNICODE
