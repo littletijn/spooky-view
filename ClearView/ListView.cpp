@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ListView.h"
-#include <CommCtrl.h>
+#include <commctrl.h>
 #include <vector>
 #include <memory>
 
@@ -14,7 +14,7 @@ ListView::~ListView()
 {
 }
 
-LPWSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
+LPTSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
 {
 	LVITEM item;
 	SecureZeroMemory(&item, sizeof(item));
@@ -36,7 +36,7 @@ int ListView::GetSelectedIndex()
 	return ListView_GetNextItem(this->hWnd, -1, LVNI_SELECTED);
 }
 
-int ListView::AddItem(LPWSTR text)
+int ListView::AddItem(LPTSTR text)
 {
 	LVITEM item;
 	SecureZeroMemory(&item, sizeof(item));
@@ -49,7 +49,7 @@ int ListView::AddItem(LPWSTR text)
 
 int ListView::AddItem(t_string text)
 {	
-	auto textBuffer = std::make_unique<std::vector<wchar_t>>(text.begin(), text.end());
+	auto textBuffer = std::make_unique<std::vector<TCHAR>>(text.begin(), text.end());
 	textBuffer->push_back(0); //Add null terminator for string
 	int result = this->AddItem(textBuffer->data());
 	return result;

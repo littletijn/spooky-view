@@ -6,10 +6,10 @@ class ListView
 public:
 	ListView(HWND parent, int intResource);
 	~ListView();
-	LPWSTR GetTextByIndex(int index, TCHAR* textBuffer);
+	LPTSTR GetTextByIndex(int index, TCHAR* textBuffer);
 	int GetSelectedIndex();
 	void SetSelectedItem(int index);
-	int AddItem(LPWSTR text);
+	int AddItem(LPTSTR text);
 	int AddItem(t_string text);
 	void DeleteAllItems();
 	void DeleteSelectedItem();

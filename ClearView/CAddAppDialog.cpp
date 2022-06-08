@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CAddAppDialog.h"
-#include "Tlhelp32.h"
-#include "Commctrl.h"
+#include "tlhelp32.h"
+#include "commctrl.h"
 #include "strsafe.h"
 #include <string.h>
 
@@ -83,17 +83,17 @@ void CAddAppDialog::StoreSelectedProcess()
 {
 	int index = this->appsListView->GetSelectedIndex();
 	TCHAR textBuffer[MAX_PATH];
-	LPWSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
+	LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
 	this->selectedProcess = std::unique_ptr<TCHAR[]>(new TCHAR[MAX_PATH]);
 	StringCchCopy(this->selectedProcess.get(), MAX_PATH, textBuffer);
 }
 
-LPWSTR CAddAppDialog::GetSelectedProcess()
+LPTSTR CAddAppDialog::GetSelectedProcess()
 {
 	return this->selectedProcess.get();
 }
 
-void CAddAppDialog::AddProcessToList(WCHAR *exeName)
+void CAddAppDialog::AddProcessToList(TCHAR *exeName)
 {
 	this->appsListView->AddItem(exeName);
 }

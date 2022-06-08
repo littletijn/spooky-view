@@ -1,6 +1,6 @@
 #pragma once
 #include "CModalDialog.h"
-#include "Tlhelp32.h"
+#include "tlhelp32.h"
 #include "ListView.h"
 #include <memory>
 
@@ -11,12 +11,12 @@ public:
 	~CAddAppDialog();
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-	LPWSTR GetSelectedProcess();
+	LPTSTR GetSelectedProcess();
 protected:
 	std::unique_ptr<TCHAR[]> selectedProcess;
 	std::unique_ptr<ListView> appsListView;
 	void LoadModules();
-	void AddProcessToList(WCHAR* exeName);
+	void AddProcessToList(TCHAR* exeName);
 	void BrowseFile();
 	void StoreSelectedProcess();
 	void GetProcessProgramName(PROCESSENTRY32 sProcess);
