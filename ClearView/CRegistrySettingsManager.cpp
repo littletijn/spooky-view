@@ -4,6 +4,7 @@
 #include "CRegistrySettingsManager.h"
 #include "Unicode.h"
 #include <shlwapi.h>
+#include <intsafe.h>
 
 #pragma once
 
@@ -232,7 +233,13 @@ void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
 	HKEY hKey;
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
 	{
-		if (RegSetValueEx(hKey, _T("SkipVersion"), 0, REG_SZ, (LPBYTE)versionNumber.c_str(), versionNumber.size() * sizeof(TCHAR)) != ERROR_SUCCESS)
+		DWORD versionNumberSize;
+		//This will convert the size_t to DWORD. a size_t in x64 is larger than a DWORD. Because our string will not be that long, we only need the size of a DWORD
+		if (SIZETToDWord(versionNumber.size() * sizeof(TCHAR), &versionNumberSize) != S_OK)
+		{
+			//Show error message
+		}
+		else if (RegSetValueEx(hKey, _T("SkipVersion"), 0, REG_SZ, (LPBYTE)versionNumber.c_str(), versionNumberSize) != ERROR_SUCCESS)
 		{
 			//Show error message
 		}
