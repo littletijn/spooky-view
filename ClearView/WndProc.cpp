@@ -34,9 +34,9 @@ LRESULT CALLBACK WndProcMain(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	CWindow *w = g_ptrmap.Extract();
 	// Stash global Window pointer into per-window data area
-	SetWindowLongPtr(hwnd, GWLP_USERDATA, (long)w);
+	SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)w);
 	// Reset the window message handler
-	SetWindowLongPtr(hwnd, GWLP_WNDPROC, (long)WndProcRedirector);
+	SetWindowLongPtr(hwnd, GWLP_WNDPROC, (LONG_PTR)WndProcRedirector);
 	// Dispatch first message to the member message handler
 	return WndProcRedirector(hwnd, msg, wp, lp);
 }
@@ -55,9 +55,9 @@ INT_PTR CALLBACK DlgProcMain(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	CDialog *w = g_ptrmapDlg.Extract();
 	// Stash global Window pointer into per-window data area
-	SetWindowLongPtr(hwnd, DWLP_USER, (long)w);
+	SetWindowLongPtr(hwnd, DWLP_USER, (LONG_PTR)w);
 	// Reset the window message handler
-	SetWindowLongPtr(hwnd, DWLP_DLGPROC, (long)DlgProcRedirector);
+	SetWindowLongPtr(hwnd, DWLP_DLGPROC, (LONG_PTR)DlgProcRedirector);
 	// Dispatch first message to the member message handler
 	return DlgProcRedirector(hwnd, msg, wp, lp);
 }
