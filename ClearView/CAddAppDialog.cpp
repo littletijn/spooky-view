@@ -118,9 +118,15 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 	LPDWORD dwDummy = 0;
 	DWORD dDummyHandle = 0;
 	UINT dwBytes;
+	BOOL module32FirstResult;
+
 
 	HANDLE hModulesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, sProcess.th32ProcessID);
-	if (Module32First(hModulesSnapshot, &sModule))
+	do {
+		module32FirstResult = Module32First(hModulesSnapshot, &sModule);
+	} while (GetLastError() == ERROR_BAD_LENGTH);
+
+	if (module32FirstResult)
 	{
 		DWORD dInfoSize = GetFileVersionInfoSize(sModule.szExePath, dwDummy);
 		if (dInfoSize)
@@ -163,5 +169,9 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 				}
 			}
 		}
+	}
+	else
+	{
+		//MessageBox(0, _T("Broke"), _T("Broke"), MB_OK);
 	}
 }
