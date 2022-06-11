@@ -18,6 +18,6 @@ protected:
 	void LoadModules();
 	void BrowseFile();
 	void StoreSelectedProcess();
-	void GetProcessProgramName(PROCESSENTRY32 sProcess);
+	void GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* programName);
 };
 
