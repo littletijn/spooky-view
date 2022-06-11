@@ -73,6 +73,9 @@ void CAddAppDialog::LoadModules()
 		std::map<tstring, tstring> programs;
 		do
 		{
+			if (sProcess.th32ProcessID == 0) {
+				continue;
+			}
 			t_string programName;
 			GetProcessProgramName(sProcess, &programName);
 			programs.insert(std::pair<t_string, t_string>(tstring(sProcess.szExeFile), programName));
