@@ -18,7 +18,7 @@ CPtrMap<CDialog> g_ptrmapDlg;
 LRESULT CALLBACK WndProcRedirector(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	// Get a window pointer associated with this window
-	CWindow *w = (CWindow *)GetWindowLongPtr(hwnd, GWL_USERDATA);
+	CWindow *w = (CWindow *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
 	// It should be valid, assert so
 	_ASSERT(w);
 	// Redirect messages to the window procedure of the associated window
@@ -34,9 +34,9 @@ LRESULT CALLBACK WndProcMain(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	CWindow *w = g_ptrmap.Extract();
 	// Stash global Window pointer into per-window data area
-	SetWindowLongPtr(hwnd, GWL_USERDATA, (long)w);
+	SetWindowLongPtr(hwnd, GWLP_USERDATA, (long)w);
 	// Reset the window message handler
-	SetWindowLongPtr(hwnd, GWL_WNDPROC, (long)WndProcRedirector);
+	SetWindowLongPtr(hwnd, GWLP_WNDPROC, (long)WndProcRedirector);
 	// Dispatch first message to the member message handler
 	return WndProcRedirector(hwnd, msg, wp, lp);
 }
@@ -57,7 +57,7 @@ INT_PTR CALLBACK DlgProcMain(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 	// Stash global Window pointer into per-window data area
 	SetWindowLongPtr(hwnd, DWLP_USER, (long)w);
 	// Reset the window message handler
-	SetWindowLongPtr(hwnd, DWL_DLGPROC, (long)DlgProcRedirector);
+	SetWindowLongPtr(hwnd, DWLP_DLGPROC, (long)DlgProcRedirector);
 	// Dispatch first message to the member message handler
 	return DlgProcRedirector(hwnd, msg, wp, lp);
 }
