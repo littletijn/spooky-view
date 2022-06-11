@@ -3,6 +3,7 @@
 #include <commctrl.h>
 #include <vector>
 #include <memory>
+#include "Unicode.h"
 
 ListView::ListView(HWND parent, int intResource)
 {
@@ -26,6 +27,16 @@ LPTSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
 	return item.pszText;
 }
 
+void ListView::InsertColumn(int index, TCHAR* textBuffer)
+{
+	LVCOLUMN column;
+	column.mask = LVCF_TEXT | LVCF_WIDTH;
+	column.pszText = textBuffer;
+	column.cx = 150;
+	ListView_InsertColumn(this->hWnd, index, &column);
+
+}
+
 void ListView::SetSelectedItem(int index)
 {
 	ListView_SetItemState(this->hWnd, index,  LVIS_SELECTED,  LVIS_SELECTED);
@@ -45,6 +56,13 @@ int ListView::AddItem(LPTSTR text)
 
 	int result = ListView_InsertItem(this->hWnd, &item);
 	return result;
+}
+
+void ListView::SetItem(int itemIndex, int subItemIndex, t_string text)
+{
+	auto textBuffer = std::make_unique<std::vector<TCHAR>>(text.begin(), text.end());
+	textBuffer->push_back(0); //Add null terminator for string
+	ListView_SetItemText(this->hWnd, itemIndex, subItemIndex, textBuffer->data());
 }
 
 int ListView::AddItem(t_string text)

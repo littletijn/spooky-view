@@ -6,6 +6,7 @@
 #include <string.h>
 #include "Unicode.h"
 #include <unordered_set>
+#include <map>
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -32,6 +33,8 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	{
 	case WM_INITDIALOG:
 		this->appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_APPS);
+		this->appsListView->InsertColumn(0, _T("File"));
+		this->appsListView->InsertColumn(1, _T("Name"));
 		LoadModules();
 		return TRUE;
 		break;
@@ -67,15 +70,17 @@ void CAddAppDialog::LoadModules()
 	HANDLE hProcessesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 	if (Process32First(hProcessesSnapshot, &sProcess))
 	{
-		std::unordered_set<tstring> programsList;
+		std::map<tstring, tstring> programs;
 		do
 		{
-			GetProcessProgramName(sProcess);
-			programsList.insert(tstring(sProcess.szExeFile));
+			t_string programName;
+			GetProcessProgramName(sProcess, &programName);
+			programs.insert(std::pair<t_string, t_string>(tstring(sProcess.szExeFile), programName));
 		} while (Process32Next(hProcessesSnapshot, &sProcess));
-		for (auto program = programsList.begin(); program != programsList.end(); ++program)
+		for (auto program = programs.begin(); program != programs.end(); ++program)
 		{
-			this->appsListView->AddItem(program->c_str());
+			int itemIndex = this->appsListView->AddItem(program->first.c_str());
+			this->appsListView->SetItem(itemIndex, 1, program->second.c_str());
 		}
 	}
 
@@ -100,7 +105,7 @@ LPTSTR CAddAppDialog::GetSelectedProcess()
 	return this->selectedProcess.get();
 }
 
-void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess)
+void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* programName)
 {
 	MODULEENTRY32 sModule;
 	sModule.dwSize = sizeof(MODULEENTRY32);
@@ -113,11 +118,16 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess)
 	LPDWORD dwDummy = 0;
 	DWORD dDummyHandle = 0;
 	UINT dwBytes;
+	BOOL module32FirstResult;
+
 
 	HANDLE hModulesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, sProcess.th32ProcessID);
-	if (Module32First(hModulesSnapshot, &sModule))
+	do {
+		module32FirstResult = Module32First(hModulesSnapshot, &sModule);
+	} while (GetLastError() == ERROR_BAD_LENGTH);
+
+	if (module32FirstResult)
 	{
-		TCHAR* programName = NULL;
 		DWORD dInfoSize = GetFileVersionInfoSize(sModule.szExePath, dwDummy);
 		if (dInfoSize)
 		{
@@ -152,13 +162,16 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess)
 							if (VerQueryValue(versionInfoBuffer.get(), subBlock, &programNameBuffer, &programNameBufferSize))
 							{
 								//We got the name of the program!
-								programName = reinterpret_cast<TCHAR*>(programNameBuffer);
+								programName->append(reinterpret_cast<TCHAR*>(programNameBuffer));
 							}
 						}
 					}
 				}
 			}
-
 		}
+	}
+	else
+	{
+		//MessageBox(0, _T("Broke"), _T("Broke"), MB_OK);
 	}
 }
