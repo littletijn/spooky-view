@@ -14,6 +14,7 @@
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
 extern void SetWindowsTransparency();
+extern void ResetWindowsTransparency();
 
 CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
@@ -96,14 +97,10 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				EnabledCheckboxNotified();
 				return TRUE;
 			case IDAPPLY:
-				settingsManager->ApplyNewSettings(newSettings.get());
-				settingsManager->SaveSettings();
-				SetWindowsTransparency();
+				ApplySettings();
 				return TRUE;
 			case IDOK:
-				settingsManager->ApplyNewSettings(newSettings.get());
-				settingsManager->SaveSettings();
-				SetWindowsTransparency();
+				ApplySettings();
 			case IDCANCEL:
 				DestroyWindow(hDlg);
 				return TRUE;
@@ -150,6 +147,14 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		break;
 	}
 	return FALSE;
+}
+
+void CSetupDialog::ApplySettings()
+{
+	ResetWindowsTransparency();
+	settingsManager->ApplyNewSettings(newSettings.get());
+	settingsManager->SaveSettings();
+	SetWindowsTransparency();
 }
 
 void CSetupDialog::CopySettings()
