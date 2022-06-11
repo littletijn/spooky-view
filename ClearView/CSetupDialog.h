@@ -25,6 +25,7 @@ protected:
 	std::unique_ptr<ListView> windowsListView;
 	std::unique_ptr<Checkbox> enabledCheckbox;
 
+	void ApplySettings();
 	void CopySettings();
 	void WindowsListNotified();
 	void EnabledCheckboxNotified();
