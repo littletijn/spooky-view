@@ -82,9 +82,12 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				cUpdateAvailableDialog->SetDownloadUrl(downloadUrl);
 				cUpdateAvailableDialog->SetVersionNumber(versionNumber);
 				cUpdateAvailableDialog->InitInstance();
+#ifdef UNICODE
+				// Only the unicode string_to_wchar_t returns pointers. The other aren't.
 				delete[] message;
 				delete[] downloadUrl;
 				delete[] versionNumber;
+#endif
 			}
 			break;
 		}

@@ -13,7 +13,9 @@
 #include <list>
 #include <strsafe.h>
 #include "Defines.h"
+#ifdef UNICODE
 #include "UpdateChecker.h"
+#endif
 #include "UpdateResponse.h"
 #include <unordered_set>
 
@@ -83,10 +85,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		settingsManager->LoadSettings();
 		SetWindowsTransparency();
+#ifdef UNICODE
 		if (!settingsManager->GetDisableUpdateCheck())
 		{
 			CreateUpdateCheckerThread();
 		}
+#endif
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SPOOKYVIEW));

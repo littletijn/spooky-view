@@ -11,6 +11,8 @@
 extern std::unique_ptr<CMainWindow> mainWindow;
 extern UpdateResponse updateResponse;
 
+#ifdef UNICODE
+
 void CreateUpdateCheckerThread()
 {
 	DWORD threadId;
@@ -186,3 +188,5 @@ void UpdateChecker::DownloadAndParseJson()
 		}
 	}
 }
+
+#endif
