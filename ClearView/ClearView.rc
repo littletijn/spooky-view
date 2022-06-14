@@ -88,7 +88,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Menu
 //
 
-IDC_CLEARVIEW MENUEX
+IDC_SPOOKYVIEW MENUEX
 BEGIN
     POPUP "ContextMenu",                    0,MFT_STRING,MFS_ENABLED
     BEGIN
@@ -108,14 +108,14 @@ END
 
 IDD_ABOUTBOX DIALOGEX 0, 0, 235, 136
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About ClearView"
+CAPTION "About Spooky View"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     LTEXT           "Test build. Do not distribute.",IDC_STATIC,17,32,130,8
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,17,67,130,8
     LTEXT           "Based on an idea by Mikey",IDC_STATIC,17,102,130,8
-    LTEXT           "ClearView",IDC_STATIC,17,12,130,8,SS_NOPREFIX
-    LTEXT           "0.0.4.1 Alpha (No Home, Phone Build)",IDC_STATIC,17,22,130,8
+    LTEXT           "Spooky View",IDC_STATIC,17,12,130,8,SS_NOPREFIX
+    LTEXT           "0.5.0 Alpha (A brand new build)",IDC_STATIC,17,22,130,8
     LTEXT           "Copyright (c) Martijn van Antwerpen",IDC_STATIC,17,57,130,8
     DEFPUSHBUTTON   "Close",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -161,7 +161,7 @@ END
 
 IDD_SETUP DIALOG 0, 0, 474, 318
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "ClearView"
+CAPTION "Spooky View"
 FONT 8, "Ms Shell Dlg"
 BEGIN
     LTEXT           "Background",IDC_STATIC_BACKGROUND,287,102,40,8,NOT WS_VISIBLE
@@ -186,7 +186,7 @@ END
 
 IDD_UPDATE_AVAILABLE DIALOGEX 0, 0, 259, 125
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
-CAPTION "ClearView update available"
+CAPTION "Spooky View update available"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "Download",ID_DOWNLOAD,63,104,69,14
@@ -220,13 +220,13 @@ BEGIN
         BEGIN
             VALUE "Comments", "Test build. Do not distribute."
             VALUE "CompanyName", "TynDomyn.net"
-            VALUE "FileDescription", "ClearView"
-            VALUE "FileVersion", "0.0.4.1 Alpha (No Home, Phone Build)"
-            VALUE "InternalName", "ClearView"
+            VALUE "FileDescription", "Spooky View"
+            VALUE "FileVersion", "0.5.0 Alpha (A brand new build)"
+            VALUE "InternalName", "Spooky View"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
-            VALUE "OriginalFilename", "ClearView.exe"
-            VALUE "ProductName", "ClearView"
-            VALUE "ProductVersion", "0.0.4.1 Alpha (No Home, Phone Build)"
+            VALUE "OriginalFilename", "Spookyview.exe"
+            VALUE "ProductName", "Spooky View"
+            VALUE "ProductVersion", "0.5.0 Alpha (A brand new build)"
         END
     END
     BLOCK "VarFileInfo"
@@ -282,36 +282,17 @@ END
 
 STRINGTABLE
 BEGIN
-    IDC_CLEARVIEW           "CLEARVIEW"
+    IDC_SPOOKYVIEW           "Spooky View"
 END
 
 STRINGTABLE
 BEGIN
-    IDS_APP_TITLE           "ClearView"
-    IDS_APP_CLOSING_TITLE   "ClearView - Closing"
+    IDS_APP_TITLE           "Spooky View"
+    IDS_APP_CLOSING_TITLE   "Spooky View - Closing"
 END
 
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Dutch (Netherlands) resources
-
-#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
-LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
-#pragma code_page(1252)
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// PNG
-//
-
-IDB_PNG1                PNG                     "C:\\Users\\Martijn\\Desktop\\Icon\\spooky view per los object.png"
-
-#endif    // Dutch (Netherlands) resources
-/////////////////////////////////////////////////////////////////////////////
-
 
 
 #ifndef APSTUDIO_INVOKED

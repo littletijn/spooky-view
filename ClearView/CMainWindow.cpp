@@ -34,8 +34,8 @@ BOOL CMainWindow::InitNotifyIcon()
 	HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_SPOOKYVIEW));
 	cNotifyIcon = std::make_unique<CNotifyIcon>(this->hWnd, notifyIcon, appName);
 	BOOL canInit = cNotifyIcon->Init();
-	notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
-	return canInit && notifyIconContextMenu != NULL;
+	notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_SPOOKYVIEW));
+	return canInit == TRUE && notifyIconContextMenu != NULL;
 }
 
 void CMainWindow::CloseWindow()

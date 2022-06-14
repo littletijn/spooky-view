@@ -1,12 +1,12 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by ClearView.rc
+// Used by spookyview.rc
 //
 #define IDD_UPDATE_AVAILABLE            101
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
-#define IDC_CLEARVIEW                   109
+#define IDC_SPOOKYVIEW                   109
 #define IDD_ADD_APP                     116
 #define IDD_SETTINGS                    117
 #define IDD_SETUP                       118

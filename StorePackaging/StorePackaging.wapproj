@@ -48,15 +48,10 @@
     <None Include="StorePackaging_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <ProjectReference Include="..\ClearView\ClearView.vcxproj" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ClearView\ClearView.vcxproj" />
+    <Folder Include="Assets\" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>
