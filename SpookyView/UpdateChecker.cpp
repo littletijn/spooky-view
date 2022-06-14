@@ -70,7 +70,7 @@ bool UpdateChecker::GetProductVersion(tstring* version)
 void UpdateChecker::DownloadAndParseJson()
 {
 	tstring version;
-	tstring url(_T("clearview/status?version="));
+	tstring url(_T("spookyview/status?version="));
 	GetProductVersion(&version);
 
 	DWORD dwSize = 0;
@@ -83,7 +83,7 @@ void UpdateChecker::DownloadAndParseJson()
 		hRequest = NULL;
 
 	// Use WinHttpOpen to obtain a session handle.
-	hSession = WinHttpOpen(_T("ClearView/1.0"),
+	hSession = WinHttpOpen(_T("SpookyView/0.5"),
 		WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
 		WINHTTP_NO_PROXY_NAME,
 		WINHTTP_NO_PROXY_BYPASS, 0);

@@ -1,7 +1,7 @@
-// ClearView.cpp : Defines the entry point for the application.
+// SpookyView.cpp : Defines the entry point for the application.
 //
 #include "stdafx.h"
-#include "ClearView.h"
+#include "SpookyView.h"
 #include "CMainWindow.h"
 #include "ISettingsManager.h"
 #include "CRegistrySettingsManager.h"
@@ -30,7 +30,7 @@ HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
 std::unique_ptr<ISettingsManager> settingsManager;
 BOOL isPause = false;
-CLimitSingleInstance singleInstanceObj(_T("ClearView"));
+CLimitSingleInstance singleInstanceObj(_T("SpookyView"));
 UpdateResponse updateResponse;
 BOOL isWindows8;
 

@@ -21,12 +21,13 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7CE47E95-8AA0-4B62-87FD-CA1242022F47}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>ClearView</RootNamespace>
+    <RootNamespace>SpookyView</RootNamespace>
     <SccProjectName>SAK</SccProjectName>
     <SccAuxPath>SAK</SccAuxPath>
     <SccLocalPath>SAK</SccLocalPath>
     <SccProvider>SAK</SccProvider>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>SpookyView</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -170,7 +171,7 @@
     <ClInclude Include="CAlphaSettings.h" />
     <ClInclude Include="CDialog.h" />
     <ClInclude Include="Checkbox.h" />
-    <ClInclude Include="ClearView.h" />
+    <ClInclude Include="SpookyView.h" />
     <ClInclude Include="CLimitSingleInstance.h" />
     <ClInclude Include="CMainWindow.h" />
     <ClInclude Include="CModalDialog.h" />
@@ -204,7 +205,7 @@
     <ClCompile Include="CAddWindowDialog.cpp" />
     <ClCompile Include="CDialog.cpp" />
     <ClCompile Include="Checkbox.cpp" />
-    <ClCompile Include="ClearView.cpp" />
+    <ClCompile Include="SpookyView.cpp" />
     <ClCompile Include="CMainWindow.cpp" />
     <ClCompile Include="CModalDialog.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
@@ -227,14 +228,14 @@
     <ClCompile Include="WndProc.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ClearView.rc" />
+    <ResourceCompile Include="SpookyView.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="spook.bmp" />
     <Image Include="spookyview.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="ClearView.exe.manifest" />
+    <Manifest Include="SpookyView.exe.manifest" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

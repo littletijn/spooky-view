@@ -12,7 +12,7 @@
 CRegistrySettingsManager::CRegistrySettingsManager()
 {
 	settings = std::make_unique<CSettings>();
-	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
+	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
 	if (result == ERROR_SUCCESS)
 	{
 	}
@@ -231,7 +231,7 @@ BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE
 void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
 {
 	HKEY hKey;
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
 	{
 		DWORD versionNumberSize;
 		//This will convert the size_t to DWORD. a size_t in x64 is larger than a DWORD. Because our string will not be that long, we only need the size of a DWORD
@@ -252,7 +252,7 @@ BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
 	DWORD keyType;
 	TCHAR keyData[100];
 	DWORD keyDataSize = sizeof(keyData);
-	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\ClearView"), _T("SkipVersion"), &keyType, keyData, &keyDataSize);
+	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\Spooky View"), _T("SkipVersion"), &keyType, keyData, &keyDataSize);
 	if (result == ERROR_SUCCESS && keyType == REG_SZ)
 	{
 		return versionNumber.compare(keyData) == 0;
@@ -265,7 +265,7 @@ BOOL CRegistrySettingsManager::GetDisableUpdateCheck()
 	DWORD keyType;
 	BYTE keyData[1];
 	DWORD keyDataSize = sizeof(keyData);
-	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\ClearView"), _T("DisableUpdateCheck"), &keyType, keyData, &keyDataSize);
+	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\Spooky View"), _T("DisableUpdateCheck"), &keyType, keyData, &keyDataSize);
 	if (result == ERROR_SUCCESS && keyType == REG_BINARY)
 	{
 		return keyData[0];
@@ -276,7 +276,7 @@ BOOL CRegistrySettingsManager::GetDisableUpdateCheck()
 void CRegistrySettingsManager::SetDisableUpdateCheck(BOOL state)
 {
 	HKEY hKey;
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\ClearView"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
 	{
 		BYTE stateByte = state ? '\x1' : '\x0';
 		if (RegSetValueEx(hKey, _T("DisableUpdateCheck"), 0, REG_BINARY, &stateByte, sizeof(stateByte)) != ERROR_SUCCESS)

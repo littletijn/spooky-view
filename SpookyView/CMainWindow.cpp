@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CMainWindow.h"
-#include "ClearView.h"
+#include "SpookyView.h"
 #include "Resource.h"
 #include "CLimitSingleInstance.h"
 #include "CSettingsDialog.h"
@@ -173,5 +173,5 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 
 void CMainWindow::ShowAlreadyRunningBalloon()
 {
-	cNotifyIcon->ShowBalloon(_T("ClearView is already running"), _T("Right click on this icon to configure this application."));
+	cNotifyIcon->ShowBalloon(_T("Spooky View is already running"), _T("Right click on this icon to configure this application."));
 }
