@@ -48,9 +48,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="CWindow.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
@@ -228,13 +225,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="small.ico">
+    <Image Include="spookyview.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="ClearView.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Dino.bmp">
+    <Image Include="spook.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

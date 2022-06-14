@@ -50,9 +50,29 @@ END
 // Bitmap
 //
 
-IDB_DINO                BITMAP                  ".\\Dino.bmp"
+IDB_SPOOK               BITMAP                  ".\\spook.bmp"
 
 #endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral (Default) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEUD)
+LANGUAGE LANG_NEUTRAL, SUBLANG_DEFAULT
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_SPOOKYVIEW          ICON                    ".\\spookyview.ico"
+
+#endif    // Neutral (Default) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -97,8 +117,8 @@ BEGIN
     LTEXT           "ClearView",IDC_STATIC,17,12,130,8,SS_NOPREFIX
     LTEXT           "0.0.4.1 Alpha (No Home, Phone Build)",IDC_STATIC,17,22,130,8
     LTEXT           "Copyright (c) Martijn van Antwerpen",IDC_STATIC,17,57,130,8
-    DEFPUSHBUTTON   "Close",IDOK,177,117,50,14,WS_GROUP
-    CONTROL         IDB_DINO,IDC_DINO_IMAGE,"Static",SS_BITMAP,165,9,59,41
+    DEFPUSHBUTTON   "Close",IDOK,180,114,50,14,WS_GROUP
+    CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
 END
 
 IDD_ADD_APP DIALOGEX 0, 0, 284, 268
@@ -174,18 +194,6 @@ BEGIN
     PUSHBUTTON      "Skip version",IDC_SKIP_VERSION,143,104,50,14
     LTEXT           "Message!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
 END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Icon
-//
-
-// Icon with lowest ID value placed first to ensure application icon
-// remains consistent on all systems.
-IDI_CLEARVIEW           ICON                    "ClearView.ico"
-
-IDI_SMALL               ICON                    "small.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -284,6 +292,24 @@ BEGIN
 END
 
 #endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Dutch (Netherlands) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
+LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PNG
+//
+
+IDB_PNG1                PNG                     "C:\\Users\\Martijn\\Desktop\\Icon\\spooky view per los object.png"
+
+#endif    // Dutch (Netherlands) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

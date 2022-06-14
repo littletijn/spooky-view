@@ -31,7 +31,7 @@ BOOL CMainWindow::InitNotifyIcon()
 	//try to create Notification Icon
 	TCHAR appName[MAX_LOADSTRING];
 	LoadString(hInstance, IDS_APP_TITLE, appName, ARRAYSIZE(appName));
-	HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_CLEARVIEW));
+	HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_SPOOKYVIEW));
 	cNotifyIcon = std::make_unique<CNotifyIcon>(this->hWnd, notifyIcon, appName);
 	BOOL canInit = cNotifyIcon->Init();
 	notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));

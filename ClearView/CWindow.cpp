@@ -24,11 +24,11 @@ ATOM CWindow::RegisterWindowClass()
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLEARVIEW));
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SPOOKYVIEW));
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_CLEARVIEW);
-	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.hIconSm = NULL;
 	wcex.lpfnWndProc = WndProcMain;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;

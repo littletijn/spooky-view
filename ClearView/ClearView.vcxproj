@@ -162,9 +162,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="CUpdateAvailableDialog.h" />
     <ClInclude Include="UpdateChecker.h" />
     <ClInclude Include="CAbout.h" />
@@ -233,9 +230,8 @@
     <ResourceCompile Include="ClearView.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="ClearView.ico" />
-    <Image Include="Dino.bmp" />
-    <Image Include="small.ico" />
+    <Image Include="spook.bmp" />
+    <Image Include="spookyview.ico" />
   </ItemGroup>
   <ItemGroup>
     <Manifest Include="ClearView.exe.manifest" />
