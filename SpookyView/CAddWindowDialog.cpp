@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CAddWindowDialog.h"
-#include "ClearView.h"
+#include "SpookyView.h"
 #include "Defines.h"
 #include <strsafe.h>
 

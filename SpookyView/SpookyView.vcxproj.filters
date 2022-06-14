@@ -48,9 +48,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="CWindow.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
@@ -66,7 +63,7 @@
     <ClInclude Include="WndProc.h">
       <Filter>Header Files\Function</Filter>
     </ClInclude>
-    <ClInclude Include="ClearView.h">
+    <ClInclude Include="SpookyView.h">
       <Filter>Header Files\Function</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
@@ -164,7 +161,7 @@
     <ClCompile Include="CMainWindow.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="ClearView.cpp">
+    <ClCompile Include="SpookyView.cpp">
       <Filter>Source Files\Function</Filter>
     </ClCompile>
     <ClCompile Include="WndProc.cpp">
@@ -223,23 +220,20 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="ClearView.rc">
+    <ResourceCompile Include="SpookyView.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="small.ico">
+    <Image Include="spookyview.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="ClearView.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Dino.bmp">
+    <Image Include="spook.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Manifest Include="ClearView.exe.manifest">
+    <Manifest Include="SpookyView.exe.manifest">
       <Filter>Resource Files</Filter>
     </Manifest>
   </ItemGroup>

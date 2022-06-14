@@ -1,7 +1,7 @@
-// ClearView.cpp : Defines the entry point for the application.
+// SpookyView.cpp : Defines the entry point for the application.
 //
 #include "stdafx.h"
-#include "ClearView.h"
+#include "SpookyView.h"
 #include "CMainWindow.h"
 #include "ISettingsManager.h"
 #include "CRegistrySettingsManager.h"
@@ -30,7 +30,7 @@ HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
 std::unique_ptr<ISettingsManager> settingsManager;
 BOOL isPause = false;
-CLimitSingleInstance singleInstanceObj(_T("ClearView"));
+CLimitSingleInstance singleInstanceObj(_T("SpookyView"));
 UpdateResponse updateResponse;
 BOOL isWindows8;
 
@@ -89,7 +89,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		}
 	}
 
-	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
+	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SPOOKYVIEW));
 
 	// Main message loop:
 	while (GetMessage(&msg, NULL, 0, 0))
@@ -320,7 +320,7 @@ void SendAlreadyRunningNotify()
 	TCHAR windowClass[MAX_LOADSTRING], windowTitle[MAX_LOADSTRING], windowClosingTitle[MAX_LOADSTRING];
 	TCHAR message[] = _T("Already running");
 
-	LoadString(hInst, IDC_CLEARVIEW, windowClass, MAX_LOADSTRING);
+	LoadString(hInst, IDC_SPOOKYVIEW, windowClass, MAX_LOADSTRING);
 	LoadString(hInst, IDS_APP_TITLE, windowTitle, MAX_LOADSTRING);
 	LoadString(hInst, IDS_APP_CLOSING_TITLE, windowClosingTitle, MAX_LOADSTRING);
 

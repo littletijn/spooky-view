@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CMainWindow.h"
-#include "ClearView.h"
+#include "SpookyView.h"
 #include "Resource.h"
 #include "CLimitSingleInstance.h"
 #include "CSettingsDialog.h"
@@ -31,11 +31,11 @@ BOOL CMainWindow::InitNotifyIcon()
 	//try to create Notification Icon
 	TCHAR appName[MAX_LOADSTRING];
 	LoadString(hInstance, IDS_APP_TITLE, appName, ARRAYSIZE(appName));
-	HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_CLEARVIEW));
+	HICON notifyIcon = LoadIcon(this->hInstance, MAKEINTRESOURCE(IDI_SPOOKYVIEW));
 	cNotifyIcon = std::make_unique<CNotifyIcon>(this->hWnd, notifyIcon, appName);
 	BOOL canInit = cNotifyIcon->Init();
-	notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_CLEARVIEW));
-	return canInit && notifyIconContextMenu != NULL;
+	notifyIconContextMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDC_SPOOKYVIEW));
+	return canInit == TRUE && notifyIconContextMenu != NULL;
 }
 
 void CMainWindow::CloseWindow()
@@ -173,5 +173,5 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 
 void CMainWindow::ShowAlreadyRunningBalloon()
 {
-	cNotifyIcon->ShowBalloon(_T("ClearView is already running"), _T("Right click on this icon to configure this application."));
+	cNotifyIcon->ShowBalloon(_T("Spooky View is already running"), _T("Right click on this icon to configure this application."));
 }

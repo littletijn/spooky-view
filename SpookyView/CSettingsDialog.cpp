@@ -73,7 +73,7 @@ BOOL CSettingsDialog::HasAutoRunValue()
 	DWORD keyType;
 	TCHAR keyData[MAX_PATH + 1];
 	DWORD keyDataSize = sizeof(keyData);
-	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), _T("ClearView"), &keyType, keyData, &keyDataSize);
+	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), _T("Spooky View"), &keyType, keyData, &keyDataSize);
 	if (result == ERROR_SUCCESS && keyType == REG_SZ)
 	{
 		return TRUE;
@@ -88,7 +88,7 @@ void CSettingsDialog::AddAutoRun()
 	GetModuleFileName(0, programPath, sizeof(programPath));
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
 	{
-		if (RegSetValueEx(hKey, _T("ClearView"), 0, REG_SZ, (LPBYTE)programPath, sizeof(programPath)) != ERROR_SUCCESS)
+		if (RegSetValueEx(hKey, _T("Spooky View"), 0, REG_SZ, (LPBYTE)programPath, sizeof(programPath)) != ERROR_SUCCESS)
 		{
 			//Show error message
 		}
@@ -101,7 +101,7 @@ void CSettingsDialog::RemoveAutoRun()
 	HKEY hKey;
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
 	{
-		if (RegDeleteValue(hKey, _T("ClearView")) != ERROR_SUCCESS)
+		if (RegDeleteValue(hKey, _T("Spooky View")) != ERROR_SUCCESS)
 		{
 			//Show error message
 		}

@@ -18,17 +18,17 @@ CWindow::CWindow(HINSTANCE hInstance, HWND hParent) : CWnd(hInstance)
 //
 ATOM CWindow::RegisterWindowClass()
 {
-	LoadString(hInstance, IDC_CLEARVIEW, szWindowClass, MAX_LOADSTRING);
+	LoadString(hInstance, IDC_SPOOKYVIEW, szWindowClass, MAX_LOADSTRING);
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	this->hParent = HWND_MESSAGE; // Make this window a Message-only window
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLEARVIEW));
+	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SPOOKYVIEW));
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_CLEARVIEW);
-	wcex.hIconSm = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
+	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_SPOOKYVIEW);
+	wcex.hIconSm = NULL;
 	wcex.lpfnWndProc = WndProcMain;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
