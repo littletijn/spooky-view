@@ -75,3 +75,14 @@ and for preparation of the GUI.
 
 0.0.4.1 (No Home, Phone Build)
 - Added option to disable auto-update check
+
+0.5.0 (a brand new build)
+- Use new name and logo!
+- Use standard C++ syntax instead of Microsoft Visual Studio dialect
+- Create correct registry keys on first clean start
+- Fix settings not applying until restart
+- Sort, select single items and only show unique values in lists
+- Reapply all settings when saving
+- Show names of running programs
+- Added x64 build
+- Exclude system process 0
