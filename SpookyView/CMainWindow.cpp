@@ -71,11 +71,9 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 #ifdef UNICODE
 				auto message = string_to_wchar_t(updateResponse.message);
 				auto downloadUrl = string_to_wchar_t(updateResponse.download_url);
-				auto versionNumber = string_to_wchar_t(updateResponse.version);
 #else
 				auto message = updateResponse.message;
 				auto downloadUrl = updateResponse.download_url;
-				auto versionNumber = updateResponse.version;
 #endif // UNICODE
 				cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance);
 				cUpdateAvailableDialog->SetMessage(message);
