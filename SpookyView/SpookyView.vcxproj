@@ -164,6 +164,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CUpdateAvailableDialog.h" />
+    <ClInclude Include="Textbox.h" />
     <ClInclude Include="UpdateChecker.h" />
     <ClInclude Include="CAbout.h" />
     <ClInclude Include="CAddAppDialog.h" />
@@ -199,6 +200,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CUpdateAvailableDialog.cpp" />
+    <ClCompile Include="Textbox.cpp" />
     <ClCompile Include="UpdateChecker.cpp" />
     <ClCompile Include="CAbout.cpp" />
     <ClCompile Include="CAddAppDialog.cpp" />

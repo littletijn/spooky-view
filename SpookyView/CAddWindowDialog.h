@@ -2,6 +2,7 @@
 #include "CModalDialog.h"
 #include "ListView.h"
 #include <memory>
+#include "Textbox.h"
 
 class CAddWindowDialog : public CModalDialog
 {
@@ -15,6 +16,7 @@ protected:
 	t_string programName;
 	std::unique_ptr<TCHAR[]> selectedWindowClass;
 	std::unique_ptr<ListView> windowsListView;
+	std::unique_ptr<Textbox> classTextbox;
 	void LoadAppWindows();
 	void SetSelectedWindow();
 	void StoreSelectedWindow();

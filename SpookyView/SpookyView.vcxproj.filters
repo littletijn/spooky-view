@@ -46,6 +46,9 @@
     <Filter Include="Source Files\Classes\Controls">
       <UniqueIdentifier>{8fe401a5-afe8-4fe6-b01e-06686b4cb645}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Classes\Controls">
+      <UniqueIdentifier>{0d3c1ec3-b927-44ff-af3a-a38bccd44b7d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CWindow.h">
@@ -120,12 +123,6 @@
     <ClInclude Include="CLimitSingleInstance.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="ListView.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
-    <ClInclude Include="Checkbox.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="CAddWindowDialog.h">
       <Filter>Header Files\Classes\Windows</Filter>
     </ClInclude>
@@ -146,6 +143,15 @@
     </ClInclude>
     <ClInclude Include="CUpdateAvailableDialog.h">
       <Filter>Header Files\Classes\Windows</Filter>
+    </ClInclude>
+    <ClInclude Include="ListView.h">
+      <Filter>Header Files\Classes\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Checkbox.h">
+      <Filter>Header Files\Classes\Controls</Filter>
+    </ClInclude>
+    <ClInclude Include="Textbox.h">
+      <Filter>Header Files\Classes\Controls</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -216,6 +222,9 @@
       <Filter>Source Files\Classes\Controls</Filter>
     </ClCompile>
     <ClCompile Include="ListView.cpp">
+      <Filter>Source Files\Classes\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="Textbox.cpp">
       <Filter>Source Files\Classes\Controls</Filter>
     </ClCompile>
   </ItemGroup>

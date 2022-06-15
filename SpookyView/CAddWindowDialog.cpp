@@ -4,6 +4,7 @@
 #include "Defines.h"
 #include <strsafe.h>
 #include <commctrl.h>
+#include "Textbox.h"
 
 CAddWindowDialog::CAddWindowDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -28,6 +29,7 @@ INT_PTR CALLBACK CAddWindowDialog::DlgProc(HWND hDlg, UINT message, WPARAM wPara
 	{
 	case WM_INITDIALOG:
 		this->windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_WINDOWS);
+		this->classTextbox = std::make_unique<Textbox>(hDlg, IDC_EDIT_CLASS_NAME);
 		LoadAppWindows();
 		return TRUE;
 		break;
@@ -77,18 +79,15 @@ void CAddWindowDialog::SetSelectedWindow()
 	int index = this->windowsListView->GetSelectedIndex();
 	TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
 	LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
-	auto textBoxHwnd = GetDlgItem(this->hWnd, IDC_EDIT_CLASS_NAME);
-	SendMessage(textBoxHwnd, WM_SETTEXT, NULL, (LPARAM)text);
+	this->classTextbox->SetText(text);
 }
 
 void CAddWindowDialog::StoreSelectedWindow()
 {
-	auto textBoxHwnd = GetDlgItem(this->hWnd, IDC_EDIT_CLASS_NAME);
-	auto textLength = GetWindowTextLength(textBoxHwnd);
-	TCHAR* textBuffer = new TCHAR[textLength + 1];
-	GetWindowText(textBoxHwnd, textBuffer, textLength + 1);
+	int textLength = 0;
+	auto textBuffer = this->classTextbox->GetText(&textLength);
 	this->selectedWindowClass = std::unique_ptr<TCHAR[]>(new TCHAR[textLength + 1]);
-	StringCchCopy(this->selectedWindowClass.get(), textLength + 1, textBuffer);
+	StringCchCopy(this->selectedWindowClass.get(), textLength + 1, textBuffer.get());
 }
 
 LPTSTR CAddWindowDialog::GetSelectedWindowClass()
