@@ -206,6 +206,10 @@ BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 			auto windowClassNameCopy = std::shared_ptr<TCHAR[]>(new TCHAR[MAX_WINDOW_CLASS_NAME]);
 			StringCchCopy(windowClassNameCopy.get(), MAX_WINDOW_CLASS_NAME, windowClassName);
 			foundWindowClasses.insert(windowClassNameCopy);
+
+			auto textLength = GetWindowTextLength(hwnd);
+			auto textBuffer = std::unique_ptr<TCHAR[]>(new TCHAR[textLength + 1]);
+			GetWindowText(hwnd, textBuffer.get(), textLength + 1);
 		}
 	}
 	return TRUE;
