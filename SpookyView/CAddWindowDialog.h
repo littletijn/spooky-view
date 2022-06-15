@@ -16,6 +16,7 @@ protected:
 	std::unique_ptr<TCHAR[]> selectedWindowClass;
 	std::unique_ptr<ListView> windowsListView;
 	void LoadAppWindows();
+	void SetSelectedWindow();
 	void StoreSelectedWindow();
 };
 
