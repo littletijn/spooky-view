@@ -113,9 +113,12 @@ void CAddAppDialog::BrowseFile()
 void CAddAppDialog::SetSelectedProgram()
 {
 	int index = this->appsListView->GetSelectedIndex();
-	TCHAR textBuffer[MAX_PATH];
-	LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
-	this->programTextbox->SetText(text);
+	if (index >= 0)
+	{
+		TCHAR textBuffer[MAX_PATH];
+		LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
+		this->programTextbox->SetText(text);
+	}
 }
 
 void CAddAppDialog::StoreSelectedProcess()

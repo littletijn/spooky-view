@@ -77,9 +77,12 @@ void CAddWindowDialog::LoadAppWindows()
 void CAddWindowDialog::SetSelectedWindow()
 {
 	int index = this->windowsListView->GetSelectedIndex();
-	TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
-	LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
-	this->classTextbox->SetText(text);
+	if (index >= 0)
+	{
+		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
+		LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
+		this->classTextbox->SetText(text);
+	}
 }
 
 void CAddWindowDialog::StoreSelectedWindow()
