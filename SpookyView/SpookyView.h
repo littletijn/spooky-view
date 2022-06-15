@@ -4,7 +4,7 @@
 
 //Globals variables
 extern t_string processNameOfWindowsToFind;
-extern std::unordered_set<TCHAR*> foundWindowClasses;
+extern std::unordered_set<std::shared_ptr<TCHAR[]>> foundWindowClasses;
 
 //Callbacks
 void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);

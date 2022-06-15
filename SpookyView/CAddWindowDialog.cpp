@@ -69,8 +69,8 @@ void CAddWindowDialog::LoadAppWindows()
 	foundWindowClasses.clear();
 	processNameOfWindowsToFind = this->programName;
 	EnumWindows(EnumWindowsForProcess, NULL);
-	for (TCHAR* windowClass : foundWindowClasses) {
-		this->windowsListView->AddItem(windowClass);
+	for (auto windowClass : foundWindowClasses) {
+		this->windowsListView->AddItem(windowClass.get());
 	}
 }
 
