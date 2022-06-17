@@ -3,6 +3,7 @@
 #include "ListView.h"
 #include <memory>
 #include "Textbox.h"
+#include "Unicode.h"
 
 class CAddWindowDialog : public CModalDialog
 {
@@ -11,10 +12,10 @@ public:
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 	BOOL InitInstance(t_string programName);
-	LPTSTR GetSelectedWindowClass();
+	tstring GetSelectedWindowClass();
 protected:
 	t_string programName;
-	std::unique_ptr<TCHAR[]> selectedWindowClass;
+	tstring selectedWindowClass;
 	std::unique_ptr<ListView> windowsListView;
 	std::unique_ptr<Textbox> classTextbox;
 	void LoadAppWindows();

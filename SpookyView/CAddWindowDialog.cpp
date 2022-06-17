@@ -92,11 +92,10 @@ void CAddWindowDialog::StoreSelectedWindow()
 {
 	int textLength = 0;
 	auto textBuffer = this->classTextbox->GetText(&textLength);
-	this->selectedWindowClass = std::unique_ptr<TCHAR[]>(new TCHAR[textLength + 1]);
-	StringCchCopy(this->selectedWindowClass.get(), textLength + 1, textBuffer.get());
+	this->selectedWindowClass = tstring(textBuffer.get());
 }
 
-LPTSTR CAddWindowDialog::GetSelectedWindowClass()
+tstring CAddWindowDialog::GetSelectedWindowClass()
 {
-	return this->selectedWindowClass.get();
+	return selectedWindowClass;
 }
