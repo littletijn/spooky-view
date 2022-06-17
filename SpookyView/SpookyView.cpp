@@ -144,12 +144,11 @@ BOOL IsWindowUsable(HWND hwnd)
 	if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 	{
 		LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
-		if (GetAncestor(hwnd, GA_PARENT) != GetDesktopWindow() || ((styles & WS_POPUP) && _tcscmp(windowClassName, DIALOGBOXCLASSNAME) != 0))
+		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0))
 		{
-			//This is not a top-level window or a pop-up window that is not a dialog or it is hidden at the moment, skip it.
-			return FALSE;
+			//This is a top-level window or a pop-up window that is dialog
+			return TRUE;
 		}
-		return TRUE;
 	}
 	return FALSE;
 }
