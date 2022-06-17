@@ -29,6 +29,8 @@ INT_PTR CALLBACK CAddWindowDialog::DlgProc(HWND hDlg, UINT message, WPARAM wPara
 	{
 	case WM_INITDIALOG:
 		this->windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_WINDOWS);
+		this->windowsListView->InsertColumn(0, _T("Class"));
+		this->windowsListView->InsertColumn(1, _T("Title"));
 		this->classTextbox = std::make_unique<Textbox>(hDlg, IDC_EDIT_CLASS_NAME);
 		LoadAppWindows();
 		return TRUE;
@@ -70,7 +72,8 @@ void CAddWindowDialog::LoadAppWindows()
 	processNameOfWindowsToFind = this->programName;
 	EnumWindows(EnumWindowsForProcess, NULL);
 	for (auto windowClass : foundWindowClasses) {
-		this->windowsListView->AddItem(windowClass.get());
+		int itemIndex = this->windowsListView->AddItem(windowClass.first);
+		this->windowsListView->SetItem(itemIndex, 1, windowClass.second);
 	}
 }
 

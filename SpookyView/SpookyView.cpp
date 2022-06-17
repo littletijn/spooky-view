@@ -43,7 +43,7 @@ TCHAR filePathName[MAX_PATH];
 
 //Global variables for EnumWindowsForProcess
 t_string processNameOfWindowsToFind;
-std::unordered_set<std::shared_ptr<TCHAR[]>> foundWindowClasses;
+std::map<tstring, tstring> foundWindowClasses;
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -205,11 +205,11 @@ BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 		{
 			auto windowClassNameCopy = std::shared_ptr<TCHAR[]>(new TCHAR[MAX_WINDOW_CLASS_NAME]);
 			StringCchCopy(windowClassNameCopy.get(), MAX_WINDOW_CLASS_NAME, windowClassName);
-			foundWindowClasses.insert(windowClassNameCopy);
 
 			auto textLength = GetWindowTextLength(hwnd);
 			auto textBuffer = std::unique_ptr<TCHAR[]>(new TCHAR[textLength + 1]);
 			GetWindowText(hwnd, textBuffer.get(), textLength + 1);
+			foundWindowClasses.insert(std::pair<tstring, tstring>(tstring(windowClassNameCopy.get()), tstring(textBuffer.get())));
 		}
 	}
 	return TRUE;
