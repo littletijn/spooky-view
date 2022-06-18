@@ -290,21 +290,18 @@ void CSetupDialog::SetTrackbarRanges(HWND hWnd)
 {
 	HWND foregroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)TRUE, (LPARAM)100);
-	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)TRUE, (LPARAM)100);
-	SendMessage(foregroundTrackbar, TBM_GETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
-	SendMessage(backgroundTrackbar, TBM_GETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
+	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
+	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
+	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
+	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
 }
 
 void CSetupDialog::SetTrackbars()
 {
 	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
-
-	auto test = (LPARAM)ceil(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS);
-
-	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)ceil(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
-	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)ceil(currentAlphaSettings->background * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->background * TRANSPARENCY_TRACKER_STEPS));
 }
 
 void CSetupDialog::SetCheckboxes()
@@ -318,10 +315,10 @@ void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 	switch (identifier)
 	{
 	case IDC_SLIDER_FOREGROUND:
-		currentAlphaSettings->foreground = (BYTE)ceil(value / TRANSPARENCY_TRACKER_STEPS);
+		currentAlphaSettings->foreground = (BYTE)round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
 	case IDC_SLIDER_BACKGROUND:
-		currentAlphaSettings->background = (BYTE)ceil(value / TRANSPARENCY_TRACKER_STEPS);
+		currentAlphaSettings->background = (BYTE)round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
 	}
 }
