@@ -8,6 +8,7 @@
 #include <unordered_set>
 #include <map>
 #include "Textbox.h"
+#include <commdlg.h>
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -56,6 +57,7 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	break;
 
 	case WM_COMMAND:
+		
 		switch (LOWORD(wParam))
 		{
 		case IDOK:
@@ -65,12 +67,11 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 		case IDCANCEL:
 			EndDialog(hDlg, 2);
 			return TRUE;
-
-		}
 		case IDC_BUTTON_BROWSE:
 			BrowseFile();
 			return TRUE;
-		break;
+			break;
+		}
 	}
 	return FALSE;
 }
@@ -108,6 +109,33 @@ void CAddAppDialog::LoadModules()
 
 void CAddAppDialog::BrowseFile()
 {
+	TCHAR fileName[MAX_PATH];
+	TCHAR filePath[MAX_PATH];
+	SecureZeroMemory(fileName, MAX_PATH);
+	SecureZeroMemory(filePath, MAX_PATH);
+	OPENFILENAME ofn;
+	SecureZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = hWnd;
+	ofn.nMaxFile = MAX_PATH - 1;
+	ofn.lpstrFile = filePath;
+	ofn.lpstrFileTitle = fileName;
+	ofn.nMaxFileTitle = MAX_PATH - 1;
+	ofn.lpstrTitle = _T("Select program");
+	ofn.lpstrFilter = _T("Executables (*.exe)\0*.exe\0All files (*.*)\0*.*\0");
+	ofn.nFilterIndex = 1;
+	ofn.lpstrInitialDir = NULL;
+	ofn.lpstrDefExt = _T("exe");
+	ofn.Flags = OFN_FILEMUSTEXIST;
+	if (GetOpenFileName(&ofn))
+	{
+		programTextbox->SetText(fileName);
+	}
+	else
+	{
+		auto errorCode = CommDlgExtendedError();
+	}
+
 }
 
 void CAddAppDialog::SetSelectedProgram()
