@@ -262,6 +262,7 @@ void CSetupDialog::WindowsListNotified()
 void CSetupDialog::EnabledCheckboxNotified()
 {
 	currentAlphaSettings->enabled = enabledCheckbox->GetCheckState();
+	SetTrackbarEnableState();
 }
 
 void CSetupDialog::PopulateProcessList()
@@ -302,6 +303,7 @@ void CSetupDialog::SetTrackbars()
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
 	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
 	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->background * TRANSPARENCY_TRACKER_STEPS));
+	SetTrackbarEnableState();
 }
 
 void CSetupDialog::SetCheckboxes()
@@ -348,3 +350,13 @@ void CSetupDialog::SetButtonEnableState(int controlId, bool show)
 	auto item = GetDlgItem(this->hWnd, controlId);
 	EnableWindow(item, show);
 }
+
+void CSetupDialog::SetTrackbarEnableState()
+{
+	const int itemIds[] = { IDC_SLIDER_FOREGROUND, IDC_SLIDER_BACKGROUND };
+	for (const auto& itemId : itemIds) {
+		auto item = GetDlgItem(this->hWnd, itemId);
+		EnableWindow(item, currentAlphaSettings->enabled);
+	}
+}
+

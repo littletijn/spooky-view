@@ -37,6 +37,7 @@ protected:
 	void SetAlpha(BYTE value, HWND trackbar);
 	void SetFormVisibility(bool show);
 	void SetButtonEnableState(int controlId, bool show);
+	void SetTrackbarEnableState();
 	void SetTrackbarRanges(HWND hWnd);
 };
 
