@@ -2,7 +2,7 @@
 
 struct CAlphaSettings
 {
-	BOOL enabled;
-	BYTE foreground;
-	BYTE background;
+	BOOL enabled = 0;
+	BYTE foreground = 255;
+	BYTE background = 255;
 };
