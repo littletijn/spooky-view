@@ -19,8 +19,6 @@
 #include "UpdateResponse.h"
 #include <unordered_set>
 
-typedef BOOL (WINAPI *PGNSI)(HANDLE);
-typedef BOOL (WINAPI *PGNSI2)(HWND, MARGINS*);
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd318055(v=vs.85).aspx
 const TCHAR DIALOGBOXCLASSNAME[7] = _T("#32770");

@@ -9,6 +9,10 @@
 #include <map>
 #include "Textbox.h"
 #include <commdlg.h>
+#include "SpookyView.h"
+
+extern PGNSI isImmersive;
+extern BOOL isWindows8;
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -92,6 +96,17 @@ void CAddAppDialog::LoadModules()
 		{
 			if (sProcess.th32ProcessID == 0) {
 				continue;
+			}
+			//Check if current process is not a Windows Store App on Windows 8 or Windows 8.1.
+			//They should not be transparent because they are always running full-screen
+			if (isWindows8 && isImmersive != NULL)
+			{
+				HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, sProcess.th32ProcessID);
+				if (hProcess != NULL && isImmersive(hProcess))
+				{
+					continue;
+				}
+				CloseHandle(hProcess);
 			}
 			t_string programName;
 			GetProcessProgramName(sProcess, &programName);

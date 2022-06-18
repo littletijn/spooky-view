@@ -7,6 +7,9 @@
 extern t_string processNameOfWindowsToFind;
 extern std::map<tstring, tstring> foundWindowClasses;
 
+//LoadAddress declaration
+typedef BOOL(WINAPI* PGNSI)(HANDLE);
+
 //Callbacks
 void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
