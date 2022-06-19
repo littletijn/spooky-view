@@ -4,6 +4,7 @@
 #include "WndProc.h"
 
 extern CPtrMap<CWindow> g_ptrmap;
+extern HICON spookyIcon;
 
 // Saves instance handle and register window class
 CWindow::CWindow(HINSTANCE hInstance, HWND hParent) : CWnd(hInstance)
@@ -23,7 +24,7 @@ ATOM CWindow::RegisterWindowClass()
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SPOOKYVIEW));
+	wcex.hIcon = spookyIcon;
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_SPOOKYVIEW);
