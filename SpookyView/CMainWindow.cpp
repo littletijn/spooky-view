@@ -184,3 +184,12 @@ void CMainWindow::ShowAlreadyRunningBalloon()
 {
 	cNotifyIcon->ShowBalloon(_T("Spooky View is already running"), _T("Right click on this icon to configure this application."));
 }
+
+void CMainWindow::CheckIsFirstRun()
+{
+	if (!settingsManager->GetSkipWelcome())
+	{
+		settingsManager->SetSkipWelcome();
+		cNotifyIcon->ShowBalloon(_T("Welcome to Spooky View"), _T("Right click on this icon to configure this application."));
+	}
+}

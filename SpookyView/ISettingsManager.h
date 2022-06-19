@@ -17,4 +17,6 @@ public:
 	virtual BOOL ShouldSkipVersion(tstring versionNumber) = 0;
 	virtual BOOL GetDisableUpdateCheck() = 0;
 	virtual void SetDisableUpdateCheck(BOOL state) = 0;
+	virtual BOOL GetSkipWelcome() = 0;
+	virtual void SetSkipWelcome() = 0;
 };

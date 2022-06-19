@@ -83,6 +83,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		settingsManager->LoadSettings();
 		SetWindowsTransparency();
+		mainWindow->CheckIsFirstRun();
 #ifdef UNICODE
 		if (!settingsManager->GetDisableUpdateCheck())
 		{

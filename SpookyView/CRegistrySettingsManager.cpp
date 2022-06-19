@@ -130,11 +130,11 @@ void CRegistrySettingsManager::LoadSettings()
 void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* settings)
 {
 	BYTE value;
-	if (ReadKeyByteValue(key, _T("AlphaForeground"), value))
+	if (ReadKeyByteValue(key, _T("Alpha foreground"), value))
 	{
 		settings->foreground = value;
 	}
-	if (ReadKeyByteValue(key, _T("AlphaBackground"), value))
+	if (ReadKeyByteValue(key, _T("Alpha background"), value))
 	{
 		settings->background = value;
 	}
@@ -167,7 +167,7 @@ bool CRegistrySettingsManager::SaveSettings()
 	if (RegCreateKeyEx(registryRootKey, _T("Programs"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programsKey, NULL) == ERROR_SUCCESS)
 	{
 		//Save global settings
-		this->SaveValues(programsKey, settings->alphaSettings);
+		this->SaveAlphaSettingsValues(programsKey, settings->alphaSettings);
 		for (auto const &program : *settings->programs)
 		{
 			//Create key for program
@@ -179,7 +179,7 @@ bool CRegistrySettingsManager::SaveSettings()
 				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
 				{
 					//Save global settings of program
-					this->SaveValues(windowsKey, program.second->alphaSettings);
+					this->SaveAlphaSettingsValues(windowsKey, program.second->alphaSettings);
 
 					for (auto const &window : *program.second->windows)
 					{
@@ -187,7 +187,7 @@ bool CRegistrySettingsManager::SaveSettings()
 						//Create key of window
 						if (RegCreateKeyEx(windowsKey, window.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowKey, NULL) == ERROR_SUCCESS)
 						{
-							this->SaveValues(windowKey, window.second->alphaSettings);
+							this->SaveAlphaSettingsValues(windowKey, window.second->alphaSettings);
 						}
 					}
 				}
@@ -197,35 +197,20 @@ bool CRegistrySettingsManager::SaveSettings()
 	return true;
 }
 
-void CRegistrySettingsManager::SaveValues(HKEY key, CAlphaSettings values)
+void CRegistrySettingsManager::SaveAlphaSettingsValues(HKEY key, CAlphaSettings values)
 {
-	RegSetValueEx(key, _T("AlphaForeground"), 0, REG_BINARY, &values.foreground, sizeof(values.foreground));
-	RegSetValueEx(key, _T("AlphaBackground"), 0, REG_BINARY, &values.background, sizeof(values.background));
 	BYTE enabled = values.enabled ? '\x1' : '\x0';
-	RegSetValueEx(key, _T("Enabled"), 0, REG_BINARY, &enabled, sizeof(enabled));
+	SaveValue(key, _T("Enabled"), REG_BINARY, &enabled);
+	SaveValue(key, _T("Alpha foreground"), REG_BINARY, &values.foreground);
+	SaveValue(key, _T("Alpha background"), REG_BINARY, &values.background);
 }
 
 BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value)
 {
-	//Create buffer and variables for return values
-	BOOL readResult = FALSE;
 	DWORD keyType;
-	BYTE keyData[1];
-	DWORD keyDataSize = sizeof(keyData);
-	LSTATUS result;
-
-	//Read the data of the value based on given type
-	result = RegQueryValueEx(key, valueName, NULL, &keyType, keyData, &keyDataSize);
-	if (result != ERROR_SUCCESS || keyType != REG_BINARY)
-	{
-		readResult = FALSE;
-	}
-	else
-	{
-		value = keyData[0];
-		readResult = TRUE;
-	}
-	return readResult;
+	DWORD dataBufferSize = sizeof(value);
+	auto result = RegQueryValueEx(key, valueName, NULL, &keyType, &value, &dataBufferSize);
+	return result == ERROR_SUCCESS && keyType == REG_BINARY;
 }
 
 void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
@@ -239,7 +224,7 @@ void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
 		{
 			//Show error message
 		}
-		else if (RegSetValueEx(hKey, _T("SkipVersion"), 0, REG_SZ, (LPBYTE)versionNumber.c_str(), versionNumberSize) != ERROR_SUCCESS)
+		else if (!SaveValue(hKey, _T("Skip version"), REG_SZ, (LPBYTE)versionNumber.c_str(), versionNumberSize))
 		{
 			//Show error message
 		}
@@ -247,13 +232,37 @@ void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
 	}
 }
 
-BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
+BOOL CRegistrySettingsManager::ReadValue(TCHAR *subkey, TCHAR *valueName, DWORD expectedKeyType, void *dataBuffer, DWORD dataBufferSize)
 {
 	DWORD keyType;
+	auto result = SHGetValue(HKEY_CURRENT_USER, subkey, valueName, &keyType, dataBuffer, &dataBufferSize);
+	return result == ERROR_SUCCESS && keyType == expectedKeyType;
+}
+
+BOOL CRegistrySettingsManager::SaveValue(HKEY hKey, TCHAR* valueName, DWORD keyType, BYTE* value, DWORD valueSize)
+{
+	if (valueSize == 0) {
+		valueSize = sizeof(*value);
+	}
+	return RegSetValueEx(hKey, valueName, 0, keyType, value, valueSize) != ERROR_SUCCESS;
+}
+
+BOOL CRegistrySettingsManager::SaveValue(TCHAR* subkey, TCHAR* valueName, DWORD keyType, BYTE* value)
+{
+	BOOL result = false;
+	HKEY hKey;
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, subkey, 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	{
+		BOOL result = SaveValue(hKey, valueName, keyType, value);
+		RegCloseKey(hKey);
+	}
+	return result;
+}
+
+BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
+{
 	TCHAR keyData[100];
-	DWORD keyDataSize = sizeof(keyData);
-	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\Spooky View"), _T("SkipVersion"), &keyType, keyData, &keyDataSize);
-	if (result == ERROR_SUCCESS && keyType == REG_SZ)
+	if (ReadValue(_T("Software\\Spooky View"), _T("Skip version"), REG_SZ, keyData, sizeof(keyData)))
 	{
 		return versionNumber.compare(keyData) == 0;
 	}
@@ -262,11 +271,8 @@ BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
 
 BOOL CRegistrySettingsManager::GetDisableUpdateCheck()
 {
-	DWORD keyType;
 	BYTE keyData[1];
-	DWORD keyDataSize = sizeof(keyData);
-	auto result = SHGetValue(HKEY_CURRENT_USER, _T("Software\\Spooky View"), _T("DisableUpdateCheck"), &keyType, keyData, &keyDataSize);
-	if (result == ERROR_SUCCESS && keyType == REG_BINARY)
+	if (ReadValue(_T("Software\\Spooky View"), _T("Disable update check"), REG_BINARY, keyData, sizeof(keyData)))
 	{
 		return keyData[0];
 	}
@@ -275,14 +281,22 @@ BOOL CRegistrySettingsManager::GetDisableUpdateCheck()
 
 void CRegistrySettingsManager::SetDisableUpdateCheck(BOOL state)
 {
-	HKEY hKey;
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	BYTE stateByte = state ? '\x1' : '\x0';
+	SaveValue(_T("Software\\Spooky View"), _T("Disable update check"), REG_BINARY, &stateByte);
+}
+
+BOOL CRegistrySettingsManager::GetSkipWelcome()
+{
+	BYTE keyData[1];
+	if (ReadValue(_T("Software\\Spooky View"), _T("Skip welcome"), REG_BINARY, keyData, sizeof(keyData)))
 	{
-		BYTE stateByte = state ? '\x1' : '\x0';
-		if (RegSetValueEx(hKey, _T("DisableUpdateCheck"), 0, REG_BINARY, &stateByte, sizeof(stateByte)) != ERROR_SUCCESS)
-		{
-			//Show error message
-		}
-		RegCloseKey(hKey);
+		return keyData[0];
 	}
+	return FALSE;
+}
+
+void CRegistrySettingsManager::SetSkipWelcome()
+{
+	BYTE stateByte = '\x1';
+	SaveValue(_T("Software\\Spooky View"), _T("Skip welcome"), REG_BINARY, &stateByte);
 }

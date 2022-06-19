@@ -14,6 +14,7 @@ public:
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	HWND GetHwnd();
 	BOOL InitNotifyIcon();
+	void CheckIsFirstRun();
 private:
 	void CloseWindow();
 	void ShowAlreadyRunningBalloon();
