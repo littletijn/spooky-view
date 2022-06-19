@@ -4,15 +4,15 @@
 
 CNotifyIcon::CNotifyIcon(HWND hWnd, HICON hIcon, TCHAR *tooltipText)
 {
-	SecureZeroMemory(&m_sNotifyIcon, sizeof(m_sNotifyIcon));
+	m_sNotifyIcon = {};
 	//Create NOTIFYICON struc
-	m_sNotifyIcon.cbSize = NOTIFYICONDATA_V1_SIZE;
+	m_sNotifyIcon.cbSize = sizeof(m_sNotifyIcon);
 	//Make sure we use the Windows 2000 and newer version
 	m_sNotifyIcon.uVersion = NOTIFYICON_VERSION;
 	m_sNotifyIcon.hWnd = hWnd;
 	m_sNotifyIcon.hIcon = hIcon;
 	m_sNotifyIcon.uID = 1;
-	m_sNotifyIcon.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+	m_sNotifyIcon.uFlags = NIF_ICON | NIF_MESSAGE;
 	m_sNotifyIcon.uCallbackMessage = WM_NOTIFYICON;
 	_stprintf_s(m_sNotifyIcon.szTip, _countof(m_sNotifyIcon.szTip), tooltipText);
 }

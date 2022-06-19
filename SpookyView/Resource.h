@@ -1,12 +1,12 @@
 //{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ generated include file.
-// Used by spookyview.rc
+// Used by SpookyView.rc
 //
 #define IDD_UPDATE_AVAILABLE            101
 #define IDD_ABOUTBOX                    103
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
-#define IDC_SPOOKYVIEW                   109
+#define IDC_SPOOKYVIEW                  109
 #define IDD_ADD_APP                     116
 #define IDD_SETTINGS                    117
 #define IDD_SETUP                       118
@@ -18,8 +18,14 @@
 #define ID_CLOSE                        1002
 #define IDC_MESSAGE                     1003
 #define IDC_UPDATE_MESSAGE              1003
-#define IDC_SPOOK_IMAGE                  1004
+#define IDC_SPOOK_IMAGE                 1004
 #define IDC_CHECKBOX_DISABLE_UPDATE_CHECK 1005
+#define IDC_STATIC_APP_EXECUTABLE       1006
+#define IDC_EDIT_EXECUTABLE_NAME        1007
+#define IDC_STATIC_FOREGORUND_TRANSPARENT 1008
+#define IDC_STATIC_FOREGROUND_OPAQUE    1009
+#define IDC_STATIC_BACKGROUND_TRANSPARENT 1010
+#define IDC_STATIC_BACKGROUND_OPAQUE    1011
 #define IDC_LIST_ADD_APPS               40000
 #define IDC_LIST_ADD_WINDOWS            40000
 #define IDC_LIST_APPS                   40000
@@ -56,7 +62,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        125
 #define _APS_NEXT_COMMAND_VALUE         40017
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_CONTROL_VALUE         1012
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

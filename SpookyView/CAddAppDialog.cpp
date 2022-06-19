@@ -7,6 +7,12 @@
 #include "Unicode.h"
 #include <unordered_set>
 #include <map>
+#include "Textbox.h"
+#include <commdlg.h>
+#include "SpookyView.h"
+
+extern PGNSI isImmersive;
+extern BOOL isWindows8;
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -35,11 +41,27 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 		this->appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_APPS);
 		this->appsListView->InsertColumn(0, _T("File"));
 		this->appsListView->InsertColumn(1, _T("Name"));
+		this->programTextbox = std::make_unique<Textbox>(hDlg, IDC_EDIT_EXECUTABLE_NAME);
 		LoadModules();
 		return TRUE;
 		break;
+	case WM_NOTIFY:
+	{
+		LPNMHDR notifyMessage = (LPNMHDR)lParam;
+		if (notifyMessage->code == LVN_ITEMCHANGED)
+		{
+			switch (notifyMessage->idFrom)
+			{
+			case IDC_LIST_ADD_WINDOWS:
+				SetSelectedProgram();
+				return TRUE;
+			}
+		}
+	}
+	break;
 
 	case WM_COMMAND:
+		
 		switch (LOWORD(wParam))
 		{
 		case IDOK:
@@ -49,12 +71,11 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 		case IDCANCEL:
 			EndDialog(hDlg, 2);
 			return TRUE;
-
-		}
 		case IDC_BUTTON_BROWSE:
 			BrowseFile();
 			return TRUE;
-		break;
+			break;
+		}
 	}
 	return FALSE;
 }
@@ -76,6 +97,17 @@ void CAddAppDialog::LoadModules()
 			if (sProcess.th32ProcessID == 0) {
 				continue;
 			}
+			//Check if current process is not a Windows Store App on Windows 8 or Windows 8.1.
+			//They should not be transparent because they are always running full-screen
+			if (isWindows8 && isImmersive != NULL)
+			{
+				HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, sProcess.th32ProcessID);
+				if (hProcess != NULL && isImmersive(hProcess))
+				{
+					continue;
+				}
+				CloseHandle(hProcess);
+			}
 			t_string programName;
 			GetProcessProgramName(sProcess, &programName);
 			programs.insert(std::pair<t_string, t_string>(tstring(sProcess.szExeFile), programName));
@@ -92,15 +124,52 @@ void CAddAppDialog::LoadModules()
 
 void CAddAppDialog::BrowseFile()
 {
+	TCHAR fileName[MAX_PATH];
+	TCHAR filePath[MAX_PATH];
+	SecureZeroMemory(fileName, MAX_PATH);
+	SecureZeroMemory(filePath, MAX_PATH);
+	OPENFILENAME ofn;
+	SecureZeroMemory(&ofn, sizeof(ofn));
+	ofn.lStructSize = sizeof(OPENFILENAME);
+	ofn.hwndOwner = hWnd;
+	ofn.nMaxFile = MAX_PATH - 1;
+	ofn.lpstrFile = filePath;
+	ofn.lpstrFileTitle = fileName;
+	ofn.nMaxFileTitle = MAX_PATH - 1;
+	ofn.lpstrTitle = _T("Select program");
+	ofn.lpstrFilter = _T("Executables (*.exe)\0*.exe\0All files (*.*)\0*.*\0");
+	ofn.nFilterIndex = 1;
+	ofn.lpstrInitialDir = NULL;
+	ofn.lpstrDefExt = _T("exe");
+	ofn.Flags = OFN_FILEMUSTEXIST;
+	if (GetOpenFileName(&ofn))
+	{
+		programTextbox->SetText(fileName);
+	}
+	else
+	{
+		auto errorCode = CommDlgExtendedError();
+	}
+
+}
+
+void CAddAppDialog::SetSelectedProgram()
+{
+	int index = this->appsListView->GetSelectedIndex();
+	if (index >= 0)
+	{
+		TCHAR textBuffer[MAX_PATH];
+		LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
+		this->programTextbox->SetText(text);
+	}
 }
 
 void CAddAppDialog::StoreSelectedProcess()
 {
-	int index = this->appsListView->GetSelectedIndex();
-	TCHAR textBuffer[MAX_PATH];
-	LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
-	this->selectedProcess = std::unique_ptr<TCHAR[]>(new TCHAR[MAX_PATH]);
-	StringCchCopy(this->selectedProcess.get(), MAX_PATH, textBuffer);
+	int textLength = 0;
+	auto textBuffer = this->programTextbox->GetText(&textLength);
+	this->selectedProcess = std::unique_ptr<TCHAR[]>(new TCHAR[textLength + 1]);
+	StringCchCopy(this->selectedProcess.get(), textLength + 1, textBuffer.get());
 }
 
 LPTSTR CAddAppDialog::GetSelectedProcess()

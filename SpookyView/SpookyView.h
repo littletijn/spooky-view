@@ -1,10 +1,14 @@
 #include "CSettings.h"
 #include <list>
 #include <unordered_set>
+#include "Unicode.h"
 
 //Globals variables
 extern t_string processNameOfWindowsToFind;
-extern std::unordered_set<TCHAR*> foundWindowClasses;
+extern std::map<tstring, tstring> foundWindowClasses;
+
+//LoadAddress declaration
+typedef BOOL(WINAPI* PGNSI)(HANDLE);
 
 //Callbacks
 void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);

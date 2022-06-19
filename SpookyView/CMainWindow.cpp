@@ -71,30 +71,39 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 #ifdef UNICODE
 				auto message = string_to_wchar_t(updateResponse.message);
 				auto downloadUrl = string_to_wchar_t(updateResponse.download_url);
-				auto versionNumber = string_to_wchar_t(updateResponse.version);
 #else
 				auto message = updateResponse.message;
 				auto downloadUrl = updateResponse.download_url;
-				auto versionNumber = updateResponse.version;
 #endif // UNICODE
 				cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance);
 				cUpdateAvailableDialog->SetMessage(message);
 				cUpdateAvailableDialog->SetDownloadUrl(downloadUrl);
 				cUpdateAvailableDialog->SetVersionNumber(versionNumber);
 				cUpdateAvailableDialog->InitInstance();
+#ifdef UNICODE
+				// Only the unicode string_to_wchar_t returns pointers. The other aren't.
 				delete[] message;
 				delete[] downloadUrl;
 				delete[] versionNumber;
+#endif
 			}
 			break;
 		}
 
 		case WM_COPYDATA:
 		{
+			if (InSendMessage())
+			{
+				ReplyMessage(TRUE);
+			}
 			PCOPYDATASTRUCT dataCopy = (PCOPYDATASTRUCT)lParam;
 			if (dataCopy->dwData == ALREADY_RUNNING_NOTIFY)
 			{
-				ShowAlreadyRunningBalloon();
+				CHAR *message = (CHAR*)dataCopy->lpData;
+				if (strrchr(message, *"Spooky View - already running"))
+				{
+					ShowAlreadyRunningBalloon();
+				}
 			}
 		}
 		break;

@@ -16,6 +16,8 @@ extern std::unique_ptr<ISettingsManager> settingsManager;
 extern void SetWindowsTransparency();
 extern void ResetWindowsTransparency();
 
+#define TRANSPARENCY_TRACKER_STEPS (100.0 / 255.0)
+
 CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
 {
 	this->CopySettings();
@@ -134,7 +136,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					windowDialog->InitInstance(this->currentProgramName);
 					if (windowDialog->GetResult() == 1)
 					{
-						LPTSTR windowClassName = windowDialog->GetSelectedWindowClass();
+						auto windowClassName = windowDialog->GetSelectedWindowClass();
 
 						auto windowSettings = new CWindowSetting();
 						this->currentProgram->windows->insert(std::pair<t_string, CWindowSetting*>(windowClassName, windowSettings));
@@ -260,6 +262,7 @@ void CSetupDialog::WindowsListNotified()
 void CSetupDialog::EnabledCheckboxNotified()
 {
 	currentAlphaSettings->enabled = enabledCheckbox->GetCheckState();
+	SetTrackbarEnableState();
 }
 
 void CSetupDialog::PopulateProcessList()
@@ -288,16 +291,19 @@ void CSetupDialog::SetTrackbarRanges(HWND hWnd)
 {
 	HWND foregroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)TRUE, (LPARAM)255);
-	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)TRUE, (LPARAM)255);
+	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
+	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
+	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
+	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
 }
 
 void CSetupDialog::SetTrackbars()
 {
 	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)currentAlphaSettings->foreground);
-	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)currentAlphaSettings->background);
+	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->background * TRANSPARENCY_TRACKER_STEPS));
+	SetTrackbarEnableState();
 }
 
 void CSetupDialog::SetCheckboxes()
@@ -311,17 +317,28 @@ void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 	switch (identifier)
 	{
 	case IDC_SLIDER_FOREGROUND:
-		currentAlphaSettings->foreground = value;
+		currentAlphaSettings->foreground = (BYTE)round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
 	case IDC_SLIDER_BACKGROUND:
-		currentAlphaSettings->background = value;
+		currentAlphaSettings->background = (BYTE)round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
 	}
 }
 
 void CSetupDialog::SetFormVisibility(bool show)
 {
-	const int itemIds[] = {IDC_CHECKBOX_ENABLE_TRANSPARENCY, IDC_STATIC_TRANSPARENCY, IDC_STATIC_FOREGROUND, IDC_SLIDER_FOREGROUND, IDC_STATIC_BACKGROUND, IDC_SLIDER_BACKGROUND };
+	const int itemIds[] = {
+		IDC_CHECKBOX_ENABLE_TRANSPARENCY,
+		IDC_STATIC_TRANSPARENCY,
+		IDC_STATIC_FOREGROUND,
+		IDC_SLIDER_FOREGROUND,
+		IDC_STATIC_BACKGROUND,
+		IDC_SLIDER_BACKGROUND,
+		IDC_STATIC_FOREGORUND_TRANSPARENT,
+		IDC_STATIC_FOREGROUND_OPAQUE,
+		IDC_STATIC_BACKGROUND_TRANSPARENT,
+		IDC_STATIC_BACKGROUND_OPAQUE
+	};
 	for (const auto& itemId : itemIds) {
 		auto item = GetDlgItem(this->hWnd, itemId);
 		ShowWindow(item, show ? SW_SHOW : SW_HIDE);
@@ -333,3 +350,13 @@ void CSetupDialog::SetButtonEnableState(int controlId, bool show)
 	auto item = GetDlgItem(this->hWnd, controlId);
 	EnableWindow(item, show);
 }
+
+void CSetupDialog::SetTrackbarEnableState()
+{
+	const int itemIds[] = { IDC_SLIDER_FOREGROUND, IDC_SLIDER_BACKGROUND };
+	for (const auto& itemId : itemIds) {
+		auto item = GetDlgItem(this->hWnd, itemId);
+		EnableWindow(item, currentAlphaSettings->enabled);
+	}
+}
+

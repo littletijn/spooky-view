@@ -13,12 +13,12 @@
 #include <list>
 #include <strsafe.h>
 #include "Defines.h"
+#ifdef UNICODE
 #include "UpdateChecker.h"
+#endif
 #include "UpdateResponse.h"
 #include <unordered_set>
 
-typedef BOOL (WINAPI *PGNSI)(HANDLE);
-typedef BOOL (WINAPI *PGNSI2)(HWND, MARGINS*);
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd318055(v=vs.85).aspx
 const TCHAR DIALOGBOXCLASSNAME[7] = _T("#32770");
@@ -41,7 +41,7 @@ TCHAR filePathName[MAX_PATH];
 
 //Global variables for EnumWindowsForProcess
 t_string processNameOfWindowsToFind;
-std::unordered_set<TCHAR*> foundWindowClasses;
+std::map<tstring, tstring> foundWindowClasses;
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -83,10 +83,12 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		settingsManager->LoadSettings();
 		SetWindowsTransparency();
+#ifdef UNICODE
 		if (!settingsManager->GetDisableUpdateCheck())
 		{
 			CreateUpdateCheckerThread();
 		}
+#endif
 	}
 
 	hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_SPOOKYVIEW));
@@ -140,12 +142,11 @@ BOOL IsWindowUsable(HWND hwnd)
 	if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 	{
 		LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
-		if (GetAncestor(hwnd, GA_PARENT) != GetDesktopWindow() || ((styles & WS_POPUP) && _tcscmp(windowClassName, DIALOGBOXCLASSNAME) != 0))
+		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && (styles & WS_VISIBLE) && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0))
 		{
-			//This is not a top-level window or a pop-up window that is not a dialog or it is hidden at the moment, skip it.
-			return FALSE;
+			//This is a top-level window that is not hidden and not a pop-up window or a pop-up windows that is a dialog
+			return TRUE;
 		}
-		return TRUE;
 	}
 	return FALSE;
 }
@@ -199,10 +200,13 @@ BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 		GetWindowProcessAndClass(hwnd);
 		if (_tcsicmp(fileName, processNameOfWindowsToFind.c_str()) == 0)
 		{
-			//TODO: Fix memory leak
-			auto windowClassNameCopy = new TCHAR[MAX_WINDOW_CLASS_NAME];
-			StringCchCopy(windowClassNameCopy, MAX_WINDOW_CLASS_NAME, windowClassName);
-			foundWindowClasses.insert(windowClassNameCopy);
+			auto windowClassNameCopy = std::shared_ptr<TCHAR[]>(new TCHAR[MAX_WINDOW_CLASS_NAME]);
+			StringCchCopy(windowClassNameCopy.get(), MAX_WINDOW_CLASS_NAME, windowClassName);
+
+			auto textLength = GetWindowTextLength(hwnd);
+			auto textBuffer = std::unique_ptr<TCHAR[]>(new TCHAR[textLength + 1]);
+			GetWindowText(hwnd, textBuffer.get(), textLength + 1);
+			foundWindowClasses.insert(std::pair<tstring, tstring>(tstring(windowClassNameCopy.get()), tstring(textBuffer.get())));
 		}
 	}
 	return TRUE;
@@ -317,25 +321,25 @@ void GetIsWindows8()
 
 void SendAlreadyRunningNotify()
 {
-	TCHAR windowClass[MAX_LOADSTRING], windowTitle[MAX_LOADSTRING], windowClosingTitle[MAX_LOADSTRING];
-	TCHAR message[] = _T("Already running");
+	TCHAR windowTitle[MAX_LOADSTRING], windowClosingTitle[MAX_LOADSTRING];
+	CHAR message[] = "Spooky View - already running";
 
-	LoadString(hInst, IDC_SPOOKYVIEW, windowClass, MAX_LOADSTRING);
+	LoadString(hInst, IDS_APP_CLOSING_TITLE, windowClosingTitle, sizeof(windowClosingTitle) / sizeof(TCHAR));
 	LoadString(hInst, IDS_APP_TITLE, windowTitle, MAX_LOADSTRING);
-	LoadString(hInst, IDS_APP_CLOSING_TITLE, windowClosingTitle, MAX_LOADSTRING);
 
 	SetWindowText(mainWindow->GetHwnd(), windowClosingTitle);
 
-	HWND otherHwnd = FindWindow(NULL, windowTitle);
+	HWND otherHwnd = FindWindow(_T("SpookyViewMainClass"), windowTitle);
 	if (otherHwnd != NULL)
 	{
 		COPYDATASTRUCT dataCopy;
 		dataCopy.dwData = ALREADY_RUNNING_NOTIFY;
 		dataCopy.cbData = sizeof(message);
 		dataCopy.lpData = message;
-		SetLastError(ERROR_SUCCESS);
-		SendMessage(otherHwnd, WM_COPYDATA, (WPARAM)(HWND)mainWindow->GetHwnd(), (LPARAM)(LPVOID)&dataCopy);
-		DWORD error = GetLastError();
+		if (!SendMessage(otherHwnd, WM_COPYDATA, (WPARAM)mainWindow->GetHwnd(), (LPARAM)&dataCopy))
+		{
+			DWORD error = GetLastError();
+		}
 	}
 }
 

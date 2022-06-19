@@ -11,6 +11,8 @@
 extern std::unique_ptr<CMainWindow> mainWindow;
 extern UpdateResponse updateResponse;
 
+#ifdef UNICODE
+
 void CreateUpdateCheckerThread()
 {
 	DWORD threadId;
@@ -72,6 +74,17 @@ void UpdateChecker::DownloadAndParseJson()
 	tstring version;
 	tstring url(_T("spookyview/status?version="));
 	GetProductVersion(&version);
+	url.append(version);
+	url.append(_T("&arch="));
+#ifdef _M_IX86 
+	url.append(_T("x86"));
+#elif _M_AMD64
+		url.append(_T("x64"));
+#elif _M_ARM64 
+	url.append(_T("AArch64"));
+#else
+	url.append(_T("unknown"));
+#endif
 
 	DWORD dwSize = 0;
 	DWORD dwDownloaded = 0;
@@ -83,7 +96,9 @@ void UpdateChecker::DownloadAndParseJson()
 		hRequest = NULL;
 
 	// Use WinHttpOpen to obtain a session handle.
-	hSession = WinHttpOpen(_T("SpookyView/0.5"),
+	tstring userAgent = _T("SpookyView/");
+	userAgent.append(version);
+	hSession = WinHttpOpen(userAgent.c_str(),
 		WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
 		WINHTTP_NO_PROXY_NAME,
 		WINHTTP_NO_PROXY_BYPASS, 0);
@@ -97,7 +112,7 @@ void UpdateChecker::DownloadAndParseJson()
 	// Create an HTTP request handle.
 	if (hConnect)
 	{
-		hRequest = WinHttpOpenRequest(hConnect, _T("GET"), url.append(version).c_str(),
+		hRequest = WinHttpOpenRequest(hConnect, _T("GET"), url.c_str(),
 			NULL, WINHTTP_NO_REFERER,
 			WINHTTP_DEFAULT_ACCEPT_TYPES,
 			WINHTTP_FLAG_SECURE);
@@ -186,3 +201,5 @@ void UpdateChecker::DownloadAndParseJson()
 		}
 	}
 }
+
+#endif

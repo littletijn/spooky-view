@@ -15,7 +15,6 @@ public:
 	virtual LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
 protected:
 	//Members
-	TCHAR szWindowClass[MAX_LOADSTRING];			// the window class name
 	TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 	WNDCLASSEX wcex;
 };

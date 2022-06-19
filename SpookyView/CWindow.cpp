@@ -18,7 +18,6 @@ CWindow::CWindow(HINSTANCE hInstance, HWND hParent) : CWnd(hInstance)
 //
 ATOM CWindow::RegisterWindowClass()
 {
-	LoadString(hInstance, IDC_SPOOKYVIEW, szWindowClass, MAX_LOADSTRING);
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	this->hParent = HWND_MESSAGE; // Make this window a Message-only window
 	wcex.cbSize = sizeof(WNDCLASSEX);
@@ -33,7 +32,7 @@ ATOM CWindow::RegisterWindowClass()
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
-	wcex.lpszClassName = szWindowClass;
+	wcex.lpszClassName = _T("SpookyViewMainClass");
 
 	g_ptrmap.Add(this);
 
@@ -53,14 +52,13 @@ ATOM CWindow::RegisterWindowClass()
 //
 BOOL CWindow::InitInstance(int nCmdShow)
 {
-	hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, this->hParent, NULL, hInstance, NULL);
+	hWnd = CreateWindow(_T("SpookyViewMainClass"), szTitle, WS_OVERLAPPEDWINDOW,
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, this->hParent, NULL, hInstance, NULL);
 
 	if (!hWnd)
 	{
 		return FALSE;
 	}
-
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 	return TRUE;

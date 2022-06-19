@@ -3,6 +3,8 @@
 #include "SpookyView.h"
 #include "Defines.h"
 #include <strsafe.h>
+#include <commctrl.h>
+#include "Textbox.h"
 
 CAddWindowDialog::CAddWindowDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -26,10 +28,27 @@ INT_PTR CALLBACK CAddWindowDialog::DlgProc(HWND hDlg, UINT message, WPARAM wPara
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		this->windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_APPS);
+		this->windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_WINDOWS);
+		this->windowsListView->InsertColumn(0, _T("Class"));
+		this->windowsListView->InsertColumn(1, _T("Title"));
+		this->classTextbox = std::make_unique<Textbox>(hDlg, IDC_EDIT_CLASS_NAME);
 		LoadAppWindows();
 		return TRUE;
 		break;
+	case WM_NOTIFY:
+	{
+		LPNMHDR notifyMessage = (LPNMHDR)lParam;
+		if (notifyMessage->code == LVN_ITEMCHANGED)
+		{
+			switch (notifyMessage->idFrom)
+			{
+			case IDC_LIST_ADD_WINDOWS:
+				SetSelectedWindow();
+				return TRUE;
+			}
+		}
+	}
+	break;
 
 	case WM_COMMAND:
 		switch (LOWORD(wParam))
@@ -52,21 +71,31 @@ void CAddWindowDialog::LoadAppWindows()
 	foundWindowClasses.clear();
 	processNameOfWindowsToFind = this->programName;
 	EnumWindows(EnumWindowsForProcess, NULL);
-	for (TCHAR* windowClass : foundWindowClasses) {
-		this->windowsListView->AddItem(windowClass);
+	for (auto windowClass : foundWindowClasses) {
+		int itemIndex = this->windowsListView->AddItem(windowClass.first);
+		this->windowsListView->SetItem(itemIndex, 1, windowClass.second);
+	}
+}
+
+void CAddWindowDialog::SetSelectedWindow()
+{
+	int index = this->windowsListView->GetSelectedIndex();
+	if (index >= 0)
+	{
+		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
+		LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
+		this->classTextbox->SetText(text);
 	}
 }
 
 void CAddWindowDialog::StoreSelectedWindow()
 {
-	int index = this->windowsListView->GetSelectedIndex();
-	TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
-	LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
-	this->selectedWindowClass = std::unique_ptr<TCHAR[]>(new TCHAR[MAX_PATH]);
-	StringCchCopy(this->selectedWindowClass.get(), MAX_PATH, textBuffer);
+	int textLength = 0;
+	auto textBuffer = this->classTextbox->GetText(&textLength);
+	this->selectedWindowClass = tstring(textBuffer.get());
 }
 
-LPTSTR CAddWindowDialog::GetSelectedWindowClass()
+tstring CAddWindowDialog::GetSelectedWindowClass()
 {
-	return this->selectedWindowClass.get();
+	return selectedWindowClass;
 }
