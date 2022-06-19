@@ -321,25 +321,25 @@ void GetIsWindows8()
 
 void SendAlreadyRunningNotify()
 {
-	TCHAR windowClass[MAX_LOADSTRING], windowTitle[MAX_LOADSTRING], windowClosingTitle[MAX_LOADSTRING];
-	TCHAR message[] = _T("Already running");
+	TCHAR windowTitle[MAX_LOADSTRING], windowClosingTitle[MAX_LOADSTRING];
+	CHAR message[] = "Spooky View - already running";
 
-	LoadString(hInst, IDC_SPOOKYVIEW, windowClass, MAX_LOADSTRING);
+	LoadString(hInst, IDS_APP_CLOSING_TITLE, windowClosingTitle, sizeof(windowClosingTitle) / sizeof(TCHAR));
 	LoadString(hInst, IDS_APP_TITLE, windowTitle, MAX_LOADSTRING);
-	LoadString(hInst, IDS_APP_CLOSING_TITLE, windowClosingTitle, MAX_LOADSTRING);
 
 	SetWindowText(mainWindow->GetHwnd(), windowClosingTitle);
 
-	HWND otherHwnd = FindWindow(NULL, windowTitle);
+	HWND otherHwnd = FindWindow(_T("SpookyViewMainClass"), windowTitle);
 	if (otherHwnd != NULL)
 	{
 		COPYDATASTRUCT dataCopy;
 		dataCopy.dwData = ALREADY_RUNNING_NOTIFY;
 		dataCopy.cbData = sizeof(message);
 		dataCopy.lpData = message;
-		SetLastError(ERROR_SUCCESS);
-		SendMessage(otherHwnd, WM_COPYDATA, (WPARAM)(HWND)mainWindow->GetHwnd(), (LPARAM)(LPVOID)&dataCopy);
-		DWORD error = GetLastError();
+		if (!SendMessage(otherHwnd, WM_COPYDATA, (WPARAM)mainWindow->GetHwnd(), (LPARAM)&dataCopy))
+		{
+			DWORD error = GetLastError();
+		}
 	}
 }
 

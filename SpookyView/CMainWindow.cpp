@@ -92,10 +92,18 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 
 		case WM_COPYDATA:
 		{
+			if (InSendMessage())
+			{
+				ReplyMessage(TRUE);
+			}
 			PCOPYDATASTRUCT dataCopy = (PCOPYDATASTRUCT)lParam;
 			if (dataCopy->dwData == ALREADY_RUNNING_NOTIFY)
 			{
-				ShowAlreadyRunningBalloon();
+				CHAR *message = (CHAR*)dataCopy->lpData;
+				if (strrchr(message, *"Spooky View - already running"))
+				{
+					ShowAlreadyRunningBalloon();
+				}
 			}
 		}
 		break;
