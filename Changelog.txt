@@ -86,3 +86,14 @@ and for preparation of the GUI.
 - Show names of running programs
 - Added x64 build
 - Exclude system process 0
+
+0.6.0 (Getting closer build)
+- Added textboxes to enter executable or class name
+- Adde browse button to search for a executable
+- Show window title when selecting a new window
+- When new app/window is added set default values on full opaque
+- Added labels to trackbars and use 10 - 100% range
+- Changed internal name of window
+- Changed window detection to skipp hidden windows
+- Fixed non UNICODE build
+- Added architecure to update request
