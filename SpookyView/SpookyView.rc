@@ -115,7 +115,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,17,67,130,8
     LTEXT           "Based on an idea by Mikey",IDC_STATIC,17,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,17,12,130,8,SS_NOPREFIX
-    LTEXT           "0.6.0 (Getting closer build)",IDC_STATIC,17,22,130,8
+    LTEXT           "0.6.1 (Window washer build)",IDC_STATIC,17,22,130,8
     LTEXT           "Copyright (c) Martijn van Antwerpen",IDC_STATIC,17,57,130,8
     DEFPUSHBUTTON   "Close",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -208,8 +208,8 @@ END
 //
 
 1 VERSIONINFO
- FILEVERSION 0,6,0,0
- PRODUCTVERSION 0,6,0,0
+ FILEVERSION 0,6,1,0
+ PRODUCTVERSION 0,6,1,0
  FILEFLAGSMASK 0x2L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -227,12 +227,12 @@ BEGIN
             VALUE "Comments", "Test build. Do not distribute."
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "Spooky View"
-            VALUE "FileVersion", "0.6.0 (Getting closer build)"
+            VALUE "FileVersion", "0.6.1 (Window washer build)"
             VALUE "InternalName", "Spooky View"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "OriginalFilename", "Spookyview.exe"
             VALUE "ProductName", "Spooky View"
-            VALUE "ProductVersion", "0.6.0 (Getting closer build)"
+            VALUE "ProductVersion", "0.6.1 (Window washer build)"
         END
     END
     BLOCK "VarFileInfo"
