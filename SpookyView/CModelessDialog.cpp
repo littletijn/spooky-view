@@ -7,7 +7,7 @@ CModelessDialog::CModelessDialog(HINSTANCE hInstance) : CDialog(hInstance)
 {
 }
 
-INT_PTR CModelessDialog::DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CModelessDialog::StaticDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	CModelessDialog* pThis = NULL;
 
@@ -30,7 +30,7 @@ INT_PTR CModelessDialog::DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 BOOL CModelessDialog::Create()
 {
-	this->hWnd = CreateDialogParam(this->hInstance, this->dialogResource, NULL, DialogProc, (LPARAM)this);
+	this->hWnd = CreateDialogParam(this->hInstance, this->dialogResource, NULL, StaticDialogProc, (LPARAM)this);
 	if (this->hWnd != NULL)
 	{
 		if (spookyIcon)

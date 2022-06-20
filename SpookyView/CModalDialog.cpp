@@ -7,7 +7,7 @@ CModalDialog::CModalDialog(HINSTANCE hInstance, HWND hParent) : CDialog(hInstanc
 	this->hParent = hParent;
 }
 
-INT_PTR CModalDialog::DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+INT_PTR CModalDialog::StaticDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	CModalDialog* pThis = NULL;
 
@@ -30,7 +30,7 @@ INT_PTR CModalDialog::DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 
 BOOL CModalDialog::Create()
 {
-	result = DialogBoxParam(hInstance, dialogResource, hParent, DialogProc, (LPARAM)this);
+	result = DialogBoxParam(hInstance, dialogResource, hParent, StaticDialogProc, (LPARAM)this);
 	return TRUE;
 }
 

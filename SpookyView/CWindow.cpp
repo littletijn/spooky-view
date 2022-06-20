@@ -26,7 +26,7 @@ ATOM CWindow::RegisterWindowClass()
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_SPOOKYVIEW);
 	wcex.hIconSm = NULL;
-	wcex.lpfnWndProc = CWindow::WindowProc;
+	wcex.lpfnWndProc = CWindow::StaticWindowProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
@@ -35,7 +35,7 @@ ATOM CWindow::RegisterWindowClass()
 	return RegisterClassEx(&wcex);
 }
 
-LRESULT CALLBACK CWindow::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK CWindow::StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	CWindow* pThis = NULL;
 
