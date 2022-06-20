@@ -87,7 +87,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				delete[] versionNumber;
 #endif
 			}
-			break;
+			return FALSE;
 		}
 
 		case WM_COPYDATA:
@@ -106,7 +106,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				}
 			}
 		}
-		break;
+		return FALSE;
 
 	case WM_NOTIFYICON:
 		//Handles the Notification Area Icon
@@ -125,13 +125,13 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			HMENU iconMenu = GetContextMenu();
 			TrackPopupMenu(iconMenu, TPM_CENTERALIGN | TPM_BOTTOMALIGN, cursorPos.x, cursorPos.y, 0, hWnd, NULL);
 		}
-			break;
+			return FALSE;
 		case WM_LBUTTONDBLCLK:
 			//Left double click. Open default option of Context menu
-			break;
+			return FALSE;
 		case WM_LBUTTONUP:
 			//Left single click. Open Flyout window
-			break;
+			return FALSE;
 		}
 		break;
 	case WM_COMMAND:
@@ -141,26 +141,25 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		case IDM_SETTINGS:
 			cSettingsDialog = std::make_unique<CSettingsDialog>(this->hInstance);
 			cSettingsDialog->InitInstance();
-			break;
+			return FALSE;
 
 			case IDM_OPEN:
 			{
 				cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance);
 				cSetupDialog->InitInstance();
 			}
-			break;
+			return FALSE;
 
 			case IDM_ABOUT:
 			{
 				cAboutDialog = std::make_unique<CAbout>(this->hInstance);
 				cAboutDialog->InitInstance();
 			}
-			break;
+			return FALSE;
 
 			case IDM_EXIT:
 				DestroyWindow(this->hWnd);
-				return 0;
-			break;
+				return FALSE;
 
 			case IDM_PAUSE:
 				UINT checkState = IsPaused() ? MF_UNCHECKED : MF_CHECKED;
@@ -168,16 +167,16 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 					DrawMenuBar(hWnd);
 					TogglePause();
 				}
-			break;
+				return FALSE;
 		}
 		break;
 	case WM_DESTROY:
 		this->CloseWindow();
-		break;
+		return FALSE;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
-	return 0;
+	return TRUE;
 }
 
 void CMainWindow::ShowAlreadyRunningBalloon()

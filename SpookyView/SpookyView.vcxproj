@@ -177,7 +177,6 @@
     <ClInclude Include="CMainWindow.h" />
     <ClInclude Include="CModalDialog.h" />
     <ClInclude Include="CNotifyIcon.h" />
-    <ClInclude Include="CPtrMap.h" />
     <ClInclude Include="CRegistrySettingsManager.h" />
     <ClInclude Include="CSettings.h" />
     <ClInclude Include="CSettingsDialog.h" />
@@ -196,7 +195,6 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="String.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="WndProc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CUpdateAvailableDialog.cpp" />
@@ -212,7 +210,6 @@
     <ClCompile Include="CModalDialog.cpp" />
     <ClCompile Include="CNotifyIcon.cpp" />
     <ClCompile Include="CProgramSetting.cpp" />
-    <ClCompile Include="CPtrMap.cpp" />
     <ClCompile Include="CRegistrySettingsManager.cpp" />
     <ClCompile Include="CSettings.cpp" />
     <ClCompile Include="CSettingsDialog.cpp" />
@@ -227,7 +224,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="WndProc.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpookyView.rc" />
