@@ -57,14 +57,8 @@
     <ClInclude Include="CNotifyIcon.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
-    <ClInclude Include="CPtrMap.h">
-      <Filter>Header Files\Classes</Filter>
-    </ClInclude>
     <ClInclude Include="CMainWindow.h">
       <Filter>Header Files\Classes\Windows</Filter>
-    </ClInclude>
-    <ClInclude Include="WndProc.h">
-      <Filter>Header Files\Function</Filter>
     </ClInclude>
     <ClInclude Include="SpookyView.h">
       <Filter>Header Files\Function</Filter>
@@ -161,16 +155,10 @@
     <ClCompile Include="CNotifyIcon.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
-    <ClCompile Include="CPtrMap.cpp">
-      <Filter>Source Files\Classes</Filter>
-    </ClCompile>
     <ClCompile Include="CMainWindow.cpp">
       <Filter>Source Files\Classes\Windows</Filter>
     </ClCompile>
     <ClCompile Include="SpookyView.cpp">
-      <Filter>Source Files\Function</Filter>
-    </ClCompile>
-    <ClCompile Include="WndProc.cpp">
       <Filter>Source Files\Function</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">

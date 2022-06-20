@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "CWindow.h"
-#include "CPtrMap.h"
-#include "WndProc.h"
 
-extern CPtrMap<CWindow> g_ptrmap;
+extern HICON spookyIcon;
 
 // Saves instance handle and register window class
 CWindow::CWindow(HINSTANCE hInstance, HWND hParent) : CWnd(hInstance)
@@ -23,22 +21,45 @@ ATOM CWindow::RegisterWindowClass()
 	wcex.cbSize = sizeof(WNDCLASSEX);
 
 	wcex.style = CS_HREDRAW | CS_VREDRAW;
-	wcex.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SPOOKYVIEW));
+	wcex.hIcon = spookyIcon;
 	wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
 	wcex.lpszMenuName = MAKEINTRESOURCE(IDC_SPOOKYVIEW);
 	wcex.hIconSm = NULL;
-	wcex.lpfnWndProc = WndProcMain;
+	wcex.lpfnWndProc = CWindow::StaticWindowProc;
 	wcex.cbClsExtra = 0;
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
 	wcex.lpszClassName = _T("SpookyViewMainClass");
 
-	g_ptrmap.Add(this);
-
 	return RegisterClassEx(&wcex);
 }
 
+LRESULT CALLBACK CWindow::StaticWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	CWindow* pThis = NULL;
+
+	if (uMsg == WM_NCCREATE)
+	{
+		CREATESTRUCT* pCreate = (CREATESTRUCT*)lParam;
+		pThis = (CWindow*)pCreate->lpCreateParams;
+		SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pThis);
+
+		pThis->hWnd = hWnd;
+	}
+	else
+	{
+		pThis = (CWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
+	}
+	if (pThis)
+	{
+		return pThis->WndProc(hWnd, uMsg, wParam, lParam);
+	}
+	else
+	{
+		return DefWindowProc(hWnd, uMsg, wParam, lParam);
+	}
+}
 
 //
 //   FUNCTION: InitInstance(int)
@@ -53,7 +74,7 @@ ATOM CWindow::RegisterWindowClass()
 BOOL CWindow::InitInstance(int nCmdShow)
 {
 	hWnd = CreateWindow(_T("SpookyViewMainClass"), szTitle, WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, this->hParent, NULL, hInstance, NULL);
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 0, this->hParent, NULL, hInstance, this);
 
 	if (!hWnd)
 	{

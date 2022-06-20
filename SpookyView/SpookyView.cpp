@@ -24,7 +24,8 @@
 const TCHAR DIALOGBOXCLASSNAME[7] = _T("#32770");
 
 // Global Variables:
-HINSTANCE hInst;								// current instance
+HINSTANCE hInst; // current instance
+HICON spookyIcon;
 std::unique_ptr<CMainWindow> mainWindow;
 HWINEVENTHOOK hWinEventHook[3];
 PGNSI isImmersive;
@@ -56,12 +57,14 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 	init.dwICC = ICC_LISTVIEW_CLASSES;
 	InitCommonControlsEx(&init);
 
+	spookyIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SPOOKYVIEW));
+
 	hInst = hInstance;
 	mainWindow = std::make_unique<CMainWindow>(hInstance);
 	mainWindow->RegisterWindowClass();
 	
 	// Perform application initialization:
-	if (!mainWindow->InitInstance(/*nCmdShow*/))
+	if (!mainWindow->InitInstance())
 	{
 		return FALSE;
 	}
@@ -83,6 +86,7 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstanc
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		settingsManager->LoadSettings();
 		SetWindowsTransparency();
+		mainWindow->CheckIsFirstRun();
 #ifdef UNICODE
 		if (!settingsManager->GetDisableUpdateCheck())
 		{
