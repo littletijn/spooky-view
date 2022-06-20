@@ -19,7 +19,7 @@ INT_PTR CModalDialog::DialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM 
 	}
 	else
 	{
-		pThis = (CModalDialog*)GetWindowLongPtr(hDlg, GWLP_USERDATA);
+		pThis = (CModalDialog*)GetWindowLongPtr(hDlg, DWLP_USER);
 	}
 	if (pThis)
 	{
