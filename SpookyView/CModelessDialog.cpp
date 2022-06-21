@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "CModelessDialog.h"
+#include "Defines.h"
 
 extern HICON spookyIcon;
 
-CModelessDialog::CModelessDialog(HINSTANCE hInstance) : CDialog(hInstance)
+CModelessDialog::CModelessDialog(HINSTANCE hInstance, HWND hParent) : CDialog(hInstance)
 {
+	this->hParent = hParent;
 }
 
 INT_PTR CModelessDialog::StaticDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
@@ -23,7 +25,18 @@ INT_PTR CModelessDialog::StaticDialogProc(HWND hDlg, UINT message, WPARAM wParam
 	}
 	if (pThis)
 	{
-		return pThis->DlgProc(hDlg, message, wParam, lParam);
+		if (message == WM_DESTROY)
+		{
+			//Remove pointer to window to make sure that our DlgProc is not called anymore.
+			//This pointer might be not valid anymore after calling OnDialogDestroyed()
+			SetWindowLongPtr(hDlg, DWLP_USER, NULL);
+			pThis->OnDialogDestroyed();
+		}
+		else
+		{
+			return pThis->DlgProc(hDlg, message, wParam, lParam);
+		}
+		
 	}
 	return FALSE;
 }
@@ -42,4 +55,12 @@ BOOL CModelessDialog::Create()
 		return TRUE;
 	}
 	return FALSE;
+}
+
+void CModelessDialog::OnDialogDestroyed()
+{
+	if (hParent != NULL && key > 0)
+	{
+		SendMessage(hParent, WM_MODELESS_DIALOG_DESTROYED, key, NULL);
+	}
 }

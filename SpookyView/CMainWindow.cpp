@@ -59,6 +59,21 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 {
 	switch (message)
 	{
+		case WM_MODELESS_DIALOG_DESTROYED:
+			switch (wParam)
+			{
+			case IDD_SETTINGS:
+				cSettingsDialog.reset();
+				break;
+			case IDD_SETUP:
+				cSetupDialog.reset();
+				break;
+			case IDD_ABOUTBOX:
+				cAboutDialog.reset();
+				break;
+			}
+			return FALSE;
+
 		case WM_UPDATE_AVAILABLE:
 		{
 #ifdef UNICODE
@@ -75,7 +90,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				auto message = updateResponse.message;
 				auto downloadUrl = updateResponse.download_url;
 #endif // UNICODE
-				cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance);
+				cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance, this->hWnd);
 				cUpdateAvailableDialog->SetMessage(message);
 				cUpdateAvailableDialog->SetDownloadUrl(downloadUrl);
 				cUpdateAvailableDialog->SetVersionNumber(versionNumber);
@@ -138,22 +153,31 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		//Handles the Context Menu of the Notification Area Icon
 		switch (LOWORD(wParam))
 		{
-		case IDM_SETTINGS:
-			cSettingsDialog = std::make_unique<CSettingsDialog>(this->hInstance);
-			cSettingsDialog->InitInstance();
+			case IDM_SETTINGS:
+				if (!cSettingsDialog)
+				{
+					cSettingsDialog = std::make_unique<CSettingsDialog>(this->hInstance, this->hWnd);
+					cSettingsDialog->InitInstance();
+				}
 			return FALSE;
 
 			case IDM_OPEN:
 			{
-				cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance);
-				cSetupDialog->InitInstance();
+				if (!cSetupDialog)
+				{
+					cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance, this->hWnd);
+					cSetupDialog->InitInstance();
+				}
 			}
 			return FALSE;
 
 			case IDM_ABOUT:
 			{
-				cAboutDialog = std::make_unique<CAbout>(this->hInstance);
-				cAboutDialog->InitInstance();
+				if (!cAboutDialog)
+				{
+					cAboutDialog = std::make_unique<CAbout>(this->hInstance, this->hWnd);
+					cAboutDialog->InitInstance();
+				}
 			}
 			return FALSE;
 

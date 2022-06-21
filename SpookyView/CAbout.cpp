@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "CAbout.h"
 
-CAbout::CAbout(HINSTANCE hInstance) : CModelessDialog(hInstance)
+CAbout::CAbout(HINSTANCE hInstance, HWND hParent) : CModelessDialog(hInstance, hParent)
 {
 };
 
 BOOL CAbout::SetupDialog()
 {
+	key = IDD_ABOUTBOX;
 	this->dialogResource = MAKEINTRESOURCE(IDD_ABOUTBOX);
 	return TRUE;
 }

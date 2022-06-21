@@ -7,7 +7,7 @@ class CUpdateAvailableDialog : public CModelessDialog
 	tstring downloadUrl;
 	tstring versionNumber;
 public:
-	CUpdateAvailableDialog(HINSTANCE hInstance);
+	CUpdateAvailableDialog(HINSTANCE hInstance, HWND hParent);
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 	void SetMessage(tstring message);
 	void SetDownloadUrl(tstring url);
