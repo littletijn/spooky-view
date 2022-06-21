@@ -12,7 +12,7 @@ public:
 	CWindow(HINSTANCE hInstance, HWND hParent = NULL);
 	ATOM RegisterWindowClass();
 	virtual BOOL InitInstance(int nCmdShow);
-	static LRESULT StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK StaticWindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 	virtual LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) = 0;
 protected:
 	//Members
