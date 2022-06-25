@@ -11,7 +11,7 @@
 class CSetupDialog : public CModelessDialog
 {
 public:
-	CSetupDialog(HINSTANCE hInstance);
+	CSetupDialog(HINSTANCE hInstance, HWND hParent);
 	~CSetupDialog();
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

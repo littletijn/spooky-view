@@ -18,7 +18,7 @@ extern void ResetWindowsTransparency();
 
 #define TRANSPARENCY_TRACKER_STEPS (100.0 / 255.0)
 
-CSetupDialog::CSetupDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
+CSetupDialog::CSetupDialog(HINSTANCE hInstance, HWND hParent) : CModelessDialog(hInstance, hParent)
 {
 	this->CopySettings();
 }
@@ -29,6 +29,7 @@ CSetupDialog::~CSetupDialog()
 
 BOOL CSetupDialog::SetupDialog()
 {
+	key = IDD_SETUP;
 	this->dialogResource = MAKEINTRESOURCE(IDD_SETUP);
 	return TRUE;
 }

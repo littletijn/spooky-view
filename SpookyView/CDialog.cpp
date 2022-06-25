@@ -5,10 +5,6 @@ CDialog::CDialog(HINSTANCE hInstance) : CWnd(hInstance)
 {
 }
 
-CDialog::~CDialog()
-{
-}
-
 BOOL CDialog::InitInstance()
 {
 	SetupDialog();

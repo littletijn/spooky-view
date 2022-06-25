@@ -4,7 +4,7 @@
 class CSettingsDialog :public CModelessDialog
 {
 public:
-	CSettingsDialog(HINSTANCE hInstance);
+	CSettingsDialog(HINSTANCE hInstance, HWND hParent);
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 protected:
 	BOOL SetupDialog();

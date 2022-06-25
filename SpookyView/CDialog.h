@@ -7,7 +7,6 @@ class CDialog : protected CWnd
 {
 public:
 	CDialog(HINSTANCE hInstance);
-	~CDialog();
 	BOOL InitInstance();
 protected:
 	LPCTSTR dialogResource;

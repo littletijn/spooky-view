@@ -7,12 +7,13 @@
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
 
-CSettingsDialog::CSettingsDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
+CSettingsDialog::CSettingsDialog(HINSTANCE hInstance, HWND hParent) : CModelessDialog(hInstance, hParent)
 {
 }
 
 BOOL CSettingsDialog::SetupDialog()
 {
+	key = IDD_SETTINGS;
 	this->dialogResource = MAKEINTRESOURCE(IDD_SETTINGS);
 	return TRUE;
 }

@@ -6,12 +6,13 @@
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
 
-CUpdateAvailableDialog::CUpdateAvailableDialog(HINSTANCE hInstance) : CModelessDialog(hInstance)
+CUpdateAvailableDialog::CUpdateAvailableDialog(HINSTANCE hInstance, HWND hParent) : CModelessDialog(hInstance, hParent)
 {
 };
 
 BOOL CUpdateAvailableDialog::SetupDialog()
 {
+	key = IDD_UPDATE_AVAILABLE;
 	this->dialogResource = MAKEINTRESOURCE(IDD_UPDATE_AVAILABLE);
 	return TRUE;
 }
