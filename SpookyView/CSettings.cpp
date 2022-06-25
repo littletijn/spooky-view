@@ -5,7 +5,7 @@
 
 CSettings::CSettings()
 {
-	this->programs = std::make_unique<std::map<t_string, CProgramSetting*>>();
+	this->programs = std::make_unique<std::map<t_string, std::unique_ptr<CProgramSetting>>>();
 }
 
 CSettings::CSettings(const CSettings& c) : CSettings::CSettings()
@@ -14,8 +14,7 @@ CSettings::CSettings(const CSettings& c) : CSettings::CSettings()
 	for (auto program = c.programs.get()->begin(); program != c.programs.get()->end(); ++program)
 	{
 		t_string firstCopy = t_string(program->first);
-		CProgramSetting* secondCopy = new CProgramSetting (*program->second);
-		this->programs->insert(std::pair<t_string, CProgramSetting*>(firstCopy, secondCopy));
+		this->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(firstCopy, std::make_unique<CProgramSetting>(*program->second)));
 	}
 }
 
@@ -32,11 +31,11 @@ BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, 
 	auto result = this->programs->find(processFileName);
 	if (result != this->programs->end())
 	{
-		auto setting = result->second;
+		auto& setting = result->second;
 		auto windowResult = setting->windows->find(windowClassName);
 		if (windowResult != setting->windows->end())
 		{
-			auto window = windowResult->second;
+			auto& window = windowResult->second;
 			alphaSettings = window->alphaSettings;
 		}
 		else{

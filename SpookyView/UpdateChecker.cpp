@@ -88,7 +88,6 @@ void UpdateChecker::DownloadAndParseJson()
 
 	DWORD dwSize = 0;
 	DWORD dwDownloaded = 0;
-	LPSTR pszOutBuffer;
 	BOOL  bResults = FALSE;
 	std::string response;
 	HINTERNET  hSession = NULL,
@@ -147,7 +146,7 @@ void UpdateChecker::DownloadAndParseJson()
 			}
 
 			// Allocate space for the buffer.
-			pszOutBuffer = new char[dwSize + 1];
+			auto pszOutBuffer = std::make_unique<char[]>(dwSize + 1);
 			if (!pszOutBuffer)
 			{
 				printf("Out of memory\n");
@@ -156,18 +155,16 @@ void UpdateChecker::DownloadAndParseJson()
 			else
 			{
 				// Read the Data.
-				ZeroMemory(pszOutBuffer, dwSize + 1);
+				ZeroMemory(pszOutBuffer.get(), dwSize + 1);
 
-				if (!WinHttpReadData(hRequest, (LPVOID)pszOutBuffer, dwSize, &dwDownloaded))
+				if (!WinHttpReadData(hRequest, (LPVOID)pszOutBuffer.get(), dwSize, &dwDownloaded))
 				{
 					printf("Error %u in WinHttpReadData.\n", GetLastError());
 				}
 				else
 				{
-					response = response + std::string(pszOutBuffer);
+					response = response + std::string(pszOutBuffer.get());
 				}
-				// Free the memory allocated to the buffer.
-				delete[] pszOutBuffer;
 			}
 
 		} while (dwSize > 0);

@@ -58,7 +58,7 @@ void CRegistrySettingsManager::LoadSettings()
 		//Create a TCHAR buffer with the maximum allowed key name length as size, make it as a heap stored array and put it in a smart pointer on the stack
 		//so it will be delete-d when the smart pointer is going out of scope
 		programsSubKeyLength++;
-		std::unique_ptr<TCHAR[]> processKeyName(new TCHAR[programsSubKeyLength]);
+		auto processKeyName = std::make_unique<TCHAR[]>(programsSubKeyLength);
 
 		//Enum the process sub keys in the Programs key
 		LSTATUS programsEnumResult;
@@ -76,11 +76,7 @@ void CRegistrySettingsManager::LoadSettings()
 			if (processKeyResult == ERROR_SUCCESS)
 			{
 				HKEY windowsKey;
-				CProgramSetting *progSettings = new CProgramSetting();
-
-				//Make process name lower case
-				settings->ToLowerCase(processKeyName.get());
-				settings->programs->insert(std::pair<t_string, CProgramSetting*>(processKeyName.get(), progSettings));
+				auto progSettings = std::make_unique<CProgramSetting>();
 
 				//Open the Programs\PROCESSNAME\Windows key
 				LSTATUS windowsKeyResult = RegOpenKeyEx(processKey, _T("Windows"), 0, KEY_READ, &windowsKey);
@@ -91,7 +87,7 @@ void CRegistrySettingsManager::LoadSettings()
 					DWORD windowsSubKeyIndex = 0;
 					RegQueryInfoKey(windowsKey, NULL, NULL, NULL, NULL, &windowsSubKeyLength, NULL, NULL, NULL, NULL, NULL, NULL);
 					windowsSubKeyLength++;
-					std::unique_ptr<TCHAR[]> windowKeyName(new TCHAR[windowsSubKeyLength]);
+					std::unique_ptr<TCHAR[]> windowKeyName = std::make_unique<TCHAR[]>(windowsSubKeyLength);
 
 					LSTATUS windowsEnumResult;
 					//Enum the window sub keys in the Windows key
@@ -109,9 +105,9 @@ void CRegistrySettingsManager::LoadSettings()
 						LSTATUS windowKeyResult = RegOpenKeyEx(windowsKey, windowKeyName.get(), 0, KEY_READ, &windowKey);
 						if (windowKeyResult == ERROR_SUCCESS)
 						{
-							CWindowSetting *windowSettings = new CWindowSetting();
+							auto windowSettings = std::make_unique<CWindowSetting>();
 							ReadAlphaValues(windowKey, &windowSettings->alphaSettings);
-							progSettings->windows->insert(std::pair<t_string, CWindowSetting*>(windowKeyName.get(), windowSettings));
+							progSettings->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowKeyName.get(), std::move(windowSettings)));
 							RegCloseKey(windowKey);
 						}
 						
@@ -119,6 +115,9 @@ void CRegistrySettingsManager::LoadSettings()
 					} while (windowsEnumResult != ERROR_NO_MORE_ITEMS && windowsEnumResult == ERROR_SUCCESS);
 					RegCloseKey(windowsKey);
 				}
+				//Make process name lower case
+				settings->ToLowerCase(processKeyName.get());
+				settings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(processKeyName.get(), std::move(progSettings)));
 				RegCloseKey(processKey);
 			}
 			programsSubKeyIndex++;

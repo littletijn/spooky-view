@@ -123,10 +123,9 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					{
 						LPTSTR programName = appDialog->GetSelectedProcess();
 
-						auto progSettings = new CProgramSetting();
 						//Make process name lower case
 						newSettings->ToLowerCase(programName);
-						newSettings->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
+						newSettings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(programName, std::make_unique<CProgramSetting>()));
 						this->appsListView->AddItem(programName);
 					}
 				}
@@ -138,9 +137,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					if (windowDialog->GetResult() == 1)
 					{
 						auto windowClassName = windowDialog->GetSelectedWindowClass();
-
-						auto windowSettings = new CWindowSetting();
-						this->currentProgram->windows->insert(std::pair<t_string, CWindowSetting*>(windowClassName, windowSettings));
+						this->currentProgram->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowClassName, std::make_unique<CWindowSetting>()));
 						this->windowsListView->AddItem(windowClassName);
 					}
 				}
@@ -177,11 +174,11 @@ void CSetupDialog::ProgramsListNotified()
 		if (program != newSettings->programs->end())
 		{
 			this->currentProgramName = program->first;
-			this->currentProgram = program->second;
+			this->currentProgram = program->second.get();
 			this->currentAlphaSettings = &program->second->alphaSettings;
 			SetTrackbars();
 			SetCheckboxes();
-			PopulateWindowsList(program->second);
+			PopulateWindowsList(program->second.get());
 		}
 		this->SetFormVisibility(TRUE);
 	}
@@ -268,9 +265,8 @@ void CSetupDialog::EnabledCheckboxNotified()
 
 void CSetupDialog::PopulateProcessList()
 {
-	auto programs = newSettings->programs.get();
 	this->appsListView->AddItem(_T("[All other programs]"));
-	for (auto const program : *programs)
+	for (auto const& program : *newSettings->programs.get())
 	{
 		this->appsListView->AddItem(program.first);
 	}
