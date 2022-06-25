@@ -177,11 +177,11 @@ void CSetupDialog::ProgramsListNotified()
 		if (program != newSettings->programs->end())
 		{
 			this->currentProgramName = program->first;
-			this->currentProgram = program->second;
+			this->currentProgram = program->second.get();
 			this->currentAlphaSettings = &program->second->alphaSettings;
 			SetTrackbars();
 			SetCheckboxes();
-			PopulateWindowsList(program->second);
+			PopulateWindowsList(program->second.get());
 		}
 		this->SetFormVisibility(TRUE);
 	}
@@ -268,9 +268,8 @@ void CSetupDialog::EnabledCheckboxNotified()
 
 void CSetupDialog::PopulateProcessList()
 {
-	auto programs = newSettings->programs.get();
 	this->appsListView->AddItem(_T("[All other programs]"));
-	for (auto const program : *programs)
+	for (auto const& program : *newSettings->programs.get())
 	{
 		this->appsListView->AddItem(program.first);
 	}

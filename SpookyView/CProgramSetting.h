@@ -15,6 +15,6 @@ public:
 	t_string name;
 	t_string path;
 	CAlphaSettings alphaSettings;
-	std::unique_ptr<std::map<t_string, CWindowSetting *>> windows;
+	std::unique_ptr<std::map<t_string, std::unique_ptr<CWindowSetting>>> windows;
 };
 

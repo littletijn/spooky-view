@@ -5,7 +5,7 @@
 
 CProgramSetting::CProgramSetting()
 {
-	this->windows = std::make_unique<std::map<t_string, CWindowSetting *>>();
+	this->windows = std::make_unique<std::map<t_string, std::unique_ptr<CWindowSetting>>>();
 }
 
 CProgramSetting::CProgramSetting(const CProgramSetting& c) : CProgramSetting::CProgramSetting()
