@@ -123,10 +123,9 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					{
 						LPTSTR programName = appDialog->GetSelectedProcess();
 
-						auto progSettings = new CProgramSetting();
 						//Make process name lower case
 						newSettings->ToLowerCase(programName);
-						newSettings->programs->insert(std::pair<t_string, CProgramSetting*>(programName, progSettings));
+						newSettings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(programName, std::make_unique<CProgramSetting>()));
 						this->appsListView->AddItem(programName);
 					}
 				}

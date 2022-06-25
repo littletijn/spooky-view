@@ -76,11 +76,7 @@ void CRegistrySettingsManager::LoadSettings()
 			if (processKeyResult == ERROR_SUCCESS)
 			{
 				HKEY windowsKey;
-				auto *progSettings = new CProgramSetting();
-
-				//Make process name lower case
-				settings->ToLowerCase(processKeyName.get());
-				settings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(processKeyName.get(), progSettings));
+				auto progSettings = std::make_unique<CProgramSetting>();
 
 				//Open the Programs\PROCESSNAME\Windows key
 				LSTATUS windowsKeyResult = RegOpenKeyEx(processKey, _T("Windows"), 0, KEY_READ, &windowsKey);
@@ -119,6 +115,9 @@ void CRegistrySettingsManager::LoadSettings()
 					} while (windowsEnumResult != ERROR_NO_MORE_ITEMS && windowsEnumResult == ERROR_SUCCESS);
 					RegCloseKey(windowsKey);
 				}
+				//Make process name lower case
+				settings->ToLowerCase(processKeyName.get());
+				settings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(processKeyName.get(), std::move(progSettings)));
 				RegCloseKey(processKey);
 			}
 			programsSubKeyIndex++;
