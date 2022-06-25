@@ -73,23 +73,14 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				break;
 			}
 			return FALSE;
-
+#ifdef UNICODE
 		case WM_UPDATE_AVAILABLE:
 		{
-#ifdef UNICODE
 			auto versionNumber = string_to_wchar_t(updateResponse.version);
-#else
-			auto versionNumber = updateResponse.version;
-#endif // UNICODE
 			if (!settingsManager->ShouldSkipVersion(versionNumber.get()))
 			{
-#ifdef UNICODE
 				auto message = string_to_wchar_t(updateResponse.message);
 				auto downloadUrl = string_to_wchar_t(updateResponse.download_url);
-#else
-				auto message = updateResponse.message;
-				auto downloadUrl = updateResponse.download_url;
-#endif // UNICODE
 				cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance, this->hWnd);
 				cUpdateAvailableDialog->SetMessage(message.get());
 				cUpdateAvailableDialog->SetDownloadUrl(downloadUrl.get());
@@ -98,6 +89,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			}
 			return FALSE;
 		}
+#endif
 
 		case WM_COPYDATA:
 		{
