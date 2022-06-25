@@ -14,8 +14,7 @@ CSettings::CSettings(const CSettings& c) : CSettings::CSettings()
 	for (auto program = c.programs.get()->begin(); program != c.programs.get()->end(); ++program)
 	{
 		t_string firstCopy = t_string(program->first);
-		CProgramSetting* secondCopy = new CProgramSetting (*program->second);
-		this->programs->insert(std::pair<t_string, CProgramSetting*>(firstCopy, secondCopy));
+		this->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(firstCopy, std::make_unique<CProgramSetting>(*program->second)));
 	}
 }
 

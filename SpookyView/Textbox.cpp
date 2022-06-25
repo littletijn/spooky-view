@@ -15,7 +15,7 @@ void Textbox::SetText(LPTSTR text)
 std::unique_ptr<TCHAR[]> Textbox::GetText(int* textLength)
 {
 	*textLength = GetWindowTextLength(this->hWnd);
-	auto textBuffer = std::unique_ptr<TCHAR[]>(new TCHAR[*textLength + 1]);
+	auto textBuffer = std::make_unique<TCHAR[]>(*textLength + 1);
 	GetWindowText(this->hWnd, textBuffer.get(), *textLength + 1);
 	return textBuffer;
 }

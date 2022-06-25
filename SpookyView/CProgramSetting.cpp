@@ -14,8 +14,7 @@ CProgramSetting::CProgramSetting(const CProgramSetting& c) : CProgramSetting::CP
 	for (auto window = c.windows.get()->begin(); window != c.windows.get()->end(); ++window)
 	{
 		t_string firstCopy = t_string(window->first);
-		CWindowSetting* secondCopy = new CWindowSetting(*window->second);
-		this->windows->insert(std::pair<t_string, CWindowSetting*>(firstCopy, secondCopy));
+		this->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(firstCopy, std::make_unique<CWindowSetting>(*window->second)));
 	}
 }
 

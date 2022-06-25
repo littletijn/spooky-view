@@ -204,11 +204,11 @@ BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 		GetWindowProcessAndClass(hwnd);
 		if (_tcsicmp(fileName, processNameOfWindowsToFind.c_str()) == 0)
 		{
-			auto windowClassNameCopy = std::shared_ptr<TCHAR[]>(new TCHAR[MAX_WINDOW_CLASS_NAME]);
+			auto windowClassNameCopy = std::make_unique<TCHAR[]>(MAX_WINDOW_CLASS_NAME);
 			StringCchCopy(windowClassNameCopy.get(), MAX_WINDOW_CLASS_NAME, windowClassName);
 
 			auto textLength = GetWindowTextLength(hwnd);
-			auto textBuffer = std::unique_ptr<TCHAR[]>(new TCHAR[textLength + 1]);
+			auto textBuffer = std::make_unique<TCHAR[]>(textLength + 1);
 			GetWindowText(hwnd, textBuffer.get(), textLength + 1);
 			foundWindowClasses.insert(std::pair<tstring, tstring>(tstring(windowClassNameCopy.get()), tstring(textBuffer.get())));
 		}
@@ -349,12 +349,12 @@ void SendAlreadyRunningNotify()
 
 #ifdef UNICODE
 // Convert std::string to a wchar_t* string.
-wchar_t* string_to_wchar_t(std::string string)
+std::unique_ptr<wchar_t[]> string_to_wchar_t(std::string string)
 {
 	size_t newsize = strlen(string.c_str()) + 1;
-	wchar_t* wcstring = new wchar_t[newsize];
+	auto wcstring = std::make_unique<wchar_t[]>(newsize);
 	size_t convertedChars = 0;
-	mbstowcs_s(&convertedChars, wcstring, newsize, string.c_str(), _TRUNCATE);
+	mbstowcs_s(&convertedChars, wcstring.get(), newsize, string.c_str(), _TRUNCATE);
 	return wcstring;
 }
 #endif // UNICODE

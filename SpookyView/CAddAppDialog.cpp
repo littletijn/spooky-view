@@ -168,7 +168,7 @@ void CAddAppDialog::StoreSelectedProcess()
 {
 	int textLength = 0;
 	auto textBuffer = this->programTextbox->GetText(&textLength);
-	this->selectedProcess = std::unique_ptr<TCHAR[]>(new TCHAR[textLength + 1]);
+	this->selectedProcess = std::make_unique<TCHAR[]>(textLength + 1);
 	StringCchCopy(this->selectedProcess.get(), textLength + 1, textBuffer.get());
 }
 
@@ -204,7 +204,7 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 		if (dInfoSize)
 		{
 			//Create buffer for storing versionInfo
-			std::unique_ptr<BYTE[]> versionInfoBuffer(new BYTE[dInfoSize]);
+			auto versionInfoBuffer = std::make_unique<BYTE[]>(dInfoSize);
 			if (GetFileVersionInfo(sModule.szExePath, dDummyHandle, dInfoSize, versionInfoBuffer.get()))
 			{
 				//Get translations of module

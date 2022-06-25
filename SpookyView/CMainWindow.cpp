@@ -11,7 +11,7 @@
 extern UpdateResponse updateResponse;
 extern std::unique_ptr<ISettingsManager> settingsManager;
 #ifdef UNICODE
-extern wchar_t* string_to_wchar_t(std::string string);
+extern std::unique_ptr<wchar_t[]> string_to_wchar_t(std::string string);
 #endif // UNICODE
 
 //Constructor
@@ -81,7 +81,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 #else
 			auto versionNumber = updateResponse.version;
 #endif // UNICODE
-			if (!settingsManager->ShouldSkipVersion(versionNumber))
+			if (!settingsManager->ShouldSkipVersion(versionNumber.get()))
 			{
 #ifdef UNICODE
 				auto message = string_to_wchar_t(updateResponse.message);
@@ -91,16 +91,10 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				auto downloadUrl = updateResponse.download_url;
 #endif // UNICODE
 				cUpdateAvailableDialog = std::make_unique<CUpdateAvailableDialog>(this->hInstance, this->hWnd);
-				cUpdateAvailableDialog->SetMessage(message);
-				cUpdateAvailableDialog->SetDownloadUrl(downloadUrl);
-				cUpdateAvailableDialog->SetVersionNumber(versionNumber);
+				cUpdateAvailableDialog->SetMessage(message.get());
+				cUpdateAvailableDialog->SetDownloadUrl(downloadUrl.get());
+				cUpdateAvailableDialog->SetVersionNumber(versionNumber.get());
 				cUpdateAvailableDialog->InitInstance();
-#ifdef UNICODE
-				// Only the unicode string_to_wchar_t returns pointers. The other aren't.
-				delete[] message;
-				delete[] downloadUrl;
-				delete[] versionNumber;
-#endif
 			}
 			return FALSE;
 		}
