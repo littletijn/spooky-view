@@ -105,9 +105,9 @@ void CRegistrySettingsManager::LoadSettings()
 						LSTATUS windowKeyResult = RegOpenKeyEx(windowsKey, windowKeyName.get(), 0, KEY_READ, &windowKey);
 						if (windowKeyResult == ERROR_SUCCESS)
 						{
-							CWindowSetting *windowSettings = new CWindowSetting();
+							auto windowSettings = std::make_unique<CWindowSetting>();
 							ReadAlphaValues(windowKey, &windowSettings->alphaSettings);
-							progSettings->windows->insert(std::pair<t_string, CWindowSetting*>(windowKeyName.get(), windowSettings));
+							progSettings->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowKeyName.get(), std::move(windowSettings)));
 							RegCloseKey(windowKey);
 						}
 						

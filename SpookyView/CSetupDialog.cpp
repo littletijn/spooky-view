@@ -137,9 +137,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					if (windowDialog->GetResult() == 1)
 					{
 						auto windowClassName = windowDialog->GetSelectedWindowClass();
-
-						auto windowSettings = new CWindowSetting();
-						this->currentProgram->windows->insert(std::pair<t_string, CWindowSetting*>(windowClassName, windowSettings));
+						this->currentProgram->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowClassName, std::make_unique<CWindowSetting>()));
 						this->windowsListView->AddItem(windowClassName);
 					}
 				}
