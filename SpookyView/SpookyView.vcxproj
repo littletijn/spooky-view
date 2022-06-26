@@ -166,6 +166,7 @@
     <ClInclude Include="AppMain.h" />
     <ClInclude Include="CUpdateAvailableDialog.h" />
     <ClInclude Include="Textbox.h" />
+    <ClInclude Include="UnicodeConversion.h" />
     <ClInclude Include="UpdateChecker.h" />
     <ClInclude Include="CAbout.h" />
     <ClInclude Include="CAddAppDialog.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="AppMain.cpp" />
     <ClCompile Include="CUpdateAvailableDialog.cpp" />
     <ClCompile Include="Textbox.cpp" />
+    <ClCompile Include="UnicodeConversion.cpp" />
     <ClCompile Include="UpdateChecker.cpp" />
     <ClCompile Include="CAbout.cpp" />
     <ClCompile Include="CAddAppDialog.cpp" />

@@ -153,6 +153,9 @@
     <ClInclude Include="AppMain.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
+    <ClInclude Include="UnicodeConversion.h">
+      <Filter>Header Files\Function</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -226,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="AppMain.cpp">
       <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="UnicodeConversion.cpp">
+      <Filter>Source Files\Function</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
