@@ -1,9 +1,0 @@
-#include "CSettings.h"
-#include <list>
-#include <unordered_set>
-#include "Unicode.h"
-#include "UpdateResponse.h"
-#include "ISettingsManager.h"
-#include "Defines.h"
-#include "WindowsEnum.h"
-#include "CMainWindow.h"

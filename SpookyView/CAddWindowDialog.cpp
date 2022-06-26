@@ -5,6 +5,7 @@
 #include <strsafe.h>
 #include <commctrl.h>
 #include "Textbox.h"
+#include "WindowsEnum.h"
 
 extern WindowsEnum windowsEnum;
 

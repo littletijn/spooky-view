@@ -3,6 +3,10 @@
 #include "stdafx.h"
 #include "SpookyView.h"
 #include "AppMain.h"
+#include "CMainWindow.h"
+#include "ISettingsManager.h"
+#include "UpdateResponse.h"
+#include "WindowsEnum.h"
 #pragma once
 
 // Global Variables:
