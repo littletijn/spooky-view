@@ -8,6 +8,9 @@
 #include "UpdateResponse.h"
 #include "ISettingsManager.h"
 #include "WindowsEnum.h"
+#ifdef UNICODE
+#include "UnicodeConversion.h"
+#endif //UNICODE
 
 extern UpdateResponse updateResponse;
 extern std::unique_ptr<ISettingsManager> settingsManager;

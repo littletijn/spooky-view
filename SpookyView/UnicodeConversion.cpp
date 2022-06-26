@@ -1,6 +1,7 @@
 #include "stdafx.h"
+#include "UnicodeConversion.h"
 #include <memory>
-#include "Unicode.h"
+#include <string>
 
 #ifdef UNICODE
 // Convert std::string to a wchar_t* string.
