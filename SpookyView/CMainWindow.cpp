@@ -7,9 +7,11 @@
 #include "Defines.h"
 #include "UpdateResponse.h"
 #include "ISettingsManager.h"
+#include "WindowsEnum.h"
 
 extern UpdateResponse updateResponse;
 extern std::unique_ptr<ISettingsManager> settingsManager;
+extern WindowsEnum windowsEnum;
 #ifdef UNICODE
 extern std::unique_ptr<wchar_t[]> string_to_wchar_t(std::string string);
 #endif // UNICODE
@@ -172,10 +174,10 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				return FALSE;
 
 			case IDM_PAUSE:
-				UINT checkState = IsPaused() ? MF_UNCHECKED : MF_CHECKED;
+				UINT checkState = windowsEnum.IsPaused() ? MF_UNCHECKED : MF_CHECKED;
 				if (CheckMenuItem(GetContextMenu(), IDM_PAUSE, checkState) != -1){
 					DrawMenuBar(hWnd);
-					TogglePause();
+					windowsEnum.TogglePause();
 				}
 				return FALSE;
 		}

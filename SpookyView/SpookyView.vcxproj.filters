@@ -147,6 +147,12 @@
     <ClInclude Include="Textbox.h">
       <Filter>Header Files\Classes\Controls</Filter>
     </ClInclude>
+    <ClInclude Include="WindowsEnum.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="AppMain.h">
+      <Filter>Header Files\Classes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -214,6 +220,12 @@
     </ClCompile>
     <ClCompile Include="Textbox.cpp">
       <Filter>Source Files\Classes\Controls</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsEnum.cpp">
+      <Filter>Source Files\Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="AppMain.cpp">
+      <Filter>Source Files\Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

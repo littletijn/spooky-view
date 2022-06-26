@@ -4,3 +4,6 @@
 
 #define WM_UPDATE_AVAILABLE WM_USER + 1
 #define WM_MODELESS_DIALOG_DESTROYED WM_USER + 2
+
+//LoadAddress declaration
+typedef BOOL(WINAPI* PGNSI)(HANDLE);
