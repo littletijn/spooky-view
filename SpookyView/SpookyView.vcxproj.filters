@@ -227,6 +227,9 @@
     <ClCompile Include="AppMain.cpp">
       <Filter>Source Files\Classes</Filter>
     </ClCompile>
+    <ClCompile Include="Unicode.cpp">
+      <Filter>Source Files\Declarations</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpookyView.rc">

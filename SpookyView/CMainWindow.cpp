@@ -12,9 +12,6 @@
 extern UpdateResponse updateResponse;
 extern std::unique_ptr<ISettingsManager> settingsManager;
 extern WindowsEnum windowsEnum;
-#ifdef UNICODE
-extern std::unique_ptr<wchar_t[]> string_to_wchar_t(std::string string);
-#endif // UNICODE
 
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
