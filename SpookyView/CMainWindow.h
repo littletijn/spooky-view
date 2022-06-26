@@ -5,6 +5,7 @@
 #include "CSettingsDialog.h"
 #include <memory>
 #include "CUpdateAvailableDialog.h"
+#pragma once
 
 class CMainWindow: public CWindow
 {

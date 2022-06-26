@@ -6,6 +6,8 @@
 #include <commctrl.h>
 #include "Textbox.h"
 
+extern WindowsEnum windowsEnum;
+
 CAddWindowDialog::CAddWindowDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
 }
@@ -68,10 +70,10 @@ INT_PTR CALLBACK CAddWindowDialog::DlgProc(HWND hDlg, UINT message, WPARAM wPara
 
 void CAddWindowDialog::LoadAppWindows()
 {
-	foundWindowClasses.clear();
-	processNameOfWindowsToFind = this->programName;
-	EnumWindows(EnumWindowsForProcess, NULL);
-	for (auto windowClass : foundWindowClasses) {
+	windowsEnum.foundWindowClasses.clear();
+	windowsEnum.processNameOfWindowsToFind = this->programName;
+	EnumWindows(windowsEnum.EnumWindowsForProcess, NULL);
+	for (auto windowClass : windowsEnum.foundWindowClasses) {
 		int itemIndex = this->windowsListView->AddItem(windowClass.first);
 		this->windowsListView->SetItem(itemIndex, 1, windowClass.second);
 	}

@@ -11,10 +11,10 @@
 #include <memory>
 #include <windowsx.h>
 #include "Defines.h"
+#include "WindowsEnum.h"
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
-extern void SetWindowsTransparency();
-extern void ResetWindowsTransparency();
+extern WindowsEnum windowsEnum;
 
 #define TRANSPARENCY_TRACKER_STEPS (100.0 / 255.0)
 
@@ -151,10 +151,10 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 
 void CSetupDialog::ApplySettings()
 {
-	ResetWindowsTransparency();
+	windowsEnum.ResetWindowsTransparency();
 	settingsManager->ApplyNewSettings(newSettings.get());
 	settingsManager->SaveSettings();
-	SetWindowsTransparency();
+	WindowsEnum::SetWindowsTransparency();
 }
 
 void CSetupDialog::CopySettings()
