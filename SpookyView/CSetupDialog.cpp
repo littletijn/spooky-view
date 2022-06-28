@@ -122,11 +122,14 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					if (appDialog->GetResult() == 1)
 					{
 						LPTSTR programName = appDialog->GetSelectedProcess();
-
 						//Make process name lower case
-						newSettings->ToLowerCase(programName);
-						newSettings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(programName, std::make_unique<CProgramSetting>()));
-						this->appsListView->AddItem(programName);
+						auto lowerCaseProgramName = newSettings->ToLowerCase(programName);
+						auto existingProgram = newSettings->programs->find(*lowerCaseProgramName);
+						if (existingProgram == newSettings->programs->end())
+						{
+							newSettings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(*lowerCaseProgramName, std::make_unique<CProgramSetting>()));
+							this->appsListView->AddItem(*lowerCaseProgramName);
+						}
 					}
 				}
 				return TRUE;
@@ -137,8 +140,12 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					if (windowDialog->GetResult() == 1)
 					{
 						auto windowClassName = windowDialog->GetSelectedWindowClass();
-						this->currentProgram->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowClassName, std::make_unique<CWindowSetting>()));
-						this->windowsListView->AddItem(windowClassName);
+						auto existingWindowClassName = this->currentProgram->windows->find(windowClassName);
+						if (existingWindowClassName == this->currentProgram->windows->end())
+						{
+							this->currentProgram->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowClassName, std::make_unique<CWindowSetting>()));
+							this->windowsListView->AddItem(windowClassName);
+						}
 					}
 				}
 				return TRUE;

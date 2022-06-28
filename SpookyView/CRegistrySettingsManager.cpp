@@ -116,8 +116,8 @@ void CRegistrySettingsManager::LoadSettings()
 					RegCloseKey(windowsKey);
 				}
 				//Make process name lower case
-				settings->ToLowerCase(processKeyName.get());
-				settings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(processKeyName.get(), std::move(progSettings)));
+				auto lowerCaseProcessKeyName = settings->ToLowerCase(processKeyName.get());
+				settings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(*lowerCaseProcessKeyName, std::move(progSettings)));
 				RegCloseKey(processKey);
 			}
 			programsSubKeyIndex++;
