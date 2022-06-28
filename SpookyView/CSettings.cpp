@@ -26,9 +26,9 @@ CSettings::~CSettings()
 BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, BYTE& alpha)
 {
 	CAlphaSettings alphaSettings;
-	ToLowerCase(processFileName);
+	auto lowerCaseProcessKeyName = ToLowerCase(processFileName);
 
-	auto result = this->programs->find(processFileName);
+	auto result = this->programs->find(*lowerCaseProcessKeyName);
 	if (result != this->programs->end())
 	{
 		auto& setting = result->second;
@@ -62,7 +62,9 @@ BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, 
 	return true;
 }
 
-void CSettings::ToLowerCase(TCHAR* string)
+std::unique_ptr<TCHAR*> CSettings::ToLowerCase(TCHAR* string)
 {
-	_tcslwr_s(string = _tcsdup(string), _tcslen(string) + 1);
+	TCHAR* lowerCase;
+	_tcslwr_s(lowerCase = _tcsdup(string), _tcslen(string) + 1);
+	return std::make_unique<TCHAR*>(lowerCase);
 }

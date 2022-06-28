@@ -16,11 +16,11 @@ public:
 
 	CAlphaSettings alphaSettings;
 	BOOL GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, BYTE& alpha);
+	std::unique_ptr<TCHAR*> ToLowerCase(TCHAR* string);
 	std::unique_ptr<std::map<t_string, std::unique_ptr<CProgramSetting>>> programs;
 	CSettings();
 	CSettings(const CSettings& c);
 	~CSettings();
-	void ToLowerCase(TCHAR* string);
 protected:
 };
 
