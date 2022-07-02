@@ -18,6 +18,7 @@ public:
 	static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam);
+	static BOOL CALLBACK EnumUWPChildWindows(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam);
 
 	//Static functions
@@ -38,18 +39,25 @@ protected:
 	//Static variables for EnumWindowsForProcess
 	static t_string processNameOfWindowsToFind;
 	static std::map<tstring, tstring> foundWindowClasses;
+
+	//Static variables for GetWindowProcessAndClass
 	static TCHAR windowClassName[MAX_WINDOW_CLASS_NAME];
-	static TCHAR* fileName;
-	//Buffer for complete path of a file
-	static TCHAR filePathName[MAX_PATH];
+	static TCHAR filePathName[MAX_PATH]; //Buffer for complete path of a file
+	static TCHAR* fileName; //Buffer for filename only
+	static DWORD processId;
 
 	//Static variables for EnumProcessHasUsableWindows
 	static DWORD processIdToCheckForUsableWindows;
 	static BOOL processHasUsableWindow;
 
+	//Static variables for EnumUWPChildWindows
+	static BOOL isUWPProcess;
+	static BOOL UWPProcessFound;
+
 	//Static functions
 	static BOOL GetWindowProcessAndClass(HWND hwnd);
 	static BOOL IsWindowUsable(HWND hwnd);
 	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
+	static void CheckAndSetUWPProcessAndClass(HWND hwnd);
 };
 
