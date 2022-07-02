@@ -109,9 +109,18 @@ void CAddAppDialog::LoadModules()
 				HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, sProcess.th32ProcessID);
 				if (hProcess != NULL && isImmersive(hProcess))
 				{
+					CloseHandle(hProcess);
 					continue;
 				}
-				CloseHandle(hProcess);
+				if (hProcess != NULL)
+				{
+					CloseHandle(hProcess);
+				}
+			}
+			//Check if the process has usable windows
+			if (!windowsEnum.HasProcessUsableWindows(sProcess.th32ProcessID))
+			{
+				continue;
 			}
 			t_string programName;
 			GetProcessProgramName(sProcess, &programName);
@@ -123,7 +132,6 @@ void CAddAppDialog::LoadModules()
 			this->appsListView->SetItem(itemIndex, 1, program->second.c_str());
 		}
 	}
-
 	CloseHandle(hProcessesSnapshot);
 }
 

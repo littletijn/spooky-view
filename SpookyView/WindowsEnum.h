@@ -8,6 +8,31 @@
 class WindowsEnum
 {
 public:
+	//Other static variables
+	static BOOL isWindows8;
+	BOOL isPause = false;
+
+	//Callbacks
+	static void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
+	static void CALLBACK WinEventProcForeground(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
+	static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
+	static BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam);
+	static BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam);
+	static BOOL CALLBACK EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam);
+
+	//Static functions
+	static void SetWindowsTransparency();
+	static std::map<tstring, tstring> GetWindowsForProcess(t_string processName);
+	static BOOL HasProcessUsableWindows(DWORD processId);
+
+	//Functions
+	void GetIsWindows8();
+	void CreateHook();
+	void Unhook();
+	BOOL IsPaused();
+	void ResetWindowsTransparency();
+	void TogglePause();
+protected:
 	HWINEVENTHOOK hWinEventHook[3];
 
 	//Static variables for EnumWindowsForProcess
@@ -18,31 +43,13 @@ public:
 	//Buffer for complete path of a file
 	static TCHAR filePathName[MAX_PATH];
 
-	//Other static variables
-	static BOOL isWindows8;
-	BOOL isPause = false;
-
-	//Callbacks
-	static void CALLBACK WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
-	static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
-	static BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam);
-	static BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam);
-	static void CALLBACK WinEventProcForeground(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
+	//Static variables for EnumProcessHasUsableWindows
+	static DWORD processIdToCheckForUsableWindows;
+	static BOOL processHasUsableWindow;
 
 	//Static functions
-	static BOOL IsWindowUsable(HWND hwnd);
-	static void SetWindowsTransparency();
-	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 	static BOOL GetWindowProcessAndClass(HWND hwnd);
-
-	//Functions
-	void GetIsWindows8();
-	void CreateHook();
-	void Unhook();
-	BOOL IsPaused();
-	void ResetWindowsTransparency();
-	void TogglePause();
-
-protected:
+	static BOOL IsWindowUsable(HWND hwnd);
+	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 };
 
