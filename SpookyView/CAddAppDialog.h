@@ -14,6 +14,7 @@ public:
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 	LPTSTR GetSelectedProcess();
 protected:
+	LANGID currentUserLanguage;
 	std::unique_ptr<TCHAR[]> selectedProcess;
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<Textbox> programTextbox;
