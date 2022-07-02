@@ -11,6 +11,8 @@ extern PGNSI isImmersive;
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd318055(v=vs.85).aspx
 const TCHAR DIALOGBOXCLASSNAME[7] = _T("#32770");
 
+const TCHAR UWP_APPLICATION_FRAME_WINDOW[23] = _T("ApplicationFrameWindow");
+
 //Static variables
 BOOL WindowsEnum::isWindows8;
 t_string WindowsEnum::processNameOfWindowsToFind;
@@ -69,7 +71,7 @@ BOOL WindowsEnum::IsWindowUsable(HWND hwnd)
 	if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 	{
 		LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
-		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && IsWindowVisible(hwnd) && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0))
+		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && IsWindowVisible(hwnd) && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0 || _tcscmp(windowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0))
 		{
 			//This is a top-level window that is not hidden and not a pop-up window or a pop-up windows that is a dialog
 			return TRUE;
