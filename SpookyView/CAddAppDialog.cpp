@@ -11,7 +11,7 @@
 #include <commdlg.h>
 #include "SpookyView.h"
 #include "WindowsEnum.h"
-#include <Winnls.h>
+#include <winnls.h>
 
 extern PGNSI isImmersive;
 extern WindowsEnum windowsEnum;
