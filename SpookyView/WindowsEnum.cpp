@@ -189,10 +189,6 @@ void WindowsEnum::CheckAndSetUWPProcessAndClass(HWND hwnd)
 void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 {
 	if (GetWindowProcessAndClass(hwnd)) {
-		if (_tcsicmp(fileName, _T("ApplicationFrameHost.exe")) != 0)
-		{
-			return;
-		}
 		CheckAndSetUWPProcessAndClass(hwnd);
 		BYTE alpha;
 		if ((!isUWPProcess || UWPProcessFound) && settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
