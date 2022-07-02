@@ -71,10 +71,8 @@ INT_PTR CALLBACK CAddWindowDialog::DlgProc(HWND hDlg, UINT message, WPARAM wPara
 
 void CAddWindowDialog::LoadAppWindows()
 {
-	windowsEnum.foundWindowClasses.clear();
-	windowsEnum.processNameOfWindowsToFind = this->programName;
-	EnumWindows(windowsEnum.EnumWindowsForProcess, NULL);
-	for (auto windowClass : windowsEnum.foundWindowClasses) {
+	auto foundWindowClasses = windowsEnum.GetWindowsForProcess(this->programName);
+	for (auto windowClass : foundWindowClasses) {
 		int itemIndex = this->windowsListView->AddItem(windowClass.first);
 		this->windowsListView->SetItem(itemIndex, 1, windowClass.second);
 	}

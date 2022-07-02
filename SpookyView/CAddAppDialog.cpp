@@ -11,12 +11,16 @@
 #include <commdlg.h>
 #include "SpookyView.h"
 #include "WindowsEnum.h"
+#include <winnls.h>
 
 extern PGNSI isImmersive;
 extern WindowsEnum windowsEnum;
 
+const int FALLBACK_LANGUAGE_CODE = 1033; // English (United States)
+
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
+	currentUserLanguage = GetUserDefaultUILanguage();
 }
 
 
@@ -105,9 +109,18 @@ void CAddAppDialog::LoadModules()
 				HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, sProcess.th32ProcessID);
 				if (hProcess != NULL && isImmersive(hProcess))
 				{
+					CloseHandle(hProcess);
 					continue;
 				}
-				CloseHandle(hProcess);
+				if (hProcess != NULL)
+				{
+					CloseHandle(hProcess);
+				}
+			}
+			//Check if the process has usable windows
+			if (!windowsEnum.HasProcessUsableWindows(sProcess.th32ProcessID))
+			{
+				continue;
 			}
 			t_string programName;
 			GetProcessProgramName(sProcess, &programName);
@@ -119,7 +132,6 @@ void CAddAppDialog::LoadModules()
 			this->appsListView->SetItem(itemIndex, 1, program->second.c_str());
 		}
 	}
-
 	CloseHandle(hProcessesSnapshot);
 }
 
@@ -192,6 +204,7 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 	DWORD dDummyHandle = 0;
 	UINT dwBytes;
 	BOOL module32FirstResult;
+	t_string fallbackProgramName;
 
 	HANDLE hModulesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, sProcess.th32ProcessID);
 	if (hModulesSnapshot == INVALID_HANDLE_VALUE) {
@@ -233,11 +246,23 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 						{
 							UINT programNameBufferSize;
 							LPVOID programNameBuffer;
+
 							//Try to read value of path in subBlock
 							if (VerQueryValue(versionInfoBuffer.get(), subBlock, &programNameBuffer, &programNameBufferSize))
 							{
-								//We got the name of the program!
-								programName->append(reinterpret_cast<TCHAR*>(programNameBuffer));
+								//We got the name of the program! Return it or store it as the fallback language
+								if (lpTranslate[i].wLanguage == FALLBACK_LANGUAGE_CODE)
+								{
+									//We got the US translation. Store it as the fallback translation when a translation in the user language does not exists
+									fallbackProgramName.append(reinterpret_cast<TCHAR*>(programNameBuffer));
+								}
+								else if (lpTranslate[i].wLanguage == currentUserLanguage)
+								{
+									//We got the translation in the user language. Return this value
+									programName->append(reinterpret_cast<TCHAR*>(programNameBuffer));
+									break;
+								}
+								
 							}
 						}
 					}
@@ -246,4 +271,9 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 		}
 	}
 	CloseHandle(hModulesSnapshot);
+	if (programName->length() == 0 && fallbackProgramName.length() > 0)
+	{
+		//We only got the US fallback translation and not the translation in the users language. Use this as the program name.
+		programName->append(fallbackProgramName);
+	}
 }

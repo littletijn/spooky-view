@@ -18,6 +18,8 @@ std::map<tstring, tstring> WindowsEnum::foundWindowClasses;
 TCHAR WindowsEnum::windowClassName[MAX_WINDOW_CLASS_NAME];
 TCHAR* WindowsEnum::fileName;
 TCHAR WindowsEnum::filePathName[MAX_PATH];
+DWORD WindowsEnum::processIdToCheckForUsableWindows;
+BOOL WindowsEnum::processHasUsableWindow;
 
 BOOL WindowsEnum::IsPaused()
 {
@@ -36,6 +38,22 @@ void WindowsEnum::TogglePause()
 	}
 }
 
+BOOL WindowsEnum::HasProcessUsableWindows(DWORD processId)
+{
+	processIdToCheckForUsableWindows = processId;
+	processHasUsableWindow = FALSE;
+	EnumWindows(EnumProcessHasUsableWindows, NULL);
+	return processHasUsableWindow;
+}
+
+std::map<tstring, tstring> WindowsEnum::GetWindowsForProcess(t_string processName)
+{
+	processNameOfWindowsToFind = processName;
+	foundWindowClasses.clear();
+	EnumWindows(EnumWindowsForProcess, NULL);
+	return foundWindowClasses;
+}
+
 void WindowsEnum::SetWindowsTransparency()
 {
 	EnumWindows(EnumWindowsProc, NULL);
@@ -51,7 +69,7 @@ BOOL WindowsEnum::IsWindowUsable(HWND hwnd)
 	if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 	{
 		LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
-		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && (styles & WS_VISIBLE) && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0))
+		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && IsWindowVisible(hwnd) && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0))
 		{
 			//This is a top-level window that is not hidden and not a pop-up window or a pop-up windows that is a dialog
 			return TRUE;
@@ -119,6 +137,21 @@ BOOL CALLBACK WindowsEnum::EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 		}
 	}
 	return TRUE;
+}
+
+BOOL CALLBACK WindowsEnum::EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam)
+{
+	DWORD windowProcessId;
+	GetWindowThreadProcessId(hwnd, &windowProcessId);
+	if (windowProcessId == processIdToCheckForUsableWindows)
+	{
+		if (IsWindowUsable(hwnd))
+		{
+			processHasUsableWindow = TRUE;
+			return FALSE; //Stop enumeration. We have found a usable window in the process
+		}
+	}
+	return TRUE; //Continue enumeration
 }
 
 void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
