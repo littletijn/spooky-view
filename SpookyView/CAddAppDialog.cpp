@@ -102,10 +102,6 @@ void CAddAppDialog::LoadModules()
 			if (sProcess.th32ProcessID == 0) {
 				continue;
 			}
-			if (_tcsicmp(sProcess.szExeFile, _T("SystemSettings.exe")) != 0)
-			{
-				continue;
-			}
 			BOOL hasUsableCoreWindow = FALSE;
 			if (isImmersive != NULL)
 			{
