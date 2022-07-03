@@ -4,12 +4,17 @@
 #include "ISettingsManager.h"
 #include <psapi.h>
 #include "SpookyView.h"
+#include <list>
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
 extern PGNSI isImmersive;
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd318055(v=vs.85).aspx
-const TCHAR DIALOGBOXCLASSNAME[7] = _T("#32770");
+const TCHAR DIALOGBOXCLASSNAME[] = _T("#32770");
+
+const TCHAR UWP_APPLICATION_FRAME_WINDOW[] = _T("ApplicationFrameWindow");
+
+const TCHAR UWP_WINDOW_UI_CLASSNAME[] = _T("Windows.UI.Core.CoreWindow");
 
 //Static variables
 BOOL WindowsEnum::isWindows8;
@@ -20,6 +25,11 @@ TCHAR* WindowsEnum::fileName;
 TCHAR WindowsEnum::filePathName[MAX_PATH];
 DWORD WindowsEnum::processIdToCheckForUsableWindows;
 BOOL WindowsEnum::processHasUsableWindow;
+DWORD WindowsEnum::processId;
+BOOL WindowsEnum::isUWPProcess;
+BOOL WindowsEnum::UWPProcessFound;
+std::list<HWND> WindowsEnum::applicationFrameHostWindows;
+BOOL WindowsEnum::isMinimizedCoreWindow;
 
 BOOL WindowsEnum::IsPaused()
 {
@@ -42,26 +52,57 @@ BOOL WindowsEnum::HasProcessUsableWindows(DWORD processId)
 {
 	processIdToCheckForUsableWindows = processId;
 	processHasUsableWindow = FALSE;
-	EnumWindows(EnumProcessHasUsableWindows, NULL);
+	EnumDesktopWindows(NULL, EnumProcessHasUsableWindows, NULL);
 	return processHasUsableWindow;
+}
+
+BOOL WindowsEnum::HasProcessUWPCoreWindow(DWORD processId)
+{
+	BOOL processHasUWPCoreWindow = FALSE;
+	isMinimizedCoreWindow = FALSE;
+	applicationFrameHostWindows.clear();
+	processIdToCheckForUsableWindows = processId;
+	EnumDesktopWindows(NULL, EnumGetProcessApplicationFrameHost, NULL);
+	if (isMinimizedCoreWindow)
+	{
+		//TODO: This will also find all suspended UWP apps as well.
+		return TRUE;
+	}
+	if (applicationFrameHostWindows.size() > 0)
+	{
+		for (auto applicationFrameHostWindow : applicationFrameHostWindows)
+		{
+			HWND coreWindowHwnd = FindWindowEx(applicationFrameHostWindow, NULL, _T("Windows.UI.Core.CoreWindow"), NULL);
+			if (coreWindowHwnd != NULL)
+			{
+				GetWindowThreadProcessId(coreWindowHwnd, &processId);
+				if (processId == processIdToCheckForUsableWindows)
+				{
+					processHasUWPCoreWindow = TRUE;
+					break;
+				}
+			}
+		}
+	}
+	return processHasUWPCoreWindow;
 }
 
 std::map<tstring, tstring> WindowsEnum::GetWindowsForProcess(t_string processName)
 {
 	processNameOfWindowsToFind = processName;
 	foundWindowClasses.clear();
-	EnumWindows(EnumWindowsForProcess, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsForProcess, NULL);
 	return foundWindowClasses;
 }
 
 void WindowsEnum::SetWindowsTransparency()
 {
-	EnumWindows(EnumWindowsProc, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsProc, NULL);
 }
 
 void WindowsEnum::ResetWindowsTransparency()
 {
-	EnumWindows(EnumWindowsReset, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsReset, NULL);
 }
 
 BOOL WindowsEnum::IsWindowUsable(HWND hwnd)
@@ -69,7 +110,7 @@ BOOL WindowsEnum::IsWindowUsable(HWND hwnd)
 	if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 	{
 		LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
-		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && IsWindowVisible(hwnd) && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0))
+		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && IsWindowVisible(hwnd) && (!(styles & WS_POPUP) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0 || _tcscmp(windowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0))
 		{
 			//This is a top-level window that is not hidden and not a pop-up window or a pop-up windows that is a dialog
 			return TRUE;
@@ -139,13 +180,48 @@ BOOL CALLBACK WindowsEnum::EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 	return TRUE;
 }
 
+BOOL CALLBACK WindowsEnum::EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM lParam)
+{
+	TCHAR currentWindowClassName[MAX_WINDOW_CLASS_NAME];
+	if (GetClassName(hwnd, currentWindowClassName, ARRAYSIZE(currentWindowClassName)))
+	{
+		if (_tcsicmp(currentWindowClassName, UWP_WINDOW_UI_CLASSNAME) == 0)
+		{
+			//We have found a minimized CoreWindow. When minimized, a CoreWindows will be a top window of the desktop with the class "Windows.UI.Core.CoreWindow".
+			//TODO: This is also for suspended UWP apps, even without a current window.
+			isMinimizedCoreWindow = TRUE;
+			return TRUE;
+		}
+		if (_tcsicmp(currentWindowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0)
+		{
+			applicationFrameHostWindows.push_back(hwnd);
+		}
+	}
+	return TRUE;
+}
+
+BOOL CALLBACK WindowsEnum::EnumUWPChildWindows(HWND hwnd, LPARAM lParam)
+{
+	//Store the process and class belonging to given hwnd in static variables.
+	if (GetWindowProcessAndClass(hwnd))
+	{
+		if (_tcsicmp(windowClassName, UWP_WINDOW_UI_CLASSNAME) == 0)
+		{
+			//We have the application belonging to the UWP window.
+			UWPProcessFound = TRUE;
+			return FALSE;
+		}
+	}
+	return TRUE;
+}
+
 BOOL CALLBACK WindowsEnum::EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam)
 {
-	DWORD windowProcessId;
-	GetWindowThreadProcessId(hwnd, &windowProcessId);
-	if (windowProcessId == processIdToCheckForUsableWindows)
+	if (IsWindowUsable(hwnd))
 	{
-		if (IsWindowUsable(hwnd))
+		DWORD windowProcessId;
+		GetWindowThreadProcessId(hwnd, &windowProcessId);
+		if (windowProcessId != NULL && windowProcessId == processIdToCheckForUsableWindows)
 		{
 			processHasUsableWindow = TRUE;
 			return FALSE; //Stop enumeration. We have found a usable window in the process
@@ -154,11 +230,27 @@ BOOL CALLBACK WindowsEnum::EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam)
 	return TRUE; //Continue enumeration
 }
 
+void WindowsEnum::CheckAndSetUWPProcessAndClass(HWND hwnd)
+{
+	if (_tcsicmp(windowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0)
+	{
+		isUWPProcess = TRUE;
+		UWPProcessFound = FALSE;
+		//We have a UWP app. Check child window for process name. Store the processId belonging to the window
+		EnumChildWindows(hwnd, EnumUWPChildWindows, NULL);
+	}
+	else
+	{
+		isUWPProcess = FALSE;
+	}
+}
+
 void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 {
 	if (GetWindowProcessAndClass(hwnd)) {
+		CheckAndSetUWPProcessAndClass(hwnd);
 		BYTE alpha;
-		if (settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
+		if ((!isUWPProcess || UWPProcessFound) && settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
 		{
 			SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
 			SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
@@ -169,7 +261,6 @@ void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 BOOL WindowsEnum::GetWindowProcessAndClass(HWND hwnd)
 {
 	BOOL result = FALSE;
-	DWORD processId;
 	GetWindowThreadProcessId(hwnd, &processId);
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, processId);
 	if (hProcess != NULL)

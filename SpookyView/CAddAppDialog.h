@@ -19,6 +19,7 @@ protected:
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<Textbox> programTextbox;
 	void LoadModules();
+	BOOL IsApplicationFrameHost(PROCESSENTRY32 sProcess);
 	void BrowseFile();
 	void SetSelectedProgram();
 	void StoreSelectedProcess();

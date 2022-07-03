@@ -102,23 +102,36 @@ void CAddAppDialog::LoadModules()
 			if (sProcess.th32ProcessID == 0) {
 				continue;
 			}
-			//Check if current process is not a Windows Store App on Windows 8 or Windows 8.1.
-			//They should not be transparent because they are always running full-screen
-			if (WindowsEnum::isWindows8 && isImmersive != NULL)
+			BOOL hasUsableCoreWindow = FALSE;
+			if (isImmersive != NULL)
 			{
 				HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, sProcess.th32ProcessID);
-				if (hProcess != NULL && isImmersive(hProcess))
-				{
-					CloseHandle(hProcess);
-					continue;
-				}
 				if (hProcess != NULL)
 				{
+					if (isImmersive(hProcess))
+					{
+						// Check if current process is a Windows Store App on Windows 8 or Windows 8.1.
+						// They should not be transparent because they are always running full-screen
+
+						// When not Windows 8 or Windows 8.1, check if it is the ApplicationFrameHost. If it is, skip it.
+						// ApplicationFrameHost does not have a window of it own. 
+						// All child windows of the ApplicationFrameHost process with class "Windows.UI.Core.CoreWindow" are the windows of the UWP apps running and visible.
+						if (WindowsEnum::isWindows8 || IsApplicationFrameHost(sProcess))
+						{
+							CloseHandle(hProcess);
+							continue;
+						}
+						//Check if the UWP application has a Windows.UI.Core.CoreWindow open
+						else if (WindowsEnum::HasProcessUWPCoreWindow(sProcess.th32ProcessID))
+						{
+							hasUsableCoreWindow = TRUE;
+						}
+					}
 					CloseHandle(hProcess);
 				}
 			}
 			//Check if the process has usable windows
-			if (!windowsEnum.HasProcessUsableWindows(sProcess.th32ProcessID))
+			if (!hasUsableCoreWindow && !windowsEnum.HasProcessUsableWindows(sProcess.th32ProcessID))
 			{
 				continue;
 			}
@@ -133,6 +146,11 @@ void CAddAppDialog::LoadModules()
 		}
 	}
 	CloseHandle(hProcessesSnapshot);
+}
+
+BOOL CAddAppDialog::IsApplicationFrameHost(PROCESSENTRY32 sProcess)
+{
+	return _tcsicmp(sProcess.szExeFile, _T("ApplicationFrameHost.exe")) == 0;
 }
 
 void CAddAppDialog::BrowseFile()
