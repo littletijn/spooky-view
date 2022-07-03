@@ -65,6 +65,7 @@ BOOL WindowsEnum::HasProcessUWPCoreWindow(DWORD processId)
 	EnumDesktopWindows(NULL, EnumGetProcessApplicationFrameHost, NULL);
 	if (isMinimizedCoreWindow)
 	{
+		//TODO: This will also find all suspended UWP apps as well.
 		return TRUE;
 	}
 	if (applicationFrameHostWindows.size() > 0)
