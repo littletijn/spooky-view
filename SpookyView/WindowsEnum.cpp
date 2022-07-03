@@ -186,12 +186,15 @@ BOOL CALLBACK WindowsEnum::EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM 
 
 BOOL CALLBACK WindowsEnum::EnumUWPChildWindows(HWND hwnd, LPARAM lParam)
 {
-	GetWindowProcessAndClass(hwnd);
-	if (_tcsicmp(windowClassName, UWP_WINDOW_UI_CLASSNAME) == 0)
+	//Store the process and class belonging to given hwnd in static variables.
+	if (GetWindowProcessAndClass(hwnd))
 	{
-		//We have the application belonging to the UWP window.
-		UWPProcessFound = TRUE;
-		return FALSE;
+		if (_tcsicmp(windowClassName, UWP_WINDOW_UI_CLASSNAME) == 0)
+		{
+			//We have the application belonging to the UWP window.
+			UWPProcessFound = TRUE;
+			return FALSE;
+		}
 	}
 	return TRUE;
 }
@@ -200,7 +203,9 @@ BOOL CALLBACK WindowsEnum::EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam)
 {
 	if (IsWindowUsable(hwnd))
 	{
-		if (processId == processIdToCheckForUsableWindows)
+		DWORD windowProcessId;
+		GetWindowThreadProcessId(hwnd, &windowProcessId);
+		if (windowProcessId != NULL && windowProcessId == processIdToCheckForUsableWindows)
 		{
 			processHasUsableWindow = TRUE;
 			return FALSE; //Stop enumeration. We have found a usable window in the process
