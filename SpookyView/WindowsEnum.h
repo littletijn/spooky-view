@@ -59,6 +59,7 @@ protected:
 
 	//Static variables for EnumGetProcessApplicationFrameHost
 	static std::list<HWND> applicationFrameHostWindows;
+	static BOOL isMinimizedCoreWindow;
 
 	//Static functions
 	static BOOL GetWindowProcessAndClass(HWND hwnd);

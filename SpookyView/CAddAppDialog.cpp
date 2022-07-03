@@ -110,9 +110,13 @@ void CAddAppDialog::LoadModules()
 				{
 					if (isImmersive(hProcess))
 					{
-						//Check if current process is a Windows Store App on Windows 8 or Windows 8.1.
-						//They should not be transparent because they are always running full-screen
-						if (WindowsEnum::isWindows8)
+						// Check if current process is a Windows Store App on Windows 8 or Windows 8.1.
+						// They should not be transparent because they are always running full-screen
+
+						// When not Windows 8 or Windows 8.1, check if it is the ApplicationFrameHost. If it is, skip it.
+						// ApplicationFrameHost does not have a window of it own. 
+						// All child windows of the ApplicationFrameHost process with class "Windows.UI.Core.CoreWindow" are the windows of the UWP apps running and visible.
+						if (WindowsEnum::isWindows8 || IsApplicationFrameHost(sProcess))
 						{
 							CloseHandle(hProcess);
 							continue;
@@ -142,6 +146,11 @@ void CAddAppDialog::LoadModules()
 		}
 	}
 	CloseHandle(hProcessesSnapshot);
+}
+
+BOOL CAddAppDialog::IsApplicationFrameHost(PROCESSENTRY32 sProcess)
+{
+	return _tcsicmp(sProcess.szExeFile, _T("ApplicationFrameHost.exe")) == 0;
 }
 
 void CAddAppDialog::BrowseFile()

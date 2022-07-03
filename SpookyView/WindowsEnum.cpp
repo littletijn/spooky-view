@@ -29,6 +29,7 @@ DWORD WindowsEnum::processId;
 BOOL WindowsEnum::isUWPProcess;
 BOOL WindowsEnum::UWPProcessFound;
 std::list<HWND> WindowsEnum::applicationFrameHostWindows;
+BOOL WindowsEnum::isMinimizedCoreWindow;
 
 BOOL WindowsEnum::IsPaused()
 {
@@ -58,9 +59,14 @@ BOOL WindowsEnum::HasProcessUsableWindows(DWORD processId)
 BOOL WindowsEnum::HasProcessUWPCoreWindow(DWORD processId)
 {
 	BOOL processHasUWPCoreWindow = FALSE;
+	isMinimizedCoreWindow = FALSE;
 	applicationFrameHostWindows.clear();
 	processIdToCheckForUsableWindows = processId;
 	EnumDesktopWindows(NULL, EnumGetProcessApplicationFrameHost, NULL);
+	if (isMinimizedCoreWindow)
+	{
+		return TRUE;
+	}
 	if (applicationFrameHostWindows.size() > 0)
 	{
 		for (auto applicationFrameHostWindow : applicationFrameHostWindows)
@@ -177,9 +183,18 @@ BOOL CALLBACK WindowsEnum::EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM 
 {
 	TCHAR currentWindowClassName[MAX_WINDOW_CLASS_NAME];
 	if (GetClassName(hwnd, currentWindowClassName, ARRAYSIZE(currentWindowClassName)))
-	if (_tcsicmp(currentWindowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0)
 	{
-		applicationFrameHostWindows.push_back(hwnd);
+		if (_tcsicmp(currentWindowClassName, UWP_WINDOW_UI_CLASSNAME) == 0)
+		{
+			//We have found a minimized CoreWindow. When minimized, a CoreWindows will be a top window of the desktop with the class "Windows.UI.Core.CoreWindow".
+			//TODO: This is also for suspended UWP apps, even without a current window.
+			isMinimizedCoreWindow = TRUE;
+			return TRUE;
+		}
+		if (_tcsicmp(currentWindowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0)
+		{
+			applicationFrameHostWindows.push_back(hwnd);
+		}
 	}
 	return TRUE;
 }
