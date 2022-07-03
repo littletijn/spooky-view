@@ -102,23 +102,36 @@ void CAddAppDialog::LoadModules()
 			if (sProcess.th32ProcessID == 0) {
 				continue;
 			}
-			//Check if current process is not a Windows Store App on Windows 8 or Windows 8.1.
-			//They should not be transparent because they are always running full-screen
-			if (WindowsEnum::isWindows8 && isImmersive != NULL)
+			if (_tcsicmp(sProcess.szExeFile, _T("SystemSettings.exe")) != 0)
+			{
+				continue;
+			}
+			BOOL hasUsableCoreWindow = FALSE;
+			if (isImmersive != NULL)
 			{
 				HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, sProcess.th32ProcessID);
-				if (hProcess != NULL && isImmersive(hProcess))
-				{
-					CloseHandle(hProcess);
-					continue;
-				}
 				if (hProcess != NULL)
 				{
+					if (isImmersive(hProcess))
+					{
+						//Check if current process is a Windows Store App on Windows 8 or Windows 8.1.
+						//They should not be transparent because they are always running full-screen
+						if (WindowsEnum::isWindows8)
+						{
+							CloseHandle(hProcess);
+							continue;
+						}
+						//Check if the UWP application has a Windows.UI.Core.CoreWindow open
+						else if (WindowsEnum::HasProcessUWPCoreWindow(sProcess.th32ProcessID))
+						{
+							hasUsableCoreWindow = TRUE;
+						}
+					}
 					CloseHandle(hProcess);
 				}
 			}
 			//Check if the process has usable windows
-			if (!windowsEnum.HasProcessUsableWindows(sProcess.th32ProcessID))
+			if (!hasUsableCoreWindow && !windowsEnum.HasProcessUsableWindows(sProcess.th32ProcessID))
 			{
 				continue;
 			}

@@ -4,6 +4,7 @@
 #include "ISettingsManager.h"
 #include <psapi.h>
 #include "SpookyView.h"
+#include <list>
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
 extern PGNSI isImmersive;
@@ -27,6 +28,7 @@ BOOL WindowsEnum::processHasUsableWindow;
 DWORD WindowsEnum::processId;
 BOOL WindowsEnum::isUWPProcess;
 BOOL WindowsEnum::UWPProcessFound;
+std::list<HWND> WindowsEnum::applicationFrameHostWindows;
 
 BOOL WindowsEnum::IsPaused()
 {
@@ -49,26 +51,51 @@ BOOL WindowsEnum::HasProcessUsableWindows(DWORD processId)
 {
 	processIdToCheckForUsableWindows = processId;
 	processHasUsableWindow = FALSE;
-	EnumWindows(EnumProcessHasUsableWindows, NULL);
+	EnumDesktopWindows(NULL, EnumProcessHasUsableWindows, NULL);
 	return processHasUsableWindow;
+}
+
+BOOL WindowsEnum::HasProcessUWPCoreWindow(DWORD processId)
+{
+	BOOL processHasUWPCoreWindow = FALSE;
+	applicationFrameHostWindows.clear();
+	processIdToCheckForUsableWindows = processId;
+	EnumDesktopWindows(NULL, EnumGetProcessApplicationFrameHost, NULL);
+	if (applicationFrameHostWindows.size() > 0)
+	{
+		for (auto applicationFrameHostWindow : applicationFrameHostWindows)
+		{
+			HWND coreWindowHwnd = FindWindowEx(applicationFrameHostWindow, NULL, _T("Windows.UI.Core.CoreWindow"), NULL);
+			if (coreWindowHwnd != NULL)
+			{
+				GetWindowThreadProcessId(coreWindowHwnd, &processId);
+				if (processId == processIdToCheckForUsableWindows)
+				{
+					processHasUWPCoreWindow = TRUE;
+					break;
+				}
+			}
+		}
+	}
+	return processHasUWPCoreWindow;
 }
 
 std::map<tstring, tstring> WindowsEnum::GetWindowsForProcess(t_string processName)
 {
 	processNameOfWindowsToFind = processName;
 	foundWindowClasses.clear();
-	EnumWindows(EnumWindowsForProcess, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsForProcess, NULL);
 	return foundWindowClasses;
 }
 
 void WindowsEnum::SetWindowsTransparency()
 {
-	EnumWindows(EnumWindowsProc, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsProc, NULL);
 }
 
 void WindowsEnum::ResetWindowsTransparency()
 {
-	EnumWindows(EnumWindowsReset, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsReset, NULL);
 }
 
 BOOL WindowsEnum::IsWindowUsable(HWND hwnd)
@@ -142,6 +169,17 @@ BOOL CALLBACK WindowsEnum::EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
 			GetWindowText(hwnd, textBuffer.get(), textLength + 1);
 			foundWindowClasses.insert(std::pair<tstring, tstring>(tstring(windowClassNameCopy.get()), tstring(textBuffer.get())));
 		}
+	}
+	return TRUE;
+}
+
+BOOL CALLBACK WindowsEnum::EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM lParam)
+{
+	TCHAR currentWindowClassName[MAX_WINDOW_CLASS_NAME];
+	if (GetClassName(hwnd, currentWindowClassName, ARRAYSIZE(currentWindowClassName)))
+	if (_tcsicmp(currentWindowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0)
+	{
+		applicationFrameHostWindows.push_back(hwnd);
 	}
 	return TRUE;
 }

@@ -3,6 +3,7 @@
 #include "Unicode.h"
 #include "CSettings.h"
 #include "Defines.h"
+#include <list>
 #pragma once
 
 class WindowsEnum
@@ -18,6 +19,7 @@ public:
 	static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam);
+	static BOOL CALLBACK EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumUWPChildWindows(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam);
 
@@ -25,6 +27,7 @@ public:
 	static void SetWindowsTransparency();
 	static std::map<tstring, tstring> GetWindowsForProcess(t_string processName);
 	static BOOL HasProcessUsableWindows(DWORD processId);
+	static BOOL HasProcessUWPCoreWindow(DWORD processId);
 
 	//Functions
 	void GetIsWindows8();
@@ -53,6 +56,9 @@ protected:
 	//Static variables for EnumUWPChildWindows
 	static BOOL isUWPProcess;
 	static BOOL UWPProcessFound;
+
+	//Static variables for EnumGetProcessApplicationFrameHost
+	static std::list<HWND> applicationFrameHostWindows;
 
 	//Static functions
 	static BOOL GetWindowProcessAndClass(HWND hwnd);
