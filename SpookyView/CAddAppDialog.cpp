@@ -16,7 +16,7 @@
 extern PGNSI isImmersive;
 extern WindowsEnum windowsEnum;
 
-const int FALLBACK_LANGUAGE_CODE = 1033; // English (United States)
+const int US_LANGUAGE_CODE = 1033; // English (United States)
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
@@ -222,7 +222,7 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 	DWORD dDummyHandle = 0;
 	UINT dwBytes;
 	BOOL module32FirstResult;
-	t_string fallbackProgramName;
+	t_string foundProgramName;
 
 	HANDLE hModulesSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, sProcess.th32ProcessID);
 	if (hModulesSnapshot == INVALID_HANDLE_VALUE) {
@@ -268,19 +268,25 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 							//Try to read value of path in subBlock
 							if (VerQueryValue(versionInfoBuffer.get(), subBlock, &programNameBuffer, &programNameBufferSize))
 							{
-								//We got the name of the program! Return it or store it as the fallback language
-								if (lpTranslate[i].wLanguage == FALLBACK_LANGUAGE_CODE)
+								//We got the name of the program! Return it or store it as one of the fallback languages
+								if (lpTranslate[i].wLanguage == currentUserLanguage)
 								{
-									//We got the US translation. Store it as the fallback translation when a translation in the user language does not exists
-									fallbackProgramName.append(reinterpret_cast<TCHAR*>(programNameBuffer));
-								}
-								else if (lpTranslate[i].wLanguage == currentUserLanguage)
-								{
-									//We got the translation in the user language. Return this value
-									programName->append(reinterpret_cast<TCHAR*>(programNameBuffer));
+									//We got the translation in the user language. Break loop and use this value
+									foundProgramName.clear();
+									foundProgramName.append(reinterpret_cast<TCHAR*>(programNameBuffer));
 									break;
 								}
-								
+								else if (lpTranslate[i].wLanguage == 0) //Neutral language
+								{
+									//We got the neutral translation. Store it as the fallback translation when a translation in the user language does not exists
+									foundProgramName.clear();
+									foundProgramName.append(reinterpret_cast<TCHAR*>(programNameBuffer));
+								}
+								else if (lpTranslate[i].wLanguage == US_LANGUAGE_CODE && foundProgramName.length() == 0)
+								{
+									//We got the US translation. Store it as the fallback translation when a translation in the user language does not exists
+									foundProgramName.append(reinterpret_cast<TCHAR*>(programNameBuffer));
+								}
 							}
 						}
 					}
@@ -289,9 +295,8 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 		}
 	}
 	CloseHandle(hModulesSnapshot);
-	if (programName->length() == 0 && fallbackProgramName.length() > 0)
+	if (foundProgramName.length() > 0)
 	{
-		//We only got the US fallback translation and not the translation in the users language. Use this as the program name.
-		programName->append(fallbackProgramName);
+		programName->append(foundProgramName);
 	}
 }
