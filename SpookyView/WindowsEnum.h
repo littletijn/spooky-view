@@ -37,7 +37,7 @@ public:
 	void ResetWindowsTransparency();
 	void TogglePause();
 protected:
-	HWINEVENTHOOK hWinEventHook[3];
+	HWINEVENTHOOK hWinEventHook[1];
 
 	//Static variables for EnumWindowsForProcess
 	static t_string processNameOfWindowsToFind;
