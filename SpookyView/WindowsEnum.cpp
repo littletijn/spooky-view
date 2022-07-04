@@ -119,21 +119,22 @@ BOOL WindowsEnum::IsWindowUsable(HWND hwnd)
 	return FALSE;
 }
 
-void CALLBACK WindowsEnum::WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
+void CALLBACK WindowsEnum::WinEventProcWithCheck(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
 {
-	if (IsWindowUsable(hwnd) && idObject == OBJID_WINDOW)
+	if (idObject == OBJID_WINDOW && IsWindowUsable(hwnd))
 	{
 		//This is a top-level window, enumerate all windows
-		OutputDebugString(_T("Enuming...\r\n"));
 		SetWindowsTransparency();
-		OutputDebugString(_T("-------------------------------------\r\n"));
 	}
 }
 
-void CALLBACK WindowsEnum::WinEventProcForeground(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
+void CALLBACK WindowsEnum::WinEventProcWithoutCheck(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
 {
-	//When the foreground window has changed, always reset transparency values
-	SetWindowsTransparency();
+	if (idObject == OBJID_WINDOW)
+	{
+		//When the foreground window has changed, always reset transparency values
+		SetWindowsTransparency();
+	}
 }
 
 BOOL CALLBACK WindowsEnum::EnumWindowsProc(HWND hwnd, LPARAM lParam)
@@ -275,10 +276,12 @@ BOOL WindowsEnum::GetWindowProcessAndClass(HWND hwnd)
 			fileName++;
 
 			//Output debug data
+#ifdef _DEBUG
 			OutputDebugString(fileName);
 			OutputDebugString(_T("  --  "));
 			OutputDebugString(windowClassName);
 			OutputDebugString(_T("\r\n"));
+#endif
 
 			if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 			{
@@ -296,12 +299,11 @@ Create the hook for capturing the events
 */
 void WindowsEnum::CreateHook()
 {
-	/*EVENT_SYSTEM_FOREGROUND*/
-	/*EVENT_OBJECT_SHOW*/
-	/*EVENT_SYSTEM_MINIMIZEEND*/
-	hWinEventHook[0] = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
-	hWinEventHook[1] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, NULL, WinEventProcForeground, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
-	hWinEventHook[2] = SetWinEventHook(EVENT_SYSTEM_MINIMIZEEND, EVENT_SYSTEM_MINIMIZEEND, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
+	//EVENT_OBJECT_SHOW is needed for UWP apps
+	hWinEventHook[0] = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, NULL, WinEventProcWithoutCheck, 0, 0, WINEVENT_OUTOFCONTEXT);
+	hWinEventHook[1] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, NULL, WinEventProcWithoutCheck, 0, 0, WINEVENT_OUTOFCONTEXT);
+	hWinEventHook[2] = SetWinEventHook(EVENT_SYSTEM_MINIMIZESTART, EVENT_SYSTEM_MINIMIZESTART, NULL, WinEventProcWithCheck, 0, 0, WINEVENT_OUTOFCONTEXT);
+	hWinEventHook[3] = SetWinEventHook(EVENT_SYSTEM_MINIMIZEEND, EVENT_SYSTEM_MINIMIZEEND, NULL, WinEventProcWithCheck, 0, 0, WINEVENT_OUTOFCONTEXT);
 }
 
 void WindowsEnum::Unhook()
@@ -341,5 +343,7 @@ void WindowsEnum::GetIsWindows8()
 		VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR,
 		dwlConditionMask
 	);
+#ifdef _DEBUG
 	OutputDebugString(WindowsEnum::isWindows8 ? _T("Running on Windows 8 or 8.1\r\n") : _T("Not running on Windows 8 or 8.1\r\n"));
+#endif
 }
