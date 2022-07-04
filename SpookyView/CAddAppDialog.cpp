@@ -284,7 +284,7 @@ void CAddAppDialog::GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* pro
 								}
 								else if (lpTranslate[i].wLanguage == US_LANGUAGE_CODE && foundProgramName.length() == 0)
 								{
-									//We got the US translation. Store it as the fallback translation when a translation in the user language does not exists
+									//We got the US translation. Store it as the fallback translation when a translation in the user language or neutral does not exists
 									foundProgramName.append(reinterpret_cast<TCHAR*>(programNameBuffer));
 								}
 							}
