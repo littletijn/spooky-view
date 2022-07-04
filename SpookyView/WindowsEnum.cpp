@@ -124,9 +124,7 @@ void CALLBACK WindowsEnum::WinEventProc(HWINEVENTHOOK hWinEventHook, DWORD event
 	if (IsWindowUsable(hwnd) && idObject == OBJID_WINDOW)
 	{
 		//This is a top-level window, enumerate all windows
-		OutputDebugString(_T("Enuming...\r\n"));
 		SetWindowsTransparency();
-		OutputDebugString(_T("-------------------------------------\r\n"));
 	}
 }
 
@@ -297,9 +295,9 @@ Create the hook for capturing the events
 void WindowsEnum::CreateHook()
 {
 	hWinEventHook[0] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, NULL, WinEventProcForeground, 0, 0, WINEVENT_OUTOFCONTEXT);
-	//hWinEventHook[1] = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT | WINEVENT_SKIPOWNPROCESS);
-	//hWinEventHook[2] = SetWinEventHook(EVENT_SYSTEM_MINIMIZESTART, EVENT_OBJECT_SHOW, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT);
-	//hWinEventHook[3] = SetWinEventHook(EVENT_SYSTEM_MINIMIZEEND, EVENT_SYSTEM_MINIMIZEEND, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT);
+	hWinEventHook[1] = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT);
+	hWinEventHook[2] = SetWinEventHook(EVENT_SYSTEM_MINIMIZESTART, EVENT_OBJECT_SHOW, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT);
+	hWinEventHook[3] = SetWinEventHook(EVENT_SYSTEM_MINIMIZEEND, EVENT_SYSTEM_MINIMIZEEND, NULL, WinEventProc, 0, 0, WINEVENT_OUTOFCONTEXT);
 }
 
 void WindowsEnum::Unhook()
