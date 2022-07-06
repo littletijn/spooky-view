@@ -55,6 +55,7 @@ int AppMain::Run()
 		windowsEnum.GetIsWindows8();
 		windowsEnum.CreateHook();
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
+		settingsManager->Init();
 		settingsManager->LoadSettings();
 		windowsEnum.SetWindowsTransparency();
 		mainWindow->CheckIsFirstRun();
