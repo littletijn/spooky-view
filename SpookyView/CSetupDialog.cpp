@@ -82,6 +82,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_APPS);
 		windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_WINDOWS);
 		enabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_TRANSPARENCY);
+		separateBackgroundValueCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE);
 
 		PopulateProcessList();
 		SetTrackbarRanges(hDlg);
@@ -98,6 +99,9 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 			{
 			case IDC_CHECKBOX_ENABLE_TRANSPARENCY:
 				EnabledCheckboxNotified();
+				return TRUE;
+			case IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE:
+				SeparateBackgroundValueCheckboxNotified();
 				return TRUE;
 			case IDAPPLY:
 				ApplySettings();
@@ -267,7 +271,13 @@ void CSetupDialog::WindowsListNotified()
 void CSetupDialog::EnabledCheckboxNotified()
 {
 	currentAlphaSettings->enabled = enabledCheckbox->GetCheckState();
-	SetTrackbarEnableState();
+	SetFormElementsEnableState();
+}
+
+void CSetupDialog::SeparateBackgroundValueCheckboxNotified()
+{
+	currentAlphaSettings->separateBackgroundValue = separateBackgroundValueCheckbox->GetCheckState();
+	SetFormElementsEnableState();
 }
 
 void CSetupDialog::PopulateProcessList()
@@ -307,12 +317,13 @@ void CSetupDialog::SetTrackbars()
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
 	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
 	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->background * TRANSPARENCY_TRACKER_STEPS));
-	SetTrackbarEnableState();
+	SetFormElementsEnableState();
 }
 
 void CSetupDialog::SetCheckboxes()
 {
 	enabledCheckbox->SetCheckState(currentAlphaSettings->enabled);
+	separateBackgroundValueCheckbox->SetCheckState(currentAlphaSettings->separateBackgroundValue);
 }
 
 void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
@@ -333,6 +344,7 @@ void CSetupDialog::SetFormVisibility(bool show)
 {
 	const int itemIds[] = {
 		IDC_CHECKBOX_ENABLE_TRANSPARENCY,
+		IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE,
 		IDC_STATIC_TRANSPARENCY,
 		IDC_STATIC_FOREGROUND,
 		IDC_SLIDER_FOREGROUND,
@@ -355,12 +367,22 @@ void CSetupDialog::SetButtonEnableState(int controlId, bool show)
 	EnableWindow(item, show);
 }
 
-void CSetupDialog::SetTrackbarEnableState()
+void CSetupDialog::SetFormElementsEnableState()
 {
-	const int itemIds[] = { IDC_SLIDER_FOREGROUND, IDC_SLIDER_BACKGROUND };
+	const int itemIds[] = { IDC_SLIDER_FOREGROUND, IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE };
 	for (const auto& itemId : itemIds) {
 		auto item = GetDlgItem(this->hWnd, itemId);
 		EnableWindow(item, currentAlphaSettings->enabled);
+	}
+
+	auto slideBackground = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
+	if (currentAlphaSettings->enabled)
+	{
+		EnableWindow(slideBackground, currentAlphaSettings->separateBackgroundValue);
+	}
+	else
+	{
+		EnableWindow(slideBackground, FALSE);
 	}
 }
 

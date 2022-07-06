@@ -24,11 +24,13 @@ protected:
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<ListView> windowsListView;
 	std::unique_ptr<Checkbox> enabledCheckbox;
+	std::unique_ptr<Checkbox> separateBackgroundValueCheckbox;
 
 	void ApplySettings();
 	void CopySettings();
 	void WindowsListNotified();
 	void EnabledCheckboxNotified();
+	void SeparateBackgroundValueCheckboxNotified();
 	void ProgramsListNotified();
 	void PopulateProcessList();
 	void PopulateWindowsList(CProgramSetting* settings = 0);
@@ -37,7 +39,7 @@ protected:
 	void SetAlpha(BYTE value, HWND trackbar);
 	void SetFormVisibility(bool show);
 	void SetButtonEnableState(int controlId, bool show);
-	void SetTrackbarEnableState();
+	void SetFormElementsEnableState();
 	void SetTrackbarRanges(HWND hWnd);
 };
 
