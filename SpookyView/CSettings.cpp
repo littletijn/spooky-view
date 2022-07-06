@@ -56,7 +56,7 @@ BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, 
 		break;
 
 	case WindowTypes::Background:
-		alpha = alphaSettings.background;
+		alpha = alphaSettings.separateBackgroundValue ? alphaSettings.background : alphaSettings.foreground;
 		break;
 	}
 	return true;

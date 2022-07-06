@@ -141,6 +141,10 @@ void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* setting
 	{
 		settings->enabled = value != 0;
 	}
+	if (ReadKeyByteValue(key, _T("Separate background value"), value))
+	{
+		settings->separateBackgroundValue = value != 0;
+	}
 }
 
 LSTATUS CRegistrySettingsManager::ClearProgramSettings()
@@ -199,9 +203,11 @@ bool CRegistrySettingsManager::SaveSettings()
 void CRegistrySettingsManager::SaveAlphaSettingsValues(HKEY key, CAlphaSettings values)
 {
 	BYTE enabled = values.enabled ? '\x1' : '\x0';
+	BYTE separateBackgroundValue = values.separateBackgroundValue ? '\x1' : '\x0';
 	SaveValue(key, _T("Enabled"), REG_BINARY, &enabled);
 	SaveValue(key, _T("Alpha foreground"), REG_BINARY, &values.foreground);
 	SaveValue(key, _T("Alpha background"), REG_BINARY, &values.background);
+	SaveValue(key, _T("Separate background value"), REG_BINARY, &separateBackgroundValue);
 }
 
 BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value)
