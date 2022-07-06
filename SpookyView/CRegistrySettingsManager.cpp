@@ -5,6 +5,7 @@
 #include "Unicode.h"
 #include <shlwapi.h>
 #include <intsafe.h>
+#include "Defines.h"
 
 #pragma once
 
@@ -59,6 +60,7 @@ void CRegistrySettingsManager::LoadSettings()
 		//so it will be delete-d when the smart pointer is going out of scope
 		programsSubKeyLength++;
 		auto processKeyName = std::make_unique<TCHAR[]>(programsSubKeyLength);
+		auto fileName = std::make_unique<TCHAR[]>(MAX_PATH);
 
 		//Enum the process sub keys in the Programs key
 		LSTATUS programsEnumResult;
@@ -82,12 +84,14 @@ void CRegistrySettingsManager::LoadSettings()
 				LSTATUS windowsKeyResult = RegOpenKeyEx(processKey, _T("Windows"), 0, KEY_READ, &windowsKey);
 				if (windowsKeyResult == ERROR_SUCCESS)
 				{
+					ReadValue(processKey, _T("File name"), REG_SZ, (BYTE*)fileName.get(), MAX_PATH * sizeof(TCHAR));
 					ReadAlphaValues(windowsKey, &progSettings->alphaSettings);
 					DWORD windowsSubKeyLength;
 					DWORD windowsSubKeyIndex = 0;
 					RegQueryInfoKey(windowsKey, NULL, NULL, NULL, NULL, &windowsSubKeyLength, NULL, NULL, NULL, NULL, NULL, NULL);
 					windowsSubKeyLength++;
-					std::unique_ptr<TCHAR[]> windowKeyName = std::make_unique<TCHAR[]>(windowsSubKeyLength);
+					auto windowKeyName = std::make_unique<TCHAR[]>(windowsSubKeyLength);
+					auto windowClassName = std::make_unique<TCHAR[]>(MAX_WINDOW_CLASS_NAME);
 
 					LSTATUS windowsEnumResult;
 					//Enum the window sub keys in the Windows key
@@ -106,8 +110,9 @@ void CRegistrySettingsManager::LoadSettings()
 						if (windowKeyResult == ERROR_SUCCESS)
 						{
 							auto windowSettings = std::make_unique<CWindowSetting>();
+							ReadValue(windowKey, _T("Window class name"), REG_SZ, (BYTE*)windowClassName.get(), MAX_WINDOW_CLASS_NAME * sizeof(TCHAR));
 							ReadAlphaValues(windowKey, &windowSettings->alphaSettings);
-							progSettings->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowKeyName.get(), std::move(windowSettings)));
+							progSettings->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowClassName.get(), std::move(windowSettings)));
 							RegCloseKey(windowKey);
 						}
 						
@@ -116,7 +121,7 @@ void CRegistrySettingsManager::LoadSettings()
 					RegCloseKey(windowsKey);
 				}
 				//Make process name lower case
-				auto lowerCaseProcessKeyName = settings->ToLowerCase(processKeyName.get());
+				auto lowerCaseProcessKeyName = settings->ToLowerCase(fileName.get());
 				settings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(*lowerCaseProcessKeyName, std::move(progSettings)));
 				RegCloseKey(processKey);
 			}
@@ -177,6 +182,7 @@ bool CRegistrySettingsManager::SaveSettings()
 			HKEY programKey;
 			if (RegCreateKeyEx(programsKey, program.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programKey, NULL) == ERROR_SUCCESS)
 			{
+				SaveStringValue(programKey, _T("File name"), program.first);
 				//Create Windows key of program
 				HKEY windowsKey;
 				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
@@ -190,6 +196,7 @@ bool CRegistrySettingsManager::SaveSettings()
 						//Create key of window
 						if (RegCreateKeyEx(windowsKey, window.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowKey, NULL) == ERROR_SUCCESS)
 						{
+							SaveStringValue(windowKey, _T("Window class name"),window.first);
 							this->SaveAlphaSettingsValues(windowKey, window.second->alphaSettings);
 						}
 					}
@@ -218,26 +225,14 @@ BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE
 	return result == ERROR_SUCCESS && keyType == REG_BINARY;
 }
 
-void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
+BOOL CRegistrySettingsManager::ReadValue(HKEY key, TCHAR *valueName, DWORD expectedKeyType, BYTE *dataBuffer, DWORD dataBufferSize)
 {
-	HKEY hKey;
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
-	{
-		DWORD versionNumberSize;
-		//This will convert the size_t to DWORD. a size_t in x64 is larger than a DWORD. Because our string will not be that long, we only need the size of a DWORD
-		if (SIZETToDWord(versionNumber.size() * sizeof(TCHAR), &versionNumberSize) != S_OK)
-		{
-			//Show error message
-		}
-		else if (!SaveValue(hKey, _T("Skip version"), REG_SZ, (LPBYTE)versionNumber.c_str(), versionNumberSize))
-		{
-			//Show error message
-		}
-		RegCloseKey(hKey);
-	}
+	DWORD keyType;
+	auto result = RegQueryValueEx(key, valueName, NULL, &keyType, dataBuffer, &dataBufferSize);
+	return result == ERROR_SUCCESS && keyType == expectedKeyType;
 }
 
-BOOL CRegistrySettingsManager::ReadValue(TCHAR *subkey, TCHAR *valueName, DWORD expectedKeyType, void *dataBuffer, DWORD dataBufferSize)
+BOOL CRegistrySettingsManager::ReadValue(TCHAR *subkey, TCHAR *valueName, DWORD expectedKeyType, BYTE *dataBuffer, DWORD dataBufferSize)
 {
 	DWORD keyType;
 	auto result = SHGetValue(HKEY_CURRENT_USER, subkey, valueName, &keyType, dataBuffer, &dataBufferSize);
@@ -264,14 +259,38 @@ BOOL CRegistrySettingsManager::SaveValue(TCHAR* subkey, TCHAR* valueName, DWORD 
 	return result;
 }
 
+BOOL CRegistrySettingsManager::SaveStringValue(HKEY hKey, TCHAR* valueName, tstring value)
+{
+	DWORD valueSize;
+	//This will convert the size_t to DWORD. a size_t in x64 is larger than a DWORD. Because our string will not be that long, we only need the size of a DWORD
+	if (SIZETToDWord(value.size() * sizeof(TCHAR), &valueSize) != S_OK)
+	{
+		return FALSE;
+	}
+	return RegSetValueEx(hKey, valueName, 0, REG_SZ, (LPBYTE)value.c_str(), valueSize) == ERROR_SUCCESS;
+}
+
 BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
 {
 	TCHAR keyData[100];
-	if (ReadValue(_T("Software\\Spooky View"), _T("Skip version"), REG_SZ, keyData, sizeof(keyData)))
+	if (ReadValue(_T("Software\\Spooky View"), _T("Skip version"), REG_SZ, (BYTE*)keyData, sizeof(keyData)))
 	{
 		return versionNumber.compare(keyData) == 0;
 	}
 	return FALSE;
+}
+
+void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
+{
+	HKEY hKey;
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	{
+		if (!SaveStringValue(hKey, _T("Skip version"), versionNumber))
+		{
+			//Show error message
+		}
+		RegCloseKey(hKey);
+	}
 }
 
 BOOL CRegistrySettingsManager::GetDisableUpdateCheck()
