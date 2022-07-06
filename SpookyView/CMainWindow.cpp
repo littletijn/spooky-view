@@ -16,6 +16,8 @@ extern UpdateResponse updateResponse;
 extern std::unique_ptr<ISettingsManager> settingsManager;
 extern WindowsEnum windowsEnum;
 
+const int SINGLE_CLICK_TIMER = 1;
+
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
 {
@@ -111,6 +113,18 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		}
 		return FALSE;
 
+	case WM_TIMER:
+		if (wParam == SINGLE_CLICK_TIMER)
+		{
+			KillTimer(hWnd, SINGLE_CLICK_TIMER);
+			if (!hasDoubleClicked)
+			{
+				OpenContextMenu();
+			}
+			hasDoubleClicked = FALSE;
+		}
+		return FALSE;
+
 	case WM_NOTIFYICON:
 		//Handles the Notification Area Icon
 		switch (lParam)
@@ -118,23 +132,23 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		case WM_CONTEXTMENU:
 		case WM_RBUTTONUP:
 		case NIN_KEYSELECT:
-		case NIN_SELECT:
 			//Right click. Open Context menu
-		{
-			POINT cursorPos;
 			GetCursorPos(&cursorPos);
-			//We must set the owning window of this Context Menu on the foreground, otherwise the menu cannot be closed by clicking outside of the menu.
-			SetForegroundWindow(hWnd);
-			HMENU iconMenu = GetContextMenu();
-			TrackPopupMenu(iconMenu, TPM_CENTERALIGN | TPM_BOTTOMALIGN, cursorPos.x, cursorPos.y, 0, hWnd, NULL);
-		}
+			OpenContextMenu();
 			return FALSE;
 		case WM_LBUTTONDBLCLK:
 			//Left double click. Open default option of Context menu
+			GetCursorPos(&cursorPos);
+			hasDoubleClicked = TRUE;
+			KillTimer(hWnd, SINGLE_CLICK_TIMER);
+			OpenSetupDialog();
 			return FALSE;
 		case WM_LBUTTONUP:
-			//Left single click. Open Flyout window
-			return FALSE;
+			//Left single click. Start timer to check if not a double click is made
+			GetCursorPos(&cursorPos);
+			SetTimer(hWnd, SINGLE_CLICK_TIMER, GetDoubleClickTime(), NULL);
+			break;
+			//return FALSE;
 		}
 		break;
 	case WM_COMMAND:
@@ -150,14 +164,8 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			return FALSE;
 
 			case IDM_OPEN:
-			{
-				if (!cSetupDialog)
-				{
-					cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance, this->hWnd);
-					cSetupDialog->InitInstance();
-				}
-			}
-			return FALSE;
+				OpenSetupDialog();
+				return FALSE;
 
 			case IDM_ABOUT:
 			{
@@ -189,6 +197,23 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}
 	return TRUE;
+}
+
+void CMainWindow::OpenContextMenu()
+{
+	//We must set the owning window of this Context Menu on the foreground, otherwise the menu cannot be closed by clicking outside of the menu.
+	SetForegroundWindow(hWnd);
+	HMENU iconMenu = GetContextMenu();
+	TrackPopupMenu(iconMenu, TPM_CENTERALIGN | TPM_BOTTOMALIGN, cursorPos.x, cursorPos.y, 0, hWnd, NULL);
+}
+
+void CMainWindow::OpenSetupDialog()
+{
+	if (!cSetupDialog)
+	{
+		cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance, this->hWnd);
+		cSetupDialog->InitInstance();
+	}
 }
 
 void CMainWindow::ShowAlreadyRunningBalloon()
