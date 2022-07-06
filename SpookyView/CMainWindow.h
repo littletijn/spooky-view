@@ -17,10 +17,14 @@ public:
 	BOOL InitNotifyIcon();
 	void CheckIsFirstRun();
 private:
+	void OpenContextMenu();
+	void OpenSetupDialog();
 	void CloseWindow();
 	void ShowAlreadyRunningBalloon();
 	HMENU GetContextMenu();
 	//Members
+	POINT cursorPos;
+	BOOL hasDoubleClicked;
 	std::unique_ptr<CNotifyIcon> cNotifyIcon;
 	HMENU notifyIconContextMenu;
 	std::unique_ptr<CSetupDialog> cSetupDialog;
