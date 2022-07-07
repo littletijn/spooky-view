@@ -246,7 +246,7 @@ BOOL CRegistrySettingsManager::SaveValue(HKEY hKey, TCHAR* valueName, DWORD keyT
 	if (valueSize == 0) {
 		valueSize = sizeof(*value);
 	}
-	return RegSetValueEx(hKey, valueName, 0, keyType, value, valueSize) != ERROR_SUCCESS;
+	return RegSetValueEx(hKey, valueName, 0, keyType, value, valueSize) == ERROR_SUCCESS;
 }
 
 BOOL CRegistrySettingsManager::SaveValue(TCHAR* subkey, TCHAR* valueName, DWORD keyType, BYTE* value)
