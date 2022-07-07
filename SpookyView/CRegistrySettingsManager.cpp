@@ -169,7 +169,10 @@ BOOL CRegistrySettingsManager::ClearProgramSettings()
 bool CRegistrySettingsManager::SaveSettings()
 {
 	//Remove programs key
-	CRegistrySettingsManager::ClearProgramSettings();
+	if (!CRegistrySettingsManager::ClearProgramSettings())
+	{
+		return false;
+	}
 	//Recreate keys
 	//Create the Programs key
 	HKEY programsKey;
@@ -204,8 +207,9 @@ bool CRegistrySettingsManager::SaveSettings()
 				}
 			}
 		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
 void CRegistrySettingsManager::SaveAlphaSettingsValues(HKEY key, CAlphaSettings values)
