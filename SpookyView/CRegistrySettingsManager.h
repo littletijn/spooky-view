@@ -25,7 +25,7 @@ protected:
 	HKEY registryRootKey;
 	BOOL ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value);
 	void ReadAlphaValues(HKEY key, CAlphaSettings* settings);
-	LSTATUS ClearProgramSettings();
+	BOOL ClearProgramSettings();
 	BOOL ReadValue(HKEY key, TCHAR* valueName, DWORD expectedKeyType, BYTE* dataBuffer, DWORD dataBufferSize);
 	BOOL ReadValue(TCHAR* subkey, TCHAR* valueName, DWORD expectedKeyType, BYTE* dataBuffer, DWORD dataBufferSize);
 	BOOL SaveValue(HKEY hKey, TCHAR* valueName, DWORD keyType, BYTE* value, DWORD valueSize = 0);

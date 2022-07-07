@@ -154,17 +154,16 @@ void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* setting
 	}
 }
 
-LSTATUS CRegistrySettingsManager::ClearProgramSettings()
+BOOL CRegistrySettingsManager::ClearProgramSettings()
 {
 	HKEY programsKey;
-	auto result = RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey);
-	if (result == ERROR_SUCCESS)
+	if (RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey) == ERROR_SUCCESS)
 	{
 		RegCloseKey(programsKey);
 		//Remove current Programs key
-		return SHDeleteKey(registryRootKey, _T("Programs"));
+		SHDeleteKey(registryRootKey, _T("Programs")) == ERROR_SUCCESS;
 	}
-	return result;
+	return TRUE;
 }
 
 bool CRegistrySettingsManager::SaveSettings()
