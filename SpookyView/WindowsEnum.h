@@ -10,7 +10,6 @@ class WindowsEnum
 {
 public:
 	//Other static variables
-	static BOOL isWindows8;
 	BOOL isPause = false;
 
 	//Callbacks
@@ -30,7 +29,6 @@ public:
 	static BOOL HasProcessUWPCoreWindow(DWORD processId);
 
 	//Functions
-	void GetIsWindows8();
 	void CreateHook();
 	void Unhook();
 	BOOL IsPaused();

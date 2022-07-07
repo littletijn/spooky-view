@@ -15,6 +15,7 @@
 
 extern PGNSI isImmersive;
 extern WindowsEnum windowsEnum;
+extern bool isWindows8;
 
 const int US_LANGUAGE_CODE = 1033; // English (United States)
 
@@ -116,7 +117,7 @@ void CAddAppDialog::LoadModules()
 						// When not Windows 8 or Windows 8.1, check if it is the ApplicationFrameHost. If it is, skip it.
 						// ApplicationFrameHost does not have a window of it own. 
 						// All child windows of the ApplicationFrameHost process with class "Windows.UI.Core.CoreWindow" are the windows of the UWP apps running and visible.
-						if (WindowsEnum::isWindows8 || IsApplicationFrameHost(sProcess))
+						if (isWindows8 || IsApplicationFrameHost(sProcess))
 						{
 							CloseHandle(hProcess);
 							continue;

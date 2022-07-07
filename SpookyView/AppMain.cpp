@@ -16,6 +16,8 @@ extern std::unique_ptr<ISettingsManager> settingsManager;
 extern std::unique_ptr<CMainWindow> mainWindow;
 extern WindowsEnum windowsEnum;
 extern PGNSI isImmersive;
+extern bool isWindows8;
+extern bool isWindows10orNewer;
 
 int AppMain::Run()
 {
@@ -54,7 +56,8 @@ int AppMain::Run()
 			MessageBox(NULL, _T("Cannot create notification area icon."), _T("Error"), MB_OK);
 			return FALSE;
 		}
-		windowsEnum.GetIsWindows8();
+		GetIsWindows8();
+		GetIsWindows10orNewer();
 		windowsEnum.CreateHook();
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
 		if (!settingsManager->Init())
@@ -124,4 +127,72 @@ void AppMain::SendAlreadyRunningNotify()
 			DWORD error = GetLastError();
 		}
 	}
+}
+
+void AppMain::GetIsWindows8()
+{
+	OSVERSIONINFOEX osvi;
+	DWORDLONG dwlConditionMask = 0;
+
+	// Initialize the OSVERSIONINFOEX structure.
+
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	osvi.dwMajorVersion = 6;
+	osvi.dwMinorVersion = 2;
+	osvi.wServicePackMajor = 0;
+	osvi.wServicePackMinor = 0;
+
+	// Initialize the condition mask.
+
+	VER_SET_CONDITION(dwlConditionMask, VER_MAJORVERSION, VER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_MINORVERSION, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMINOR, VER_GREATER_EQUAL);
+
+	// Perform the test.
+
+	isWindows8 = VerifyVersionInfo(
+		&osvi,
+		VER_MAJORVERSION | VER_MINORVERSION |
+		VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR,
+		dwlConditionMask
+	);
+#ifdef _DEBUG
+	OutputDebugString(isWindows8 ? _T("Running on Windows 8 or 8.1\r\n") : _T("Not running on Windows 8 or 8.1\r\n"));
+#endif
+}
+
+void AppMain::GetIsWindows10orNewer()
+{
+	OSVERSIONINFOEX osvi;
+	DWORDLONG dwlConditionMask = 0;
+
+	// Initialize the OSVERSIONINFOEX structure.
+
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	osvi.dwMajorVersion = 10;
+	osvi.dwMinorVersion = 0;
+	osvi.wServicePackMajor = 0;
+	osvi.wServicePackMinor = 0;
+
+	// Initialize the condition mask.
+
+	VER_SET_CONDITION(dwlConditionMask, VER_MAJORVERSION, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_MINORVERSION, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
+	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMINOR, VER_GREATER_EQUAL);
+
+	// Perform the test.
+
+	isWindows10orNewer = VerifyVersionInfo(
+		&osvi,
+		VER_MAJORVERSION | VER_MINORVERSION |
+		VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR,
+		dwlConditionMask
+	);
+#ifdef _DEBUG
+	OutputDebugString(isWindows10orNewer ? _T("Running on Windows 10 or newer\r\n") : _T("Not running on Windows 10 or newer\r\n"));
+#endif
 }
