@@ -37,6 +37,7 @@ int AppMain::Run()
 	// Perform application initialization:
 	if (!mainWindow->InitInstance())
 	{
+		MessageBox(NULL, _T("Cannot create main window."), _T("Error"), MB_OK);
 		return FALSE;
 	}
 	else
@@ -50,13 +51,20 @@ int AppMain::Run()
 
 		if (!mainWindow->InitNotifyIcon())
 		{
+			MessageBox(NULL, _T("Cannot create notification area icon."), _T("Error"), MB_OK);
 			return FALSE;
 		}
 		windowsEnum.GetIsWindows8();
 		windowsEnum.CreateHook();
 		settingsManager = std::make_unique<CRegistrySettingsManager>();
-		settingsManager->Init();
-		settingsManager->LoadSettings();
+		if (!settingsManager->Init())
+		{
+			MessageBox(NULL, _T("Cannot create Registry key to store configuration. Settings will not be stored."), _T("Error"), MB_OK);
+		}
+		else
+		{
+			settingsManager->LoadSettings();
+		}
 		windowsEnum.SetWindowsTransparency();
 		mainWindow->CheckIsFirstRun();
 #ifdef UNICODE

@@ -23,13 +23,10 @@ CRegistrySettingsManager::~CRegistrySettingsManager()
 	}
 }
 
-void CRegistrySettingsManager::Init()
+BOOL CRegistrySettingsManager::Init()
 {
 	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
-	if (result != ERROR_SUCCESS)
-	{
-		MessageBox(NULL, _T("Cannot create Registry key to store configuration."), _T("Error"), MB_OK);
-	}
+	return result == ERROR_SUCCESS;
 }
 
 CSettings* CRegistrySettingsManager::GetSettings()

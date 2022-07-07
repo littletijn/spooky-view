@@ -6,7 +6,7 @@ class CRegistrySettingsManager : public ISettingsManager
 {
 public:
 	CRegistrySettingsManager();
-	void Init();
+	BOOL Init();
 	~CRegistrySettingsManager();
 	void LoadSettings();
 	bool SaveSettings();
