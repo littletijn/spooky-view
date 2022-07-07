@@ -287,10 +287,7 @@ void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
 	HKEY hKey;
 	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
 	{
-		if (!SaveStringValue(hKey, _T("Skip version"), versionNumber))
-		{
-			//Show error message
-		}
+		SaveStringValue(hKey, _T("Skip version"), versionNumber);
 		RegCloseKey(hKey);
 	}
 }
