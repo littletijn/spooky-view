@@ -85,6 +85,18 @@ void UpdateChecker::DownloadAndParseJson()
 #else
 	url.append(_T("unknown"));
 #endif
+	url.append(_T("&packaging="));
+#ifdef PACKAGING_STORE
+	url.append(_T("store"));
+#elif PACKAGING_MSIX
+	url.append(_T("msix"));
+#elif PACKAGING_MSI
+	url.append(_T("msi"));
+#elif PACKAGING_PORTABLE
+	url.append(_T("portable"));
+#else
+	url.append(_T("unknown"));
+#endif
 
 	DWORD dwSize = 0;
 	DWORD dwDownloaded = 0;
