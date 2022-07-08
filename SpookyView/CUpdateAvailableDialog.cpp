@@ -34,7 +34,9 @@ INT_PTR CALLBACK CUpdateAvailableDialog::DlgProc(HWND hDlg, UINT message, WPARAM
 			return TRUE;
 			break;
 		case ID_DOWNLOAD:
+#ifndef PACKAGING_STORE
 			ShellExecute(NULL, _T("open"), this->downloadUrl.c_str(), NULL, NULL, SW_SHOWNORMAL);
+#endif // !PACKAGING_STORE
 			DestroyWindow(hDlg);
 			return TRUE;
 		case IDCANCEL:
