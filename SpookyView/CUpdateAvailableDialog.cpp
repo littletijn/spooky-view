@@ -23,6 +23,12 @@ INT_PTR CALLBACK CUpdateAvailableDialog::DlgProc(HWND hDlg, UINT message, WPARAM
 	{
 	case WM_INITDIALOG:
 		ShowMessage();
+#ifdef PACKAGING_STORE
+		{
+			HWND downloadButton = GetDlgItem(hDlg, ID_DOWNLOAD);
+			ShowWindow(downloadButton, SW_HIDE);
+		}
+#endif // !PACKAGING_STORE
 		return TRUE;
 
 	case WM_COMMAND:
