@@ -8,7 +8,8 @@ obj/
 packages/
 Debug/
 Release/
-StorePackaging/StorePackaging_TemporaryKey.pfx
 StorePackaging/Assets
 StorePackaging/AppPackages
 StorePackaging/BundleArtifacts
+StorePackaging/StorePackaging_TemporaryKey.pfx
+StorePackaging/Package.StoreAssociation.xml
