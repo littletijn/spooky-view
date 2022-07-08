@@ -26,7 +26,7 @@ protected:
 	std::unique_ptr<Checkbox> enabledCheckbox;
 	std::unique_ptr<Checkbox> separateBackgroundValueCheckbox;
 
-	void ApplySettings();
+	bool ApplySettings();
 	void CopySettings();
 	void WindowsListNotified();
 	void EnabledCheckboxNotified();

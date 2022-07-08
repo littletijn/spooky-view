@@ -15,6 +15,7 @@
 extern UpdateResponse updateResponse;
 extern std::unique_ptr<ISettingsManager> settingsManager;
 extern WindowsEnum windowsEnum;
+extern bool isWindows10orNewer;
 
 const int SINGLE_CLICK_TIMER = 1;
 
@@ -218,7 +219,14 @@ void CMainWindow::OpenSetupDialog()
 
 void CMainWindow::ShowAlreadyRunningBalloon()
 {
-	cNotifyIcon->ShowBalloon(_T("Spooky View is already running"), _T("Right click on this icon to configure this application."));
+	if (isWindows10orNewer)
+	{
+		cNotifyIcon->ShowBalloon(_T("Spooky View is already running"), _T("Right click on the icon in the notification area to configure this application."));
+	}
+	else
+	{
+		cNotifyIcon->ShowBalloon(_T("Spooky View is already running"), _T("Right click on this icon to configure this application."));
+	}
 }
 
 void CMainWindow::CheckIsFirstRun()
@@ -226,6 +234,13 @@ void CMainWindow::CheckIsFirstRun()
 	if (!settingsManager->GetSkipWelcome())
 	{
 		settingsManager->SetSkipWelcome();
-		cNotifyIcon->ShowBalloon(_T("Welcome to Spooky View"), _T("Right click on this icon to configure this application."));
+		if (isWindows10orNewer)
+		{
+			cNotifyIcon->ShowBalloon(_T("Welcome to Spooky View"), _T("Right click on the icon in the notification area to configure this application."));
+		}
+		else
+		{
+			cNotifyIcon->ShowBalloon(_T("Welcome to Spooky View"), _T("Right click on this icon to configure this application."));
+		}
 	}
 }

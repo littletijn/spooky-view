@@ -107,7 +107,11 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 				ApplySettings();
 				return TRUE;
 			case IDOK:
-				ApplySettings();
+				if (ApplySettings())
+				{
+					DestroyWindow(hDlg);
+				}
+				return TRUE;
 			case IDCANCEL:
 				DestroyWindow(hDlg);
 				return TRUE;
@@ -160,12 +164,17 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	return FALSE;
 }
 
-void CSetupDialog::ApplySettings()
+bool CSetupDialog::ApplySettings()
 {
 	windowsEnum.ResetWindowsTransparency();
 	settingsManager->ApplyNewSettings(newSettings.get());
-	settingsManager->SaveSettings();
+	if (!settingsManager->SaveSettings())
+	{
+		MessageBox(NULL, _T("Could not save settings. Modifications are not stored."), _T("Error"), MB_OK);
+		return false;
+	}
 	WindowsEnum::SetWindowsTransparency();
+	return true;
 }
 
 void CSetupDialog::CopySettings()

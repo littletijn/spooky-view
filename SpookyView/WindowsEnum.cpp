@@ -8,6 +8,7 @@
 
 extern std::unique_ptr<ISettingsManager> settingsManager;
 extern PGNSI isImmersive;
+extern bool isWindows8;
 
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd318055(v=vs.85).aspx
 const TCHAR DIALOGBOXCLASSNAME[] = _T("#32770");
@@ -17,7 +18,6 @@ const TCHAR UWP_APPLICATION_FRAME_WINDOW[] = _T("ApplicationFrameWindow");
 const TCHAR UWP_WINDOW_UI_CLASSNAME[] = _T("Windows.UI.Core.CoreWindow");
 
 //Static variables
-BOOL WindowsEnum::isWindows8;
 t_string WindowsEnum::processNameOfWindowsToFind;
 std::map<tstring, tstring> WindowsEnum::foundWindowClasses;
 TCHAR WindowsEnum::windowClassName[MAX_WINDOW_CLASS_NAME];
@@ -268,7 +268,7 @@ BOOL WindowsEnum::GetWindowProcessAndClass(HWND hwnd)
 	{
 		//Check if current process is not a Windows Store App on Windows 8 or Windows 8.1.
 		//They should not be transparent because they are always running full-screen
-		if (!WindowsEnum::isWindows8 || isImmersive == NULL || !isImmersive(hProcess))
+		if (!isWindows8 || isImmersive == NULL || !isImmersive(hProcess))
 		{
 			//Get process image file name
 			GetProcessImageFileName(hProcess, filePathName, ARRAYSIZE(filePathName));
@@ -312,38 +312,4 @@ void WindowsEnum::Unhook()
 	{
 		UnhookWinEvent(hook);
 	}
-}
-
-void WindowsEnum::GetIsWindows8()
-{
-	OSVERSIONINFOEX osvi;
-	DWORDLONG dwlConditionMask = 0;
-
-	// Initialize the OSVERSIONINFOEX structure.
-
-	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-	osvi.dwMajorVersion = 6;
-	osvi.dwMinorVersion = 2;
-	osvi.wServicePackMajor = 0;
-	osvi.wServicePackMinor = 0;
-
-	// Initialize the condition mask.
-
-	VER_SET_CONDITION(dwlConditionMask, VER_MAJORVERSION, VER_EQUAL);
-	VER_SET_CONDITION(dwlConditionMask, VER_MINORVERSION, VER_GREATER_EQUAL);
-	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
-	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMINOR, VER_GREATER_EQUAL);
-
-	// Perform the test.
-
-	WindowsEnum::isWindows8 = VerifyVersionInfo(
-		&osvi,
-		VER_MAJORVERSION | VER_MINORVERSION |
-		VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR,
-		dwlConditionMask
-	);
-#ifdef _DEBUG
-	OutputDebugString(WindowsEnum::isWindows8 ? _T("Running on Windows 8 or 8.1\r\n") : _T("Not running on Windows 8 or 8.1\r\n"));
-#endif
 }

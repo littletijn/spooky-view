@@ -17,6 +17,8 @@ std::unique_ptr<CMainWindow> mainWindow;
 std::unique_ptr<ISettingsManager> settingsManager;
 UpdateResponse updateResponse;
 WindowsEnum windowsEnum;
+bool isWindows8;
+bool isWindows10orNewer;
 
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPTSTR lpCmdLine, _In_ int nCmdShow)
 {
