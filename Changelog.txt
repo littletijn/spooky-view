@@ -103,3 +103,18 @@ and for preparation of the GUI.
 - Added icon to title bar of modeless dialog boxes
 - Removed duplicate code in Registry settings
 - Removed pointer table for window Procedures and use window data to store pointer instead
+
+1.0.0 (It's showtime release)
+- First version for public use
+- Corrected x86 build
+- Disable update check for non Unicode builds
+- Make sure a window can be opened once
+- Use case insensitive logic
+- Use neutral or US program name when no name is found in user set language
+- Addded support for UWP apps using CoreWindow
+- Added option to enable inactive window trackbar for easier setup when not needed
+- Changed text for welcome message and a running instance message on Windows 10 and newer
+- Added requirements for Microsoft Store
+- Fixed single instance check
+- Fixed memory leaks
+- Cleanup code
