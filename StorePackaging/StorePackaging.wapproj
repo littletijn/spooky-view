@@ -8,10 +8,6 @@
       <Configuration>Debug</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Release Store|AnyCPU">
-      <Configuration>Release Store</Configuration>
-      <Platform>AnyCPU</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release Store|x64">
       <Configuration>Release Store</Configuration>
       <Platform>x64</Platform>
@@ -31,14 +27,6 @@
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Debug|AnyCPU">
-      <Configuration>Debug</Configuration>
-      <Platform>AnyCPU</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|AnyCPU">
-      <Configuration>Release</Configuration>
-      <Platform>AnyCPU</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup>
