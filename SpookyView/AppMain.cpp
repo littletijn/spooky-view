@@ -42,41 +42,39 @@ int AppMain::Run()
 		MessageBox(NULL, _T("Cannot create main window."), _T("Error"), MB_OK);
 		return FALSE;
 	}
+
+	CLimitSingleInstance singleInstanceObj(_T("SpookyView"));
+	if (singleInstanceObj.IsAnotherInstanceRunning())
+	{
+		SendAlreadyRunningNotify();
+		return FALSE;
+	}
+
+	if (!mainWindow->InitNotifyIcon())
+	{
+		MessageBox(NULL, _T("Cannot create notification area icon."), _T("Error"), MB_OK);
+		return FALSE;
+	}
+	GetIsWindows8();
+	GetIsWindows10orNewer();
+	windowsEnum.CreateHook();
+	settingsManager = std::make_unique<CRegistrySettingsManager>();
+	if (!settingsManager->Init())
+	{
+		MessageBox(NULL, _T("Cannot create Registry key to store configuration. Settings will not be stored."), _T("Error"), MB_OK);
+	}
 	else
 	{
-		CLimitSingleInstance singleInstanceObj(_T("SpookyView"));
-		if (singleInstanceObj.IsAnotherInstanceRunning())
-		{
-			SendAlreadyRunningNotify();
-			return FALSE;
-		}
-
-		if (!mainWindow->InitNotifyIcon())
-		{
-			MessageBox(NULL, _T("Cannot create notification area icon."), _T("Error"), MB_OK);
-			return FALSE;
-		}
-		GetIsWindows8();
-		GetIsWindows10orNewer();
-		windowsEnum.CreateHook();
-		settingsManager = std::make_unique<CRegistrySettingsManager>();
-		if (!settingsManager->Init())
-		{
-			MessageBox(NULL, _T("Cannot create Registry key to store configuration. Settings will not be stored."), _T("Error"), MB_OK);
-		}
-		else
-		{
-			settingsManager->LoadSettings();
-		}
-		windowsEnum.SetWindowsTransparency();
-		mainWindow->CheckIsFirstRun();
-#ifdef UNICODE
-		if (!settingsManager->GetDisableUpdateCheck())
-		{
-			CreateUpdateCheckerThread();
-		}
-#endif
+		settingsManager->LoadSettings();
 	}
+	windowsEnum.SetWindowsTransparency();
+	mainWindow->CheckIsFirstRun();
+#ifdef UNICODE
+	if (!settingsManager->GetDisableUpdateCheck())
+	{
+		CreateUpdateCheckerThread();
+	}
+#endif
 
 	hAccelTable = LoadAccelerators(hInst, MAKEINTRESOURCE(IDC_SPOOKYVIEW));
 
