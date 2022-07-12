@@ -161,7 +161,7 @@ BOOL CRegistrySettingsManager::ClearProgramSettings()
 	{
 		RegCloseKey(programsKey);
 		//Remove current Programs key
-		SHDeleteKey(registryRootKey, _T("Programs")) == ERROR_SUCCESS;
+		return SHDeleteKey(registryRootKey, _T("Programs")) == ERROR_SUCCESS;
 	}
 	return TRUE;
 }

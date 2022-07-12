@@ -8,6 +8,8 @@ obj/
 packages/
 Debug/
 Release/
+x64/
+Release Store/
 StorePackaging/Assets
 StorePackaging/AppPackages
 StorePackaging/BundleArtifacts

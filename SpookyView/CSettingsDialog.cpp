@@ -57,11 +57,15 @@ void CSettingsDialog::ApplySettings()
 
 void CSettingsDialog::SetFormValues(HWND hDlg)
 {
+	HWND autoStartupCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_AUTO_STARTUP);
+#ifdef PACKAGING_STORE
+	ShowWindow(autoStartupCheckbox, SW_HIDE);
+#else
 	if (HasAutoRunValue())
 	{
-		HWND autoStartupCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_AUTO_STARTUP);
 		Button_SetCheck(autoStartupCheckbox, TRUE);
 	}
+#endif // PACKAGING_STORE
 	HWND disableUpdateCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_DISABLE_UPDATE_CHECK);
 #ifdef UNICODE
 	if (settingsManager->GetDisableUpdateCheck())
