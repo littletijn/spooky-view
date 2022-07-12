@@ -23,7 +23,7 @@
       <Extensions>
         <desktop:Extension
             Category="windows.startupTask"
-            Executable="SpookyView.exe"
+            Executable="SpookyView\SpookyView.exe"
             EntryPoint="Windows.FullTrustApplication">
             <desktop:StartupTask
               TaskId="SpookyViewStartupTask"
