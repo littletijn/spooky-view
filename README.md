@@ -1,5 +1,5 @@
 <p align="center">
-  <img style="width: 200px;" src="https://github.com/littletijn/spooky-view/blob/readme/docs/spooky-view-logo.svg" alt="Spooky View" />
+  <img style="width: 200px;" src="https://github.com/littletijn/spooky-view/blob/main/docs/spooky-view-logo.svg" alt="Spooky View" />
 </p>
 
 # Spooky View
@@ -14,7 +14,7 @@ The application is available from the Microsoft Store and Github.
 
 ### Microsoft Store
 <a href="https://apps.microsoft.com/store/detail/spooky-view/9PB88ZKT0CDB">
-  <img style="width: 300px;" src="https://github.com/littletijn/spooky-view/blob/readme/docs/ms-store-badge-large-en.png" alt="Get it from Microsoft" />
+  <img style="width: 300px;" src="https://github.com/littletijn/spooky-view/blob/main/docs/ms-store-badge-large-en.png" alt="Get it from Microsoft" />
 </a>
 
 ### Github
