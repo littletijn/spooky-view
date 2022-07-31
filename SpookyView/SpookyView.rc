@@ -115,7 +115,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,17,67,130,8
     LTEXT           "Based on an idea by Mikey",IDC_STATIC,17,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,17,12,130,8,SS_NOPREFIX
-    LTEXT           "1.0.1 (Pardon me release)",IDC_STATIC,17,22,130,8
+    LTEXT           "1.0.2 (Check it out release)",IDC_STATIC,17,22,130,8
     LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,17,57,138,8
     DEFPUSHBUTTON   "Close",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -208,8 +208,8 @@ END
 //
 
 1 VERSIONINFO
- FILEVERSION 1,0,1,0
- PRODUCTVERSION 1,0,1,0
+ FILEVERSION 1,0,2,0
+ PRODUCTVERSION 1,0,2,0
  FILEFLAGSMASK 0x2L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -227,12 +227,12 @@ BEGIN
             VALUE "Comments", "This application is licensed under GPL-v3"
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "Spooky View"
-            VALUE "FileVersion", "1.0.1 (Pardon me release)"
+            VALUE "FileVersion", "1.0.2 (Check it out release)"
             VALUE "InternalName", "Spooky View"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "OriginalFilename", "Spookyview.exe"
             VALUE "ProductName", "Spooky View"
-            VALUE "ProductVersion", "1.0.1 (Pardon me release)"
+            VALUE "ProductVersion", "1.0.2 (Check it out release)"
         END
     END
     BLOCK "VarFileInfo"
