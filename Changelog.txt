@@ -118,3 +118,11 @@ and for preparation of the GUI.
 - Fixed single instance check
 - Fixed memory leaks
 - Cleanup code
+
+1.0.1 (Pardon me release)
+- Added program title to tile on Windows 10 for Microsoft Store release
+- Removed unneeded option from settings from Microsoft Store release
+
+1.0.2 (Check it out release)
+- Added ARM64 build
+- Changed window detection to detect more types of windows
