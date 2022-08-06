@@ -105,12 +105,12 @@ void WindowsEnum::ResetWindowsTransparency()
 	EnumDesktopWindows(NULL, EnumWindowsReset, NULL);
 }
 
-BOOL WindowsEnum::IsWindowUsable(HWND hwnd)
+BOOL WindowsEnum::IsWindowUsable(HWND hwnd, BOOL includeHidden)
 {
 	if (GetClassName(hwnd, windowClassName, ARRAYSIZE(windowClassName)))
 	{
 		LONG_PTR styles = GetWindowLongPtr(hwnd, GWL_STYLE);
-		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && IsWindowVisible(hwnd) && ((styles & WS_OVERLAPPED) || (styles & WS_DLGFRAME) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0 || _tcscmp(windowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0))
+		if (GetAncestor(hwnd, GA_PARENT) == GetDesktopWindow() && (includeHidden || IsWindowVisible(hwnd)) && ((styles & WS_OVERLAPPED) || (styles & WS_DLGFRAME) || _tcscmp(windowClassName, DIALOGBOXCLASSNAME) == 0 || _tcscmp(windowClassName, UWP_APPLICATION_FRAME_WINDOW) == 0))
 		{
 			//This is a top-level window that is not hidden and not a pop-up window or a pop-up windows that is a dialog
 			return TRUE;
@@ -139,7 +139,7 @@ void CALLBACK WindowsEnum::WinEventProcWithoutCheck(HWINEVENTHOOK hWinEventHook,
 
 BOOL CALLBACK WindowsEnum::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 {
-	if (IsWindowUsable(hwnd) && IsWindowVisible(hwnd) && !IsIconic(hwnd))
+	if (IsWindowUsable(hwnd) && !IsIconic(hwnd))
 	{
 		if (GetForegroundWindow() == hwnd)
 		{
@@ -155,9 +155,11 @@ BOOL CALLBACK WindowsEnum::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 
 BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
 {
-	if (IsWindowUsable(hwnd))
+	//Only reset windows changed by our app
+	if (IsWindowUsable(hwnd, TRUE) && (GetWindowLongPtr(hwnd, GWL_STYLE) & WS_EX_LAYERED) && GetWindowAlphaSettings(hwnd))
 	{
 		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) ^ WS_EX_LAYERED));
+		SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
 	}
 	return TRUE;
 }
@@ -246,16 +248,36 @@ void WindowsEnum::CheckAndSetUWPProcessAndClass(HWND hwnd)
 	}
 }
 
-void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
+CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd)
 {
 	if (GetWindowProcessAndClass(hwnd)) {
 		CheckAndSetUWPProcessAndClass(hwnd);
-		BYTE alpha;
-		if ((!isUWPProcess || UWPProcessFound) && settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
-		{
-			SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
-			SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
+		if (!isUWPProcess || UWPProcessFound) {
+			return settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName);
 		}
+	}
+	return NULL;
+}
+
+void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
+{
+	auto alphaSettings = GetWindowAlphaSettings(hwnd);
+
+	if (alphaSettings)
+	{
+		BYTE alpha;
+		switch (windowType)
+		{
+		case CSettings::WindowTypes::Foregound:
+			alpha = alphaSettings->foreground;
+			break;
+
+		case CSettings::WindowTypes::Background:
+			alpha = alphaSettings->separateBackgroundValue ? alphaSettings->background : alphaSettings->foreground;
+			break;
+		}
+		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
+		SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
 	}
 }
 

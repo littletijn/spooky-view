@@ -23,9 +23,9 @@ CSettings::~CSettings()
 }
 
 // Search settings maps for alpha settings for given process and window class
-BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, WindowTypes type, BYTE& alpha)
+CAlphaSettings* CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName)
 {
-	CAlphaSettings alphaSettings;
+	CAlphaSettings foundAlphaSettings;
 	auto lowerCaseProcessKeyName = ToLowerCase(processFileName);
 
 	auto result = this->programs->find(*lowerCaseProcessKeyName);
@@ -36,30 +36,19 @@ BOOL CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName, 
 		if (windowResult != setting->windows->end())
 		{
 			auto& window = windowResult->second;
-			alphaSettings = window->alphaSettings;
+			foundAlphaSettings = window->alphaSettings;
 		}
 		else{
-			alphaSettings = setting->alphaSettings;
+			foundAlphaSettings = setting->alphaSettings;
 		}
 	}
 	else{
-		alphaSettings = this->alphaSettings;
+		foundAlphaSettings = this->alphaSettings;
 	}
-	if (!alphaSettings.enabled) {
-		return false;
+	if (!foundAlphaSettings.enabled) {
+		return NULL;
 	}
-
-	switch (type)
-	{
-	case WindowTypes::Foregound:
-		alpha = alphaSettings.foreground;
-		break;
-
-	case WindowTypes::Background:
-		alpha = alphaSettings.separateBackgroundValue ? alphaSettings.background : alphaSettings.foreground;
-		break;
-	}
-	return true;
+	return &foundAlphaSettings;
 }
 
 std::unique_ptr<TCHAR*> CSettings::ToLowerCase(TCHAR* string)
