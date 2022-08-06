@@ -7,11 +7,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpookyView", "SpookyView\Sp
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "StorePackaging", "StorePackaging\StorePackaging.wapproj", "{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}"
 EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "WiXSetup", "WiXSetup\WiXSetup.wixproj", "{23A5B163-BB3A-4BD7-9F5B-01F266A73505}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
 		Debug|Win32 = Debug|Win32
 		Debug|x64 = Debug|x64
+		Release MSI|ARM64 = Release MSI|ARM64
+		Release MSI|Win32 = Release MSI|Win32
+		Release MSI|x64 = Release MSI|x64
 		Release Store|ARM64 = Release Store|ARM64
 		Release Store|Win32 = Release Store|Win32
 		Release Store|x64 = Release Store|x64
@@ -26,6 +31,12 @@ Global
 		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Debug|Win32.Build.0 = Debug|Win32
 		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Debug|x64.ActiveCfg = Debug|x64
 		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Debug|x64.Build.0 = Debug|x64
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release MSI|ARM64.ActiveCfg = Release MSI|ARM64
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release MSI|ARM64.Build.0 = Release MSI|ARM64
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release MSI|Win32.ActiveCfg = Release MSI|Win32
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release MSI|Win32.Build.0 = Release MSI|Win32
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release MSI|x64.ActiveCfg = Release MSI|x64
+		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release MSI|x64.Build.0 = Release MSI|x64
 		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release Store|ARM64.ActiveCfg = Release Store|ARM64
 		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release Store|ARM64.Build.0 = Release Store|ARM64
 		{7CE47E95-8AA0-4B62-87FD-CA1242022F47}.Release Store|Win32.ActiveCfg = Release Store|Win32
@@ -41,6 +52,9 @@ Global
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Debug|ARM64.ActiveCfg = Debug|ARM64
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Debug|Win32.ActiveCfg = Debug|x86
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Debug|x64.ActiveCfg = Debug|x64
+		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release MSI|ARM64.ActiveCfg = Release MSI|ARM64
+		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release MSI|Win32.ActiveCfg = Release MSI|x86
+		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release MSI|x64.ActiveCfg = Release MSI|x64
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release Store|ARM64.ActiveCfg = Release Store|ARM64
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release Store|ARM64.Build.0 = Release Store|ARM64
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release Store|ARM64.Deploy.0 = Release Store|ARM64
@@ -53,6 +67,21 @@ Global
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release|ARM64.ActiveCfg = Release|ARM64
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release|Win32.ActiveCfg = Release|x86
 		{5A5B9D71-588F-45C0-BD4A-0BC33BEE022E}.Release|x64.ActiveCfg = Release|x64
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Debug|ARM64.ActiveCfg = Debug|x86
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Debug|Win32.ActiveCfg = Debug|x86
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Debug|x64.ActiveCfg = Release MSI|x86
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release MSI|ARM64.ActiveCfg = Release MSI|ARM64
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release MSI|ARM64.Build.0 = Release MSI|ARM64
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release MSI|Win32.ActiveCfg = Release MSI|x86
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release MSI|Win32.Build.0 = Release MSI|x86
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release MSI|x64.ActiveCfg = Release MSI|x64
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release MSI|x64.Build.0 = Release MSI|x64
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release Store|ARM64.ActiveCfg = Release|ARM64
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release Store|Win32.ActiveCfg = Release|x86
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release Store|x64.ActiveCfg = Release MSI|x64
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release|ARM64.ActiveCfg = Release|ARM64
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release|Win32.ActiveCfg = Release|x86
+		{23A5B163-BB3A-4BD7-9F5B-01F266A73505}.Release|x64.ActiveCfg = Release MSI|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
