@@ -52,6 +52,7 @@
 		<ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
 			<Component Id="ProductComponent">
 				<File Id="executable" Source="$(var.SpookyView.TargetPath)" />
+        <File Id="license" Source="gpl-3.0.rtf" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>
