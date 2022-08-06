@@ -22,8 +22,9 @@ https://github.com/littletijn/spooky-view/releases
 
 When downloading from Github, make sure to choose the correct version.
 
-- For 64-bits Windows, download the x64 version.
-- For 32-bits Windows, download the x86 version. 
+- For 64-bits Windows, download the x64 version to make sure that x64 based apps can also be set transparent.
+- For 32-bits Windows, download the x86 version. Use this version only on 32-bits computers. 
+- For Windows 10 or 11 Arm-based PCs, download the ARM64 version for the best performance. 
 
 ## Building
 This project can be build with Visual Studio 2022. Install the "Desktop Development with C++" workload and the "C++ Windows XP Support for VS 2017 (v141) tools" component. Open the Solution file "SpookyView.sln" and build the SpookyView project within.
