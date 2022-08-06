@@ -155,7 +155,8 @@ BOOL CALLBACK WindowsEnum::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 
 BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
 {
-	if (IsWindowUsable(hwnd))
+	//Only reset windows changed by our app
+	if (IsWindowUsable(hwnd) && GetWindowAlphaSettings(hwnd))
 	{
 		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) ^ WS_EX_LAYERED));
 	}
@@ -246,16 +247,36 @@ void WindowsEnum::CheckAndSetUWPProcessAndClass(HWND hwnd)
 	}
 }
 
-void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
+CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd)
 {
 	if (GetWindowProcessAndClass(hwnd)) {
 		CheckAndSetUWPProcessAndClass(hwnd);
-		BYTE alpha;
-		if ((!isUWPProcess || UWPProcessFound) && settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, windowType, alpha))
-		{
-			SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
-			SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
+		if (!isUWPProcess || UWPProcessFound) {
+			return settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName);
 		}
+	}
+	return NULL;
+}
+
+void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
+{
+	auto alphaSettings = GetWindowAlphaSettings(hwnd);
+
+	if (alphaSettings)
+	{
+		BYTE alpha;
+		switch (windowType)
+		{
+		case CSettings::WindowTypes::Foregound:
+			alpha = alphaSettings->foreground;
+			break;
+
+		case CSettings::WindowTypes::Background:
+			alpha = alphaSettings->separateBackgroundValue ? alphaSettings->background : alphaSettings->foreground;
+			break;
+		}
+		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
+		SetLayeredWindowAttributes(hwnd, 0, alpha, LWA_ALPHA);
 	}
 }
 

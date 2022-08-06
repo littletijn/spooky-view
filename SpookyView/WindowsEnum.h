@@ -64,5 +64,6 @@ protected:
 	static BOOL IsWindowUsable(HWND hwnd);
 	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 	static void CheckAndSetUWPProcessAndClass(HWND hwnd);
+	static CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd);
 };
 
