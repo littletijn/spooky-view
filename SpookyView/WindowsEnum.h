@@ -61,7 +61,7 @@ protected:
 
 	//Static functions
 	static BOOL GetWindowProcessAndClass(HWND hwnd);
-	static BOOL IsWindowUsable(HWND hwnd);
+	static BOOL IsWindowUsable(HWND hwnd, BOOL includeHidden = FALSE);
 	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 	static void CheckAndSetUWPProcessAndClass(HWND hwnd);
 	static CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd);
