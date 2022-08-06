@@ -9,25 +9,43 @@
 		<Feature Id="ProductFeature" Title="Spooky View" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
+
+		<Property Id="ApplicationFolderName" Value="Spooky View" />
+		<Property Id="WixAppFolder" Value="WixPerMachineFolder" />
+		<UIRef Id="WixUI_Advanced" />
+    <WixVariable Id="WixUILicenseRtf" Value="gpl-3.0.rtf" />
+
+		<?if $(var.SpookyView.Platform) = "x64"?>
+			<!-- Fix for https://github.com/wixtoolset/issues/issues/2165 -->
+			<CustomAction Id="Overwrite_WixSetDefaultPerMachineFolder" Property="WixPerMachineFolder" Value="[ProgramFiles64Folder][ApplicationFolderName]" Execute="immediate" />
+			<InstallUISequence>
+				<Custom Action="Overwrite_WixSetDefaultPerMachineFolder" After="WixSetDefaultPerMachineFolder" />
+			</InstallUISequence>
+			<InstallExecuteSequence>
+				<Custom Action="Overwrite_WixSetDefaultPerMachineFolder" After="WixSetDefaultPerMachineFolder" />
+			</InstallExecuteSequence>
+
+			<SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
+		<?endif?>
 	</Product>
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
 			<?if $(var.SpookyView.Platform) = "x64"?>
 				<Directory Id="ProgramFiles64Folder">
-					<Directory Id="INSTALLFOLDER" Name="Spooky View" />
+					<Directory Id="APPLICATIONFOLDER" Name="Spooky View" />
 				</Directory>
 			<?endif?>
 			<?if $(var.SpookyView.Platform) = "Win32"?>
 				<Directory Id="ProgramFilesFolder">
-					<Directory Id="INSTALLFOLDER" Name="Spooky View" />
+					<Directory Id="APPLICATIONFOLDER" Name="Spooky View" />
 				</Directory>
 			<?endif?>
 		</Directory>
 	</Fragment>
 
 	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+		<ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
 			<Component Id="ProductComponent">
 				<File Source="$(var.SpookyView.TargetPath)" />
 			</Component>
