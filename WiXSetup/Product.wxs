@@ -6,8 +6,9 @@
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate />
 
-		<Feature Id="ProductFeature" Title="Spooky View" Level="1">
+		<Feature Id="ProductFeature" Title="Spooky View" Level="1" Absent="disallow" Description="Application to make any window transparent.">
 			<ComponentGroupRef Id="ProductComponents" />
+      <ComponentRef Id="ApplicationShortcut" />
 		</Feature>
 
 		<Property Id="ApplicationFolderName" Value="Spooky View" />
@@ -31,6 +32,9 @@
 
 	<Fragment>
 		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="Spooky View"/>
+			</Directory>
 			<?if $(var.SpookyView.Platform) = "x64"?>
 				<Directory Id="ProgramFiles64Folder">
 					<Directory Id="APPLICATIONFOLDER" Name="Spooky View" />
@@ -47,8 +51,22 @@
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
 			<Component Id="ProductComponent">
-				<File Source="$(var.SpookyView.TargetPath)" />
+				<File Id="executable" Source="$(var.SpookyView.TargetPath)" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>
+
+  <Fragment>
+    <DirectoryRef Id="ApplicationProgramsFolder">
+      <Component Id="ApplicationShortcut" Guid="C35E4AD7-0D9D-4FA3-B507-ADDC1CDC0561">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Spooky View"
+                  Description="Make any window transparent."
+                  Target="[#executable]"
+                  WorkingDirectory="APPLICATIONFOLDER"/>
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\SpookyView" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
 </Wix>
