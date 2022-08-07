@@ -9,4 +9,4 @@ This app will check for updates when started by default. This option can be disa
 When checking for updates the following details are send to https://updates.tyndomyn.net/spookyview/status 
 - version number of app
 - computer architecture (x64, x86, AArch64)
-- packaging format (Microsoft Store, MSI, ZIP)
+- packaging format (Microsoft Store, MSI, Portable)
