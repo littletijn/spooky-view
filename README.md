@@ -30,4 +30,4 @@ When downloading from Github, make sure to choose the correct version.
 This project can be build with Visual Studio 2022. Install the "Desktop Development with C++" workload and the "C++ Windows XP Support for VS 2017 (v141) tools" component. Open the Solution file "SpookyView.sln" and build the SpookyView project within.
 
 ## License
-Spooky View is licensed under the GLP-v3. See the LICENSE file for more details.
+Spooky View is licensed under the GNU GLP v3.0 or later. See the LICENSE file for more details.
