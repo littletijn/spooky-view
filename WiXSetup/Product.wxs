@@ -8,7 +8,7 @@
 
 		<Feature Id="ProductFeature" Title="Spooky View" Level="1" Absent="disallow" Description="Application to make any window transparent.">
 			<ComponentGroupRef Id="ProductComponents" />
-      <ComponentRef Id="ApplicationShortcut" />
+			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
 
 		<Property Id="ApplicationFolderName" Value="Spooky View" />

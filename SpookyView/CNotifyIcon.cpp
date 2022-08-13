@@ -4,30 +4,39 @@
 
 CNotifyIcon::CNotifyIcon(HWND hWnd, HICON hIcon, TCHAR *tooltipText)
 {
-	m_sNotifyIcon = {};
-	//Create NOTIFYICON struc
-	m_sNotifyIcon.cbSize = sizeof(m_sNotifyIcon);
+	this->hWnd = hWnd;
+	this->tooltipText = tstring(tooltipText);
+	auto nid = CreateStructure();
 	//Make sure we use the Windows 2000 and newer version
-	m_sNotifyIcon.uVersion = NOTIFYICON_VERSION;
-	m_sNotifyIcon.hWnd = hWnd;
-	m_sNotifyIcon.hIcon = hIcon;
-	m_sNotifyIcon.uID = 1;
-	m_sNotifyIcon.uFlags = NIF_ICON | NIF_MESSAGE;
-	m_sNotifyIcon.uCallbackMessage = WM_NOTIFYICON;
-	_stprintf_s(m_sNotifyIcon.szTip, _countof(m_sNotifyIcon.szTip), tooltipText);
+	nid.uVersion = NOTIFYICON_VERSION;
+	nid.hIcon = hIcon;
+	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
+	nid.uCallbackMessage = WM_NOTIFYICON;
+	_stprintf_s(nid.szTip, _countof(nid.szTip), tooltipText);
+	this->addIconNid = nid;
 }
 
 CNotifyIcon::~CNotifyIcon()
 {
+	auto nid = CreateStructure();
 	//Remove created NotifyIcon
-	Shell_NotifyIcon(NIM_DELETE, &m_sNotifyIcon);
+	Shell_NotifyIcon(NIM_DELETE, &nid);
+}
+
+NOTIFYICONDATA CNotifyIcon::CreateStructure()
+{
+	NOTIFYICONDATA nid = {};
+	nid.cbSize = sizeof(nid);
+	nid.hWnd = hWnd;
+	nid.uID = 1;
+	return nid;
 }
 
 BOOL CNotifyIcon::Init()
 {
 	//Call Shell_NotifyIcon to add new icon in Notification area
-	BOOL result = Shell_NotifyIcon(NIM_ADD, &m_sNotifyIcon);
-	Shell_NotifyIcon(NIM_SETVERSION, &m_sNotifyIcon);
+	BOOL result = Shell_NotifyIcon(NIM_ADD, &addIconNid);
+	Shell_NotifyIcon(NIM_SETVERSION, &addIconNid);
 	return result;
 	
 }
@@ -35,17 +44,34 @@ BOOL CNotifyIcon::Init()
 BOOL CNotifyIcon::SetFocus()
 {
 	//Call Shell_NotifyIcon to set focus back to notification area
-	return Shell_NotifyIcon(NIM_SETFOCUS, &m_sNotifyIcon);
+	auto nid = CreateStructure();
+	return Shell_NotifyIcon(NIM_SETFOCUS, &nid);
+}
+
+BOOL CNotifyIcon::SetTooltipText(TCHAR* tooltipText)
+{
+	//Call Shell_NotifyIcon to set focus back to notification area
+	auto nid = CreateStructure();
+	tstring fullTooltipText = tstring(this->tooltipText);
+	if (tooltipText != NULL)
+	{
+		fullTooltipText.append(_T(" - "));
+		fullTooltipText.append(tooltipText);
+	}
+	nid.uFlags = NIF_TIP;
+	_stprintf_s(nid.szTip, _countof(nid.szTip), fullTooltipText.c_str());
+	return Shell_NotifyIcon(NIM_MODIFY, &nid);
 }
 
 BOOL CNotifyIcon::ShowBalloon(TCHAR *title, TCHAR *text)
 {
-	m_sNotifyIcon.uFlags = NIF_INFO;
-	m_sNotifyIcon.uTimeout = 20000; //20 seconds
-	m_sNotifyIcon.dwInfoFlags = NIIF_INFO;
-	_stprintf_s(m_sNotifyIcon.szInfoTitle, _countof(m_sNotifyIcon.szInfoTitle), title);
-	_stprintf_s(m_sNotifyIcon.szInfo, _countof(m_sNotifyIcon.szInfo), text);
-	BOOL result = Shell_NotifyIcon(NIM_MODIFY, &m_sNotifyIcon);
+	auto nid = CreateStructure();
+	nid.uFlags = NIF_INFO;
+	nid.uTimeout = 20000; //20 seconds
+	nid.dwInfoFlags = NIIF_INFO;
+	_stprintf_s(nid.szInfoTitle, _countof(nid.szInfoTitle), title);
+	_stprintf_s(nid.szInfo, _countof(nid.szInfo), text);
+	BOOL result = Shell_NotifyIcon(NIM_MODIFY, &nid);
 	return result;
 }
 

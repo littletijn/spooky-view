@@ -158,8 +158,10 @@ BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
 	//Only reset windows changed by our app
 	if (IsWindowUsable(hwnd, TRUE) && (GetWindowLongPtr(hwnd, GWL_STYLE) & WS_EX_LAYERED) && GetWindowAlphaSettings(hwnd))
 	{
-		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) ^ WS_EX_LAYERED));
+		//https://docs.microsoft.com/en-us/windows/win32/winmsg/using-windows#using-layered-windows
+		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED));
 		SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
+		RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
 	}
 	return TRUE;
 }
