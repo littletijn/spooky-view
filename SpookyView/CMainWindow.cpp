@@ -108,7 +108,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				CHAR *message = (CHAR*)dataCopy->lpData;
 				if (strrchr(message, *"Spooky View - already running"))
 				{
-					ShowAlreadyRunningBalloon();
+					OpenSetupDialog();
 				}
 			}
 		}
@@ -162,6 +162,10 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 					cSettingsDialog = std::make_unique<CSettingsDialog>(this->hInstance, this->hWnd);
 					cSettingsDialog->InitInstance();
 				}
+				else
+				{
+					cSettingsDialog->SetForeground();
+				}
 			return FALSE;
 
 			case IDM_OPEN:
@@ -175,6 +179,10 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 					cAboutDialog = std::make_unique<CAbout>(this->hInstance, this->hWnd);
 					cAboutDialog->InitInstance();
 				}
+				else
+				{
+					cAboutDialog->SetForeground();
+				}
 			}
 			return FALSE;
 
@@ -187,6 +195,15 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				if (CheckMenuItem(GetContextMenu(), IDM_PAUSE, checkState) != -1){
 					DrawMenuBar(hWnd);
 					windowsEnum.TogglePause();
+					if (windowsEnum.IsPaused())
+					{
+						cNotifyIcon->SetTooltipText(_T("Paused"));
+					}
+					else
+					{
+						cNotifyIcon->SetTooltipText(NULL);
+					}
+
 				}
 				return FALSE;
 		}
@@ -214,6 +231,10 @@ void CMainWindow::OpenSetupDialog()
 	{
 		cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance, this->hWnd);
 		cSetupDialog->InitInstance();
+	}
+	else
+	{
+		cSetupDialog->SetForeground();
 	}
 }
 

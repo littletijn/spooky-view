@@ -1,7 +1,7 @@
-#pragma once
-
-#include "stdafx.h"
 #include "shellapi.h"
+#pragma once
+#include "stdafx.h"
+#include "Unicode.h"
 
 #define WM_NOTIFYICON WM_USER
 
@@ -12,8 +12,11 @@ public:
 	~CNotifyIcon();
 	BOOL Init();
 	BOOL SetFocus();
+	BOOL SetTooltipText(TCHAR* tooltipText);
 	BOOL ShowBalloon(TCHAR *title, TCHAR *text);
 protected:
-	//members
-	NOTIFYICONDATA m_sNotifyIcon;
+	HWND hWnd;
+	NOTIFYICONDATA addIconNid;
+	tstring tooltipText;
+	NOTIFYICONDATA CreateStructure();
 };
