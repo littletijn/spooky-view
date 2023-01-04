@@ -1,5 +1,5 @@
 ﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
-	<Package Name="Spooky View" Language="1033" Version="1.0.4.1" Manufacturer="LittleTijn" UpgradeCode="8e3e3451-28d5-44e7-b71d-3cec60ec471d" InstallerVersion="200">
+	<Package Name="Spooky View" Language="1033" Version="1.0.5.0" Manufacturer="LittleTijn" UpgradeCode="8e3e3451-28d5-44e7-b71d-3cec60ec471d" InstallerVersion="200">
 		
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
