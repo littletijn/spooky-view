@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="Spooky View" Language="1033" Version="1.0.3.0" Manufacturer="LittleTijn" UpgradeCode="8e3e3451-28d5-44e7-b71d-3cec60ec471d">
+	<Product Id="*" Name="Spooky View" Language="1033" Version="1.0.4.0" Manufacturer="LittleTijn" UpgradeCode="8e3e3451-28d5-44e7-b71d-3cec60ec471d">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />

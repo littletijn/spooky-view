@@ -126,3 +126,14 @@ and for preparation of the GUI.
 1.0.2 (Check it out release)
 - Added ARM64 build
 - Changed window detection to detect more types of windows
+
+1.0.3 (Back to default release)
+- When changing settings or when exiting the application, only reset windows that have been modified by application.
+- Added MSI based installers
+
+1.0.4 (Your name, please release)
+- Added application name and state to tooltip in Notification Area
+- When starting the app when it is already running, show the Setup dialog modal
+- Set focus on existing window when opening same dialog again
+- Fixed wrong aligned text in about dialog
+- Changed reset method
