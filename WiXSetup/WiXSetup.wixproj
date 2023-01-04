@@ -1,6 +1,7 @@
 <Project Sdk="WixToolset.Sdk/4.0.0-rc.1">
   <PropertyGroup>
     <OutputName>Spooky View</OutputName>
+    <Configurations>Debug;Release;Release MSI;Release Store</Configurations>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release MSI|Win32' ">
     <OutputPath>bin\$(Configuration)\$(Platform)\</OutputPath>
