@@ -1,22 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="Spooky View" Language="1033" Version="1.0.4.0" Manufacturer="LittleTijn" UpgradeCode="8e3e3451-28d5-44e7-b71d-3cec60ec471d">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+﻿<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+	<Package Name="Spooky View" Language="1033" Version="1.0.4.0" Manufacturer="LittleTijn" UpgradeCode="8e3e3451-28d5-44e7-b71d-3cec60ec471d" InstallerVersion="200">
+		
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 		<MediaTemplate EmbedCab="yes" />
 
-		<Feature Id="ProductFeature" Title="Spooky View" Level="1" Absent="disallow" Description="Application to make any window transparent.">
+		<Feature Id="ProductFeature" Title="Spooky View" Level="1" Description="Application to make any window transparent." AllowAbsent="no">
 			<ComponentGroupRef Id="ProductComponents" />
 			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
 
 		<Property Id="ApplicationFolderName" Value="Spooky View" />
 		<Property Id="WixAppFolder" Value="WixPerMachineFolder" />
-		<UIRef Id="WixUI_Advanced" />
+		<ui:WixUI Id="WixUI_Advanced" />
     <WixVariable Id="WixUILicenseRtf" Value="gpl-3.0.rtf" />
 
-    <Icon Id="icon.ico" SourceFile="spookyview.ico"/>
+    <Icon Id="icon.ico" SourceFile="spookyview.ico" />
     <Property Id="ARPPRODUCTICON" Value="icon.ico" />
 
 		<?if $(var.SpookyView.Platform) = "x64"?>
@@ -31,25 +30,23 @@
 
 			<SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
 		<?endif?>
-	</Product>
+	</Package>
 
 	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramMenuFolder">
-				<Directory Id="ApplicationProgramsFolder" Name="Spooky View"/>
-			</Directory>
+			<StandardDirectory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="Spooky View" />
+			</StandardDirectory>
 			<?if $(var.SpookyView.Platform) = "x64"?>
-				<Directory Id="ProgramFiles64Folder">
+				<StandardDirectory Id="ProgramFiles64Folder">
 					<Directory Id="APPLICATIONFOLDER" Name="Spooky View" />
-				</Directory>
+				</StandardDirectory>
 			<?endif?>
 			<?if $(var.SpookyView.Platform) = "Win32"?>
-				<Directory Id="ProgramFilesFolder">
+				<StandardDirectory Id="ProgramFilesFolder">
 					<Directory Id="APPLICATIONFOLDER" Name="Spooky View" />
-				</Directory>
+				</StandardDirectory>
 			<?endif?>
-		</Directory>
-	</Fragment>
+		</Fragment>
 
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
@@ -63,13 +60,9 @@
   <Fragment>
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcut" Guid="C35E4AD7-0D9D-4FA3-B507-ADDC1CDC0561">
-        <Shortcut Id="ApplicationStartMenuShortcut"
-                  Name="Spooky View"
-                  Description="Make any window transparent."
-                  Target="[#executable]"
-                  WorkingDirectory="APPLICATIONFOLDER"/>
-        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
-        <RegistryValue Root="HKCU" Key="Software\SpookyView" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+        <Shortcut Id="ApplicationStartMenuShortcut" Name="Spooky View" Description="Make any window transparent." Target="[#executable]" WorkingDirectory="APPLICATIONFOLDER" />
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+        <RegistryValue Root="HKCU" Key="Software\SpookyView" Name="installed" Type="integer" Value="1" KeyPath="yes" />
       </Component>
     </DirectoryRef>
   </Fragment>

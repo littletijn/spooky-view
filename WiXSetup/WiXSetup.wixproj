@@ -1,27 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="WixToolset.Sdk/4.0.0-rc.1">
   <PropertyGroup>
-    <ProductVersion>3.10</ProductVersion>
-    <ProjectGuid>23a5b163-bb3a-4bd7-9f5b-01f266a73505</ProjectGuid>
-    <SchemaVersion>2.0</SchemaVersion>
     <OutputName>Spooky View</OutputName>
-    <OutputType>Package</OutputType>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release MSI|x86' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release MSI|Win32' ">
     <OutputPath>bin\$(Configuration)\$(Platform)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release MSI|x64' ">
     <OutputPath>bin\$(Configuration)\$(Platform)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release MSI|ARM64' ">
     <OutputPath>bin\$(Configuration)\$(Platform)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Product.wxs" />
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpookyView\SpookyView.vcxproj">
       <Name>SpookyView</Name>
@@ -33,26 +22,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <WixExtension Include="WixUIExtension">
-      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
-      <Name>WixUIExtension</Name>
-    </WixExtension>
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.0-rc.1" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="gpl-3.0.rtf" />
     <Content Include="spookyview.ico" />
   </ItemGroup>
-  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
-  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
-    <Error Text="The WiX Toolset v3.11 (or newer) build tools must be installed to build this project. To download the WiX Toolset, see http://wixtoolset.org/releases/" />
+  <Target Name="Sign" AfterTargets="Build" Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='Release MSI' Or '$(Configuration)'=='Release Store'">
+    <Exec Command="call &quot;$(DevEnvDir)..\Tools\VsDevCmd.bat&quot; &amp;&amp; signtool.exe sign /a /td SHA512 /tr http://timestamp.sectigo.com /fd SHA512 &quot;$(TargetPath)&quot;" />
   </Target>
-  <!--
-	To modify your build process, add your task inside one of the targets below and uncomment it.
-	Other similar extension points exist, see Wix.targets.
-	<Target Name="BeforeBuild">
-	</Target>
-	<Target Name="AfterBuild">
-	</Target>
-	-->
 </Project>
