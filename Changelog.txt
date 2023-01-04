@@ -138,6 +138,6 @@ and for preparation of the GUI.
 - Fixed wrong aligned text in about dialog
 - Changed reset method
 
-1.0.5 (Fully signed release) - MSI and portable only
+1.0.5 (A update would be nice release) - MSI and portable only
 - Upgrade installer creator from WiX 3 to WiX 4 for ARM64 builds
 - Added signing of release executables
