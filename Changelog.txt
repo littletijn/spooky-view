@@ -137,3 +137,7 @@ and for preparation of the GUI.
 - Set focus on existing window when opening same dialog again
 - Fixed wrong aligned text in about dialog
 - Changed reset method
+
+1.0.4.1 (Fully signed release) - MSI and portable only
+- Upgrade installer creator from WiX 3 to WiX 4 for ARM64 builds
+- Added signing of release executables
