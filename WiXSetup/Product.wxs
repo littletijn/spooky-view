@@ -18,7 +18,7 @@
     <Icon Id="icon.ico" SourceFile="spookyview.ico" />
     <Property Id="ARPPRODUCTICON" Value="icon.ico" />
 
-		<?if $(var.SpookyView.Platform) = "x64"?>
+		<?if $(var.SpookyView.Platform) = "x64" or $(var.SpookyView.Platform) = "ARM64"?>
 			<!-- Fix for https://github.com/wixtoolset/issues/issues/2165 -->
 			<CustomAction Id="Overwrite_WixSetDefaultPerMachineFolder" Property="WixPerMachineFolder" Value="[ProgramFiles64Folder][ApplicationFolderName]" Execute="immediate" />
 			<InstallUISequence>
@@ -36,7 +36,7 @@
 			<StandardDirectory Id="ProgramMenuFolder">
 				<Directory Id="ApplicationProgramsFolder" Name="Spooky View" />
 			</StandardDirectory>
-			<?if $(var.SpookyView.Platform) = "x64"?>
+			<?if $(var.SpookyView.Platform) = "x64" or $(var.SpookyView.Platform) = "ARM64"?>
 				<StandardDirectory Id="ProgramFiles64Folder">
 					<Directory Id="APPLICATIONFOLDER" Name="Spooky View" />
 				</StandardDirectory>
@@ -46,7 +46,7 @@
 					<Directory Id="APPLICATIONFOLDER" Name="Spooky View" />
 				</StandardDirectory>
 			<?endif?>
-		</Fragment>
+	</Fragment>
 
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
