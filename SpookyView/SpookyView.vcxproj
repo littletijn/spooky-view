@@ -574,4 +574,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets'))" />
   </Target>
+  <Target Name="AfterBuild" Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='Release MSI' Or '$(Configuration)'=='Release Store'">
+    <Exec Command="call &quot;$(DevEnvDir)..\Tools\VsDevCmd.bat&quot; &amp;&amp; signtool.exe sign /a /td SHA512 /tr http://timestamp.sectigo.com /fd SHA512 &quot;$(TargetPath)&quot;" />
+  </Target>
 </Project>
