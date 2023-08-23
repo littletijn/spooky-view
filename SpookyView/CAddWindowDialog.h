@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CADDWINDOWDIALOG_H
+#define CADDWINDOWDIALOG_H
+
 #include "CModalDialog.h"
 #include "ListView.h"
 #include <memory>
@@ -23,3 +25,4 @@ protected:
 	void StoreSelectedWindow();
 };
 
+#endif

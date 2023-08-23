@@ -1,9 +1,10 @@
+#ifndef CSETTINGS_H
+#define CSETTINGS_H
+
 #include <string>
 #include <map>
 #include "CProgramSetting.h"
 #include <memory>
-#pragma once
-
 
 class CSettings
 {
@@ -15,7 +16,7 @@ public:
 	};
 
 	CAlphaSettings alphaSettings;
-	CAlphaSettings* CSettings::GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName);
+	CAlphaSettings* GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName);
 	std::unique_ptr<TCHAR*> ToLowerCase(TCHAR* string);
 	std::unique_ptr<std::map<t_string, std::unique_ptr<CProgramSetting>>> programs;
 	CSettings();
@@ -23,4 +24,6 @@ public:
 	~CSettings();
 protected:
 };
+
+#endif
 

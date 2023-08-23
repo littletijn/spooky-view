@@ -1,3 +1,6 @@
+#ifndef APPMAIN_H
+#define APPMAIN_H
+
 class AppMain
 {
 public:
@@ -9,3 +12,4 @@ protected:
 	void GetIsWindows10orNewer();
 };
 
+#endif

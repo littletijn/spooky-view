@@ -1,7 +1,8 @@
+#ifndef CREGISTRYSETTINGSMANAGER_H
+#define CREGISTRYSETTINGSMANAGER_H
+
 #include "ISettingsManager.h"
 #include "Unicode.h"
-#pragma once
-
 class CRegistrySettingsManager : public ISettingsManager
 {
 public:
@@ -32,3 +33,5 @@ protected:
 	BOOL SaveValue(TCHAR* subkey, TCHAR* valueName, DWORD keyType, BYTE* value);
 	BOOL SaveStringValue(HKEY hKey, TCHAR* valueName, tstring value);
 };
+
+#endif

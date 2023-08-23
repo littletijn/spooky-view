@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CADDAPPDIALOG_H
+#define CADDAPPDIALOG_H
+
 #include "CModalDialog.h"
 #include "tlhelp32.h"
 #include "ListView.h"
@@ -26,3 +28,4 @@ protected:
 	void GetProcessProgramName(PROCESSENTRY32 sProcess, t_string* programName);
 };
 
+#endif

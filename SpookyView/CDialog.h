@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CDIALOG_H
+#define CDIALOG_H
 
 #include "stdafx.h"
 #include "CWnd.h"
@@ -15,3 +16,4 @@ protected:
 	virtual BOOL Create() = 0;
 };
 
+#endif

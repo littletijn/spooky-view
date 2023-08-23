@@ -1,6 +1,9 @@
+#ifndef CSETUPDIALOG_H
+#define CSETUPDIALOG_H
+
 #include "CModelessDialog.h"
 #include <commctrl.h>
-#include "String.h"
+#include "MultiPlatformString.h"
 #include "CAlphaSettings.h"
 #include "CProgramSetting.h"
 #include "ListView.h"
@@ -43,3 +46,4 @@ protected:
 	void SetTrackbarRanges(HWND hWnd);
 };
 
+#endif

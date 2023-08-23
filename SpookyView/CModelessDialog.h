@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CMODELESSDIALOG_H
+#define CMODELESSDIALOG_H
 
 #include "stdafx.h"
 #include "CDialog.h"
@@ -14,6 +15,7 @@ protected:
 	WORD key;
 	virtual BOOL SetupDialog() = 0;
 	virtual BOOL Create();
-	void CModelessDialog::OnDialogDestroyed();
+	void OnDialogDestroyed();
 };
 
+#endif

@@ -7,8 +7,6 @@
 #include "Textbox.h"
 #include "WindowsEnum.h"
 
-extern WindowsEnum windowsEnum;
-
 CAddWindowDialog::CAddWindowDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)
 {
 }

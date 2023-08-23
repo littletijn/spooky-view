@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MAINFRAMEMFC_H
+#define MAINFRAMEMFC_H
 
 #include "CNotifyIcon.h"
 //#include "SetupDlg.h"
@@ -33,4 +34,4 @@ protected:
 	DECLARE_MESSAGE_MAP()
 };
 
-
+#endif

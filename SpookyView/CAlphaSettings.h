@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CALPHASETTING_H
+#define CALPHASETTING_H
 
 struct CAlphaSettings
 {
@@ -7,3 +8,5 @@ struct CAlphaSettings
 	BYTE foreground = 255;
 	BYTE background = 255;
 };
+
+#endif

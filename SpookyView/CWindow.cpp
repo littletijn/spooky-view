@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "CWindow.h"
-
-extern HICON spookyIcon;
+#include "SpookyView.h"
 
 // Saves instance handle and register window class
 CWindow::CWindow(HINSTANCE hInstance, HWND hParent) : CWnd(hInstance)

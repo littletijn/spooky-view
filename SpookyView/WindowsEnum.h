@@ -1,11 +1,12 @@
-#include "String.h"
+#ifndef WINDOWSENUM_H
+#define WINDOWSENUM_H
+
+#include "MultiPlatformString.h"
 #include <map>
 #include "Unicode.h"
 #include "CSettings.h"
 #include "Defines.h"
 #include <list>
-#pragma once
-
 class WindowsEnum
 {
 public:
@@ -64,6 +65,7 @@ protected:
 	static BOOL IsWindowUsable(HWND hwnd, BOOL includeHidden = FALSE);
 	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 	static void CheckAndSetUWPProcessAndClass(HWND hwnd);
-	static CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd);
+	static CAlphaSettings* GetWindowAlphaSettings(HWND hwnd);
 };
 
+#endif

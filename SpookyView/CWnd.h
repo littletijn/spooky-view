@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CWND_H
+#define CWND_H
 
 #include "stdafx.h"
 #include "Resource.h"
@@ -15,3 +16,5 @@ protected:
 	HWND hParent;
 	HWND hWnd;
 };
+
+#endif

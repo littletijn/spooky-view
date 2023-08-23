@@ -3,8 +3,7 @@
 #include <shellapi.h>
 #include <memory>
 #include "ISettingsManager.h"
-
-extern std::unique_ptr<ISettingsManager> settingsManager;
+#include "SpookyView.h"
 
 CUpdateAvailableDialog::CUpdateAvailableDialog(HINSTANCE hInstance, HWND hParent) : CModelessDialog(hInstance, hParent)
 {

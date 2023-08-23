@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CABOUT_H
+#define CABOUT_H
+
 #include "CModelessDialog.h"
 
 class CAbout :public CModelessDialog
@@ -10,3 +12,4 @@ protected:
 	BOOL SetupDialog();
 };
 
+#endif

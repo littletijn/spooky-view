@@ -1,4 +1,5 @@
-#pragma once
+#ifndef CWINDOW_H
+#define CWINDOW_H
 
 #include "stdafx.h"
 #include "Resource.h"
@@ -19,3 +20,5 @@ protected:
 	TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
 	WNDCLASSEX wcex;
 };
+
+#endif

@@ -1,6 +1,8 @@
-#include "String.h"
+#ifndef LISTVIEW_H
+#define LISTVIEW_H
 
-#pragma once
+#include "MultiPlatformString.h"
+
 class ListView
 {
 public:
@@ -20,3 +22,4 @@ protected:
 	int intResouce;
 };
 
+#endif

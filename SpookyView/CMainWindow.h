@@ -1,3 +1,6 @@
+#ifndef CMAINWINDOW_H
+#define CMAINWINDOW_H
+
 #include "CWindow.h"
 #include "CNotifyIcon.h"
 #include "CAbout.h"
@@ -5,8 +8,6 @@
 #include "CSettingsDialog.h"
 #include <memory>
 #include "CUpdateAvailableDialog.h"
-#pragma once
-
 class CMainWindow: public CWindow
 {
 public:
@@ -32,3 +33,5 @@ private:
 	std::unique_ptr<CAbout> cAboutDialog;
 	std::unique_ptr<CUpdateAvailableDialog> cUpdateAvailableDialog;
 };
+
+#endif

@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CHECKBOX_H
+#define CHECKBOX_H
+
 class Checkbox
 {
 public:
@@ -10,3 +12,4 @@ protected:
 	int intResouce;
 };
 
+#endif

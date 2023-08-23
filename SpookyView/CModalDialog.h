@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CMODALDIALOG_H
+#define CMODALDIALOG_H
+
 #include "CDialog.h"
 
 class CModalDialog : public CDialog
@@ -14,3 +16,5 @@ protected:
 	virtual BOOL SetupDialog() = 0;
 	virtual BOOL Create();
 };
+
+#endif
