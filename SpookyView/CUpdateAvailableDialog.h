@@ -1,3 +1,6 @@
+#ifndef CUPDATEAVAILABLEDIALOG_H
+#define CUPDATEAVAILABLEDIALOG_H
+
 #include "CModelessDialog.h"
 #include "Unicode.h"
 
@@ -18,3 +21,4 @@ protected:
 	void ShowMessage();
 };
 
+#endif

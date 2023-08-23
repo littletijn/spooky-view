@@ -6,18 +6,10 @@
 #include "ISettingsManager.h"
 #include "CRegistrySettingsManager.h"
 #include "CMainWindow.h"
+#include "SpookyView.h"
 #ifdef UNICODE
 #include "UpdateChecker.h"
 #endif
-
-extern HICON spookyIcon;
-extern HINSTANCE hInst;
-extern std::unique_ptr<ISettingsManager> settingsManager;
-extern std::unique_ptr<CMainWindow> mainWindow;
-extern WindowsEnum windowsEnum;
-extern PGNSI isImmersive;
-extern bool isWindows8;
-extern bool isWindows10orNewer;
 
 int AppMain::Run()
 {

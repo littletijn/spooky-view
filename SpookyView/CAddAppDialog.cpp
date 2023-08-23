@@ -13,10 +13,6 @@
 #include "WindowsEnum.h"
 #include <winnls.h>
 
-extern PGNSI isImmersive;
-extern WindowsEnum windowsEnum;
-extern bool isWindows8;
-
 const int US_LANGUAGE_CODE = 1033; // English (United States)
 
 CAddAppDialog::CAddAppDialog(HINSTANCE hInstance, HWND hParent) : CModalDialog(hInstance, hParent)

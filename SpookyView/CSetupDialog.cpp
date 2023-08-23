@@ -6,15 +6,14 @@
 #include "CSettings.h"
 #include "CProgramSetting.h"
 #include "ISettingsManager.h"
-#include "String.h"
+#include "MultiPlatformString.h"
 #include <vector>
 #include <memory>
 #include <windowsx.h>
 #include "Defines.h"
 #include "WindowsEnum.h"
-
-extern std::unique_ptr<ISettingsManager> settingsManager;
-extern WindowsEnum windowsEnum;
+#include <cmath>
+#include "SpookyView.h"
 
 #define TRANSPARENCY_TRACKER_STEPS (100.0 / 255.0)
 
@@ -324,8 +323,8 @@ void CSetupDialog::SetTrackbars()
 {
 	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
-	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)round(currentAlphaSettings->background * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentAlphaSettings->background * TRANSPARENCY_TRACKER_STEPS));
 	SetFormElementsEnableState();
 }
 
@@ -341,10 +340,10 @@ void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 	switch (identifier)
 	{
 	case IDC_SLIDER_FOREGROUND:
-		currentAlphaSettings->foreground = (BYTE)round(value / TRANSPARENCY_TRACKER_STEPS);
+		currentAlphaSettings->foreground = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
 	case IDC_SLIDER_BACKGROUND:
-		currentAlphaSettings->background = (BYTE)round(value / TRANSPARENCY_TRACKER_STEPS);
+		currentAlphaSettings->background = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
 	}
 }

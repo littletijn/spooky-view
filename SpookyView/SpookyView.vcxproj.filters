@@ -87,7 +87,7 @@
     <ClInclude Include="CRegistrySettingsManager.h">
       <Filter>Header Files\Classes\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="String.h">
+    <ClInclude Include="MultiPlatformString.h">
       <Filter>Header Files\Classes</Filter>
     </ClInclude>
     <ClInclude Include="CWindowSetting.h">

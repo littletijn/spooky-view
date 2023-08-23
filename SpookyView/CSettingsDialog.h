@@ -1,4 +1,6 @@
-#pragma once
+#ifndef CSETTINGSDIALOG_H
+#define CSETTINGSDIALOG_H
+
 #include "CModelessDialog.h"
 
 class CSettingsDialog :public CModelessDialog
@@ -14,3 +16,5 @@ protected:
 	void AddAutoRun();
 	void RemoveAutoRun();
 };
+
+#endif

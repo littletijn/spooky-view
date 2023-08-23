@@ -3,8 +3,10 @@
 *.wapproj.user
 *.cache
 *.aps
-bin/
-obj/
+/bin/**
+/obj/**
+*/bin/**
+*/obj/**
 packages/
 StorePackaging/Assets
 StorePackaging/AppPackages
@@ -12,3 +14,5 @@ StorePackaging/BundleArtifacts
 StorePackaging/StorePackaging_TemporaryKey.pfx
 StorePackaging/Package.StoreAssociation.xml
 UpgradeLog.htm
+!SpookyView/bin/.gitkeep
+!SpookyView/obj/.gitkeep

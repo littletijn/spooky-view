@@ -1,6 +1,8 @@
+#ifndef TEXTBOX_H
+#define TEXTBOX_H
+
 #include <memory>
 
-#pragma once
 class Textbox
 {
 public:
@@ -11,3 +13,4 @@ protected:
 	HWND hWnd;
 };
 
+#endif

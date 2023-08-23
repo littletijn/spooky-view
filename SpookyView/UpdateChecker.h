@@ -1,4 +1,6 @@
-#pragma once
+#ifndef UPDATECHECKER_H
+#define UPDATECHECKER_H
+
 #include "nlohmann/json.hpp"
 #include "Unicode.h"
 
@@ -14,3 +16,4 @@ protected:
 	void DownloadAndParseJson();
 };
 
+#endif

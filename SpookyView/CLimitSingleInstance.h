@@ -1,6 +1,7 @@
-#include "stdafx.h"
-#pragma once
+#ifndef CLIMITSINGLEINSTANCE_H
+#define CLIMITSINGLEINSTANCE_H
 
+#include "stdafx.h"
 #define ALREADY_RUNNING_NOTIFY 1
 
 //This code is from Q243953 in case you lose the article and wonder
@@ -35,3 +36,5 @@ public:
 		return (ERROR_ALREADY_EXISTS == m_dwLastError);
 	}
 };
+
+#endif

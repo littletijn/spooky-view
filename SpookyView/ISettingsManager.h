@@ -1,7 +1,8 @@
+#ifndef ISETTINGMANAGER_H
+#define ISETTINGMANAGER_H
+
 #include "CSettings.h"
 #include "Unicode.h"
-#pragma once
-
 class ISettingsManager
 {
 
@@ -21,3 +22,5 @@ public:
 	virtual BOOL GetSkipWelcome() = 0;
 	virtual void SetSkipWelcome() = 0;
 };
+
+#endif

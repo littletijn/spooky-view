@@ -7,9 +7,7 @@
 #include "Unicode.h"
 #include "CMainWindow.h"
 #include "Defines.h"
-
-extern std::unique_ptr<CMainWindow> mainWindow;
-extern UpdateResponse updateResponse;
+#include "SpookyView.h"
 
 #ifdef UNICODE
 

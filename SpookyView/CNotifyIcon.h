@@ -1,5 +1,7 @@
+#ifndef CNOTIFYICON
+#define CNOTIFYICON
+
 #include "shellapi.h"
-#pragma once
 #include "stdafx.h"
 #include "Unicode.h"
 
@@ -20,3 +22,5 @@ protected:
 	tstring tooltipText;
 	NOTIFYICONDATA CreateStructure();
 };
+
+#endif

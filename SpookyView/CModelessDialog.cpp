@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "CModelessDialog.h"
 #include "Defines.h"
-
-extern HICON spookyIcon;
+#include "SpookyView.h"
 
 CModelessDialog::CModelessDialog(HINSTANCE hInstance, HWND hParent) : CDialog(hInstance)
 {

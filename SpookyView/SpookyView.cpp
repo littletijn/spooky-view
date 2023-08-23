@@ -7,7 +7,6 @@
 #include "ISettingsManager.h"
 #include "UpdateResponse.h"
 #include "WindowsEnum.h"
-#pragma once
 
 // Global Variables:
 HINSTANCE hInst; // current instance

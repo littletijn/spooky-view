@@ -1,4 +1,6 @@
-#pragma once
+#ifndef UPDATERESPONSE_H
+#define UPDATERESPONSE_H
+
 #include <nlohmann/json.hpp>
 
 struct UpdateResponse {
@@ -8,3 +10,5 @@ struct UpdateResponse {
 	BOOL update_available;
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE(UpdateResponse, version, download_url, message, update_available)
+
+#endif

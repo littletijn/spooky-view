@@ -1,10 +1,11 @@
-#include "String.h"
+#ifndef CPROGRAMSETTING_H
+#define CPROGRAMSETTING_H
+
+#include "MultiPlatformString.h"
 #include "CWindowSetting.h"
 #include "CAlphaSettings.h"
 #include <map>
 #include <memory>
-
-#pragma once
 
 class CProgramSetting
 {
@@ -18,3 +19,4 @@ public:
 	std::unique_ptr<std::map<t_string, std::unique_ptr<CWindowSetting>>> windows;
 };
 
+#endif

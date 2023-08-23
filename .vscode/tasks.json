@@ -1,0 +1,25 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build Debug version with MinGW-w64",
+            "type": "shell",
+            "command": "windres.exe SpookyView.rc .\\obj\\SpookyViewRes.o & windres.exe Manifest.rc .\\obj\\Manifest.o & mingw32-make.exe",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceRoot}/SpookyView"
+            }
+        },
+        {
+            "label": "Clean",
+            "type": "shell",
+            "command": "cmd /c \"del .\\obj\\*.o && del .\\bin\\spookyview.exe\"",
+            "group": "build",
+            "options": {
+                "cwd": "${workspaceRoot}/SpookyView"
+            }
+        }
+    ]
+}

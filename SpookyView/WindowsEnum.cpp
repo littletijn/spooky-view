@@ -6,10 +6,6 @@
 #include "SpookyView.h"
 #include <list>
 
-extern std::unique_ptr<ISettingsManager> settingsManager;
-extern PGNSI isImmersive;
-extern bool isWindows8;
-
 //http://msdn.microsoft.com/en-us/library/windows/desktop/dd318055(v=vs.85).aspx
 const TCHAR DIALOGBOXCLASSNAME[] = _T("#32770");
 

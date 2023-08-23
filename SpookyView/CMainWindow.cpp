@@ -11,11 +11,7 @@
 #ifdef UNICODE
 #include "UnicodeConversion.h"
 #endif //UNICODE
-
-extern UpdateResponse updateResponse;
-extern std::unique_ptr<ISettingsManager> settingsManager;
-extern WindowsEnum windowsEnum;
-extern bool isWindows10orNewer;
+#include "SpookyView.h"
 
 const int SINGLE_CLICK_TIMER = 1;
 

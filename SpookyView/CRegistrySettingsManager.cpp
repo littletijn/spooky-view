@@ -7,8 +7,6 @@
 #include <intsafe.h>
 #include "Defines.h"
 
-#pragma once
-
 
 CRegistrySettingsManager::CRegistrySettingsManager()
 {
@@ -268,7 +266,7 @@ BOOL CRegistrySettingsManager::SaveStringValue(HKEY hKey, TCHAR* valueName, tstr
 {
 	DWORD valueSize;
 	//This will convert the size_t to DWORD. a size_t in x64 is larger than a DWORD. Because our string will not be that long, we only need the size of a DWORD
-	if (SIZETToDWord(value.size() * sizeof(TCHAR), &valueSize) != S_OK)
+	if (SSIZETToDWord(value.size() * sizeof(TCHAR), &valueSize) != S_OK)
 	{
 		return FALSE;
 	}
