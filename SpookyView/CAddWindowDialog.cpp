@@ -13,6 +13,8 @@ CAddWindowDialog::CAddWindowDialog(HINSTANCE hInstance, HWND hParent) : CModalDi
 
 BOOL CAddWindowDialog::SetupDialog()
 {
+	LoadString(hInst, IDS_CLASS, classString, sizeof(classString) / sizeof(TCHAR));
+	LoadString(hInst, IDS_TITLE, titleString, sizeof(titleString) / sizeof(TCHAR));
 	this->dialogResource = MAKEINTRESOURCE(IDD_ADD_WINDOW);
 	return TRUE;
 }
@@ -30,8 +32,8 @@ INT_PTR CALLBACK CAddWindowDialog::DlgProc(HWND hDlg, UINT message, WPARAM wPara
 	{
 	case WM_INITDIALOG:
 		this->windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_WINDOWS);
-		this->windowsListView->InsertColumn(0, _T("Class"));
-		this->windowsListView->InsertColumn(1, _T("Title"));
+		this->windowsListView->InsertColumn(0, classString);
+		this->windowsListView->InsertColumn(1, titleString);
 		this->classTextbox = std::make_unique<Textbox>(hDlg, IDC_EDIT_CLASS_NAME);
 		LoadAppWindows();
 		return TRUE;

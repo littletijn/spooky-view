@@ -24,6 +24,7 @@ private:
 	void ShowAlreadyRunningBalloon();
 	HMENU GetContextMenu();
 	//Members
+	TCHAR pausedString[80];
 	POINT cursorPos;
 	BOOL hasDoubleClicked;
 	std::unique_ptr<CNotifyIcon> cNotifyIcon;

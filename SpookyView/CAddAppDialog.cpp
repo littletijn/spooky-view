@@ -27,6 +27,15 @@ CAddAppDialog::~CAddAppDialog()
 
 BOOL CAddAppDialog::SetupDialog()
 {
+	TCHAR programFilterString[80];
+	TCHAR allFilesFilterString[80];
+	LoadString(hInst, IDS_FILE, fileString, sizeof(fileString) / sizeof(TCHAR));
+	LoadString(hInst, IDS_NAME, nameString, sizeof(nameString) / sizeof(TCHAR));
+	LoadString(hInst, IDS_SELECT_PROGRAM, selectProgramString, sizeof(selectProgramString) / sizeof(TCHAR));
+	LoadString(hInst, IDS_PROGRAM_FILTER, programFilterString, sizeof(programFilterString) / sizeof(TCHAR));
+	LoadString(hInst, IDS_ALL_FILES_FILTER, allFilesFilterString, sizeof(allFilesFilterString) / sizeof(TCHAR));
+	_sntprintf_s(fileSelectFilterString, sizeof(fileSelectFilterString) / sizeof(TCHAR), _T("%s (*.exe)%c*.exe%c%s (*.*)%c*.*%c"), programFilterString, '\0', '\0', allFilesFilterString, '\0', '\0');
+
 	this->dialogResource = MAKEINTRESOURCE(IDD_ADD_APP);
 	return TRUE;
 }
@@ -41,8 +50,8 @@ INT_PTR CALLBACK CAddAppDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, 
 	{
 	case WM_INITDIALOG:
 		this->appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_ADD_APPS);
-		this->appsListView->InsertColumn(0, _T("File"));
-		this->appsListView->InsertColumn(1, _T("Name"));
+		this->appsListView->InsertColumn(0, fileString);
+		this->appsListView->InsertColumn(1, nameString);
 		this->programTextbox = std::make_unique<Textbox>(hDlg, IDC_EDIT_EXECUTABLE_NAME);
 		LoadModules();
 		return TRUE;
@@ -164,8 +173,8 @@ void CAddAppDialog::BrowseFile()
 	ofn.lpstrFile = filePath;
 	ofn.lpstrFileTitle = fileName;
 	ofn.nMaxFileTitle = MAX_PATH - 1;
-	ofn.lpstrTitle = _T("Select program");
-	ofn.lpstrFilter = _T("Executables (*.exe)\0*.exe\0All files (*.*)\0*.*\0");
+	ofn.lpstrTitle = selectProgramString;
+	ofn.lpstrFilter = fileSelectFilterString;
 	ofn.nFilterIndex = 1;
 	ofn.lpstrInitialDir = NULL;
 	ofn.lpstrDefExt = _T("exe");

@@ -289,12 +289,46 @@ END
 STRINGTABLE
 BEGIN
     IDC_SPOOKYVIEW          "Spooky View"
+    IDS_ALL_OTHER_APPS      "[All other apps]"
+    IDS_ALL_OTHER_WINDOWS   "[All other windows]"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APP_TITLE           "Spooky View"
     IDS_APP_CLOSING_TITLE   "Spooky View - Closing"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_FILE                "File"
+    IDS_NAME                "Name"
+    IDS_CLASS               "Class"
+    IDS_TITLE               "Title"
+    IDS_SELECT_PROGRAM      "Select program"
+    IDS_PROGRAM_FILTER      "Executables"
+    IDS_ALL_FILES_FILTER    "All files"
+    IDS_ERROR_CANNOT_SAVE_SETTINGS 
+                            "Could not save settings. Modifications are not stored."
+    IDS_ERROR_TITLE         "Error"
+    IDS_ALREADY_RUNNING     "Spooky View is already running"
+    DS_ALREADY_RUNNING_HINT_WIN10 
+                            "Right click on the icon in the notification area to configure this application."
+    DS_ALREADY_RUNNING_HINT "Right click on this icon to configure this application."
+    IDS_WELCOME_TITLE       "Welcome to Spooky View"
+    IDS_WELCOME_MESSAGE     "Right click on this icon to configure this application."
+    IDS_WELCOME_MESSAGE_WIN10 
+                            "Right click on the icon in the notification area to configure this application."
+    IDS_PAUSED              "Paused"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_CANNOT_CREATE_MAIN_WINDOW "Cannot create main window."
+    IDS_ERROR_CANNOT_CREATE_NOTIFICATION_AREA_ICON 
+                            "Cannot create notification area icon."
+    IDS_ERROR_CANNOT_CREATE_REGISTRY_KEY 
+                            "Cannot create Registry key to store configuration. Settings will not be stored."
 END
 
 #endif    // English (United States) resources
@@ -514,12 +548,46 @@ END
 STRINGTABLE
 BEGIN
     IDC_SPOOKYVIEW          "Spooky View"
+    IDS_ALL_OTHER_APPS      "[Alle andere apps]"
+    IDS_ALL_OTHER_WINDOWS   "[Alle andere vensters]"
 END
 
 STRINGTABLE
 BEGIN
     IDS_APP_TITLE           "Spooky View"
     IDS_APP_CLOSING_TITLE   "Spooky View - Afsluiten"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_FILE                "Bestand"
+    IDS_NAME                "Naam"
+    IDS_CLASS               "Klasse"
+    IDS_TITLE               "Titel"
+    IDS_SELECT_PROGRAM      "Selecteer programma"
+    IDS_PROGRAM_FILTER      "Programma's"
+    IDS_ALL_FILES_FILTER    "Alle bestanden"
+    IDS_ERROR_CANNOT_SAVE_SETTINGS 
+                            "Kon instellingen niet opslaan. Wijzigingen zijn niet opgeslagen."
+    IDS_ERROR_TITLE         "Fout"
+    IDS_ALREADY_RUNNING     "Spooky View is al actief"
+    DS_ALREADY_RUNNING_HINT_WIN10 
+                            "Klik met de rechtermuisknop op het icoon in het systeemvak om dit programma in te stellen."
+    DS_ALREADY_RUNNING_HINT "Klik met de rechtermuisknop op dit icoon om dit programma in te stellen."
+    IDS_WELCOME_TITLE       "Welkom bij Spooky View"
+    IDS_WELCOME_MESSAGE     "Klik met de rechtermuisknop op dit icoon om dit programma in te stellen."
+    IDS_WELCOME_MESSAGE_WIN10 
+                            "Klik met de rechtermuisknop op het icoon in het systeemvak om dit programma in te stellen."
+    IDS_PAUSED              "Gepauzeerd"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_CANNOT_CREATE_MAIN_WINDOW "Kan hoofdvenster niet aanmaken."
+    IDS_ERROR_CANNOT_CREATE_NOTIFICATION_AREA_ICON 
+                            "Kan icoon in systeemvak niet aanmaken."
+    IDS_ERROR_CANNOT_CREATE_REGISTRY_KEY 
+                            "Kan sleutel in Windows register niet aanmaken. Instellingen worden niet opgeslagen."
 END
 
 #endif    // Dutch (Netherlands) resources

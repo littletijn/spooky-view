@@ -19,6 +19,8 @@ public:
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 protected:
+	TCHAR allOtherAppsString[160];
+	TCHAR allOtherWindowsString[160];
 	CAlphaSettings* currentAlphaSettings;
 	CProgramSetting* currentProgram;
 	t_string currentProgramName;

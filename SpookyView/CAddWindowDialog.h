@@ -16,6 +16,8 @@ public:
 	BOOL InitInstance(t_string programName);
 	tstring GetSelectedWindowClass();
 protected:
+	TCHAR classString[160];
+	TCHAR titleString[160];
 	t_string programName;
 	tstring selectedWindowClass;
 	std::unique_ptr<ListView> windowsListView;

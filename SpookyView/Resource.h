@@ -7,12 +7,33 @@
 #define IDM_ABOUT                       104
 #define IDM_EXIT                        105
 #define IDC_SPOOKYVIEW                  109
+#define IDS_ALL_OTHER_APPS              110
+#define IDS_ALL_OTHER_WINDOWS           111
+#define IDS_FILE                        112
+#define IDS_NAME                        113
+#define IDS_CLASS                       114
+#define IDS_TITLE                       115
 #define IDD_ADD_APP                     116
+#define IDS_SELECT_PROGRAM              116
 #define IDD_SETTINGS                    117
+#define IDS_PROGRAM_FILTER              117
 #define IDD_SETUP                       118
+#define IDS_ALL_FILES_FILTER            118
+#define IDS_ERROR_CANNOT_SAVE_SETTINGS  119
 #define IDD_ADD_WINDOW                  120
+#define IDS_ERROR_TITLE                 120
+#define IDS_ALREADY_RUNNING             121
 #define IDB_SPOOK                       122
+#define DS_ALREADY_RUNNING_HINT_WIN10   122
+#define DS_ALREADY_RUNNING_HINT         123
 #define IDI_SPOOKYVIEW                  124
+#define IDS_WELCOME_TITLE               124
+#define IDS_WELCOME_MESSAGE             125
+#define IDS_WELCOME_MESSAGE_WIN10       126
+#define IDS_PAUSED                      127
+#define IDS_ERROR_CANNOT_CREATE_MAIN_WINDOW 128
+#define IDS_ERROR_CANNOT_CREATE_NOTIFICATION_AREA_ICON 129
+#define IDS_ERROR_CANNOT_CREATE_REGISTRY_KEY 130
 #define ID_DOWNLOAD                     1000
 #define IDC_SKIP_VERSION                1001
 #define ID_CLOSE                        1002
@@ -61,7 +82,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        125
+#define _APS_NEXT_RESOURCE_VALUE        127
 #define _APS_NEXT_COMMAND_VALUE         40017
 #define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           101

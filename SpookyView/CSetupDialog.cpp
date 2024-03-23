@@ -28,6 +28,8 @@ CSetupDialog::~CSetupDialog()
 
 BOOL CSetupDialog::SetupDialog()
 {
+	LoadString(hInst, IDS_ALL_OTHER_APPS, allOtherAppsString, sizeof(allOtherAppsString) / sizeof(TCHAR));
+	LoadString(hInst, IDS_ALL_OTHER_WINDOWS, allOtherWindowsString, sizeof(allOtherWindowsString) / sizeof(TCHAR));
 	key = IDD_SETUP;
 	this->dialogResource = MAKEINTRESOURCE(IDD_SETUP);
 	return TRUE;
@@ -169,7 +171,11 @@ bool CSetupDialog::ApplySettings()
 	settingsManager->ApplyNewSettings(newSettings.get());
 	if (!settingsManager->SaveSettings())
 	{
-		MessageBox(NULL, _T("Could not save settings. Modifications are not stored."), _T("Error"), MB_OK);
+		TCHAR titleString[10];
+		TCHAR messageString[80];
+		LoadString(hInst, IDS_ERROR_TITLE, titleString, sizeof(titleString) / sizeof(TCHAR));
+		LoadString(hInst, IDS_ERROR_CANNOT_SAVE_SETTINGS, messageString, sizeof(messageString) / sizeof(TCHAR));
+		MessageBox(NULL, messageString, titleString, MB_OK | MB_ICONWARNING);
 		return false;
 	}
 	WindowsEnum::SetWindowsTransparency();
@@ -290,7 +296,7 @@ void CSetupDialog::SeparateBackgroundValueCheckboxNotified()
 
 void CSetupDialog::PopulateProcessList()
 {
-	this->appsListView->AddItem(_T("[All other programs]"));
+	this->appsListView->AddItem(allOtherAppsString);
 	for (auto const& program : *newSettings->programs.get())
 	{
 		this->appsListView->AddItem(program.first);
@@ -300,7 +306,7 @@ void CSetupDialog::PopulateProcessList()
 void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)
 {
 	this->windowsListView->DeleteAllItems();
-	this->windowsListView->AddItem(_T("[All other windows]"));
+	this->windowsListView->AddItem(allOtherWindowsString);
 	if (settings) {
 		for (auto const& window : *settings->windows)
 		{
