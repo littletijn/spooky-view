@@ -1,4 +1,4 @@
-﻿<Project Sdk="WixToolset.Sdk/4.0.0-rc.1">
+﻿<Project Sdk="WixToolset.Sdk/4.0.5">
   <PropertyGroup>
     <OutputName>Spooky View</OutputName>
     <Configurations>Debug;Release;Release MSI;Release Store</Configurations>
@@ -23,7 +23,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.0-rc.1" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="4.0.5" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="gpl-3.0.rtf" />
