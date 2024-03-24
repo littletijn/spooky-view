@@ -481,7 +481,7 @@ END
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "04090025"
+        BLOCK "04130025"
         BEGIN
             VALUE "Comments", "Deze toepassing valt onder de GNU GPL v3.0-licentie of hoger"
             VALUE "CompanyName", "TynDomyn.net"
@@ -496,7 +496,7 @@ BEGIN
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x409, 37
+        VALUE "Translation", 0x413, 37
     END
 END
 
