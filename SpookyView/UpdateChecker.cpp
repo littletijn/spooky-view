@@ -67,12 +67,28 @@ bool UpdateChecker::GetProductVersion(tstring* version)
 	return TRUE;
 }
 
+void UpdateChecker::GetUserLanguage(tstring* version)
+{
+	TCHAR bufferLanguage[10];
+	TCHAR bufferCountry[10];
+	auto languageId = GetUserDefaultUILanguage();
+	GetLocaleInfo(languageId, LOCALE_SISO639LANGNAME, bufferLanguage, sizeof(bufferLanguage) / sizeof(TCHAR));
+	GetLocaleInfo(languageId, LOCALE_SISO3166CTRYNAME, bufferCountry, sizeof(bufferCountry) / sizeof(TCHAR));
+	version->append(bufferLanguage);
+	version->append(_T("-"));
+	version->append(bufferCountry);
+}
+
 void UpdateChecker::DownloadAndParseJson()
 {
 	tstring version;
+	tstring language;
 	tstring url(_T("spookyview/status?version="));
 	GetProductVersion(&version);
 	url.append(version);
+	url.append(_T("&language="));
+	GetUserLanguage(&language);
+	url.append(language);
 	url.append(_T("&arch="));
 #ifdef _M_IX86 
 	url.append(_T("x86"));
