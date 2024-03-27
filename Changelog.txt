@@ -141,3 +141,8 @@ and for preparation of the GUI.
 1.0.5 (A update would be nice release) - MSI and portable only
 - Upgrade installer creator from WiX 3 to WiX 4 for ARM64 builds
 - Added signing of release executables
+
+1.0.6 (Nicely spoken release)
+- Added Dutch translation
+- Added user language to updater request
+- Upgrade installer creator from WiX 4.0.0-rc.1 to 4.0.5

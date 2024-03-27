@@ -31,7 +31,11 @@ int AppMain::Run()
 	// Perform application initialization:
 	if (!mainWindow->InitInstance())
 	{
-		MessageBox(NULL, _T("Cannot create main window."), _T("Error"), MB_OK);
+		TCHAR title[80];
+		TCHAR message[100];
+		LoadString(hInst, IDS_ERROR_TITLE, title, ARRAYSIZE(title));
+		LoadString(hInst, IDS_ERROR_CANNOT_CREATE_MAIN_WINDOW, message, ARRAYSIZE(message));
+		MessageBox(NULL, message, title, MB_OK | MB_ICONERROR);
 		return FALSE;
 	}
 
@@ -44,7 +48,11 @@ int AppMain::Run()
 
 	if (!mainWindow->InitNotifyIcon())
 	{
-		MessageBox(NULL, _T("Cannot create notification area icon."), _T("Error"), MB_OK);
+		TCHAR title[80];
+		TCHAR message[100];
+		LoadString(hInst, IDS_ERROR_TITLE, title, ARRAYSIZE(title));
+		LoadString(hInst, IDS_ERROR_CANNOT_CREATE_NOTIFICATION_AREA_ICON, message, ARRAYSIZE(message));
+		MessageBox(NULL, message, title, MB_OK | MB_ICONERROR);
 		return FALSE;
 	}
 	GetIsWindows8();
@@ -53,7 +61,11 @@ int AppMain::Run()
 	settingsManager = std::make_unique<CRegistrySettingsManager>();
 	if (!settingsManager->Init())
 	{
-		MessageBox(NULL, _T("Cannot create Registry key to store configuration. Settings will not be stored."), _T("Error"), MB_OK);
+		TCHAR title[80];
+		TCHAR message[200];
+		LoadString(hInst, IDS_ERROR_TITLE, title, ARRAYSIZE(title));
+		LoadString(hInst, IDS_ERROR_CANNOT_CREATE_REGISTRY_KEY, message, ARRAYSIZE(message));
+		MessageBox(NULL, message, title, MB_OK | MB_ICONWARNING);
 	}
 	else
 	{

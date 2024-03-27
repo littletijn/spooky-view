@@ -115,7 +115,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,78,130,8
     LTEXT           "Based on an idea by Mikey",IDC_STATIC,12,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
-    LTEXT           "1.0.5.0 (A update would be nice release)",IDC_STATIC,12,18,136,18
+    LTEXT           "1.0.6.0 (Nicely spoken release)",IDC_STATIC,12,18,136,18
     LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,66,138,8
     DEFPUSHBUTTON   "Close",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -208,8 +208,8 @@ END
 //
 
 1 VERSIONINFO
- FILEVERSION 1,0,5,0
- PRODUCTVERSION 1,0,5,0
+ FILEVERSION 1,0,6,0
+ PRODUCTVERSION 1,0,6,0
  FILEFLAGSMASK 0x2L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -227,12 +227,12 @@ BEGIN
             VALUE "Comments", "This application is licensed under the GNU GPL v3.0 or later"
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "Spooky View"
-            VALUE "FileVersion", "1.0.5.0 (A update would be nice release)"
+            VALUE "FileVersion", "1.0.6.0 (Nicely spoken release)"
             VALUE "InternalName", "Spooky View"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "OriginalFilename", "Spookyview.exe"
             VALUE "ProductName", "Spooky View"
-            VALUE "ProductVersion", "1.0.5.0 (A update would be nice release)"
+            VALUE "ProductVersion", "1.0.6.0 (Nicely spoken release)"
         END
     END
     BLOCK "VarFileInfo"
@@ -289,6 +289,8 @@ END
 STRINGTABLE
 BEGIN
     IDC_SPOOKYVIEW          "Spooky View"
+    IDS_ALL_OTHER_APPS      "[All other apps]"
+    IDS_ALL_OTHER_WINDOWS   "[All other windows]"
 END
 
 STRINGTABLE
@@ -297,7 +299,298 @@ BEGIN
     IDS_APP_CLOSING_TITLE   "Spooky View - Closing"
 END
 
+STRINGTABLE
+BEGIN
+    IDS_FILE                "File"
+    IDS_NAME                "Name"
+    IDS_CLASS               "Class"
+    IDS_TITLE               "Title"
+    IDS_SELECT_PROGRAM      "Select program"
+    IDS_PROGRAM_FILTER      "Executables"
+    IDS_ALL_FILES_FILTER    "All files"
+    IDS_ERROR_CANNOT_SAVE_SETTINGS 
+                            "Could not save settings. Modifications are not stored."
+    IDS_ERROR_TITLE         "Error"
+    IDS_ALREADY_RUNNING     "Spooky View is already running"
+    DS_ALREADY_RUNNING_HINT_WIN10 
+                            "Right click on the icon in the notification area to configure this application."
+    DS_ALREADY_RUNNING_HINT "Right click on this icon to configure this application."
+    IDS_WELCOME_TITLE       "Welcome to Spooky View"
+    IDS_WELCOME_MESSAGE     "Right click on this icon to configure this application."
+    IDS_WELCOME_MESSAGE_WIN10 
+                            "Right click on the icon in the notification area to configure this application."
+    IDS_PAUSED              "Paused"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_CANNOT_CREATE_MAIN_WINDOW "Cannot create main window."
+    IDS_ERROR_CANNOT_CREATE_NOTIFICATION_AREA_ICON 
+                            "Cannot create notification area icon."
+    IDS_ERROR_CANNOT_CREATE_REGISTRY_KEY 
+                            "Cannot create Registry key to store configuration. Settings will not be stored."
+END
+
 #endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Dutch (Netherlands) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLD)
+LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_SPOOKYVIEW MENUEX
+BEGIN
+    POPUP "ContextMenu",                    0,MFT_STRING,MFS_ENABLED
+    BEGIN
+        MENUITEM "&Openen...",                  IDM_OPEN,MFT_STRING,MFS_ENABLED | MFS_UNCHECKED | MFS_UNHILITE | MFS_DEFAULT
+        MENUITEM "Instellingen...",             IDM_SETTINGS,MFT_STRING,MFS_ENABLED
+        MENUITEM "&Over...",                    IDM_ABOUT,MFT_STRING,MFS_ENABLED
+        MENUITEM "&Pauzeren",                   IDM_PAUSE,MFT_STRING,MFS_ENABLED
+        MENUITEM "&Sluiten",                    IDM_EXIT,MFT_STRING,MFS_ENABLED
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 136
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Over Spooky View"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Deze toepassing valt onder de GNU GPL v3.0-licentie of hoger.",IDC_STATIC,12,36,120,18
+    LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,78,130,8
+    LTEXT           "Gebaseerd op een idee van Mikey",IDC_STATIC,12,102,130,8
+    LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
+    LTEXT           "1.0.6.0 (Nicely spoken release)",IDC_STATIC,12,18,136,18
+    LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,66,138,8
+    DEFPUSHBUTTON   "Sluiten",IDOK,180,114,50,14,WS_GROUP
+    CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
+END
+
+IDD_ADD_APP DIALOGEX 0, 0, 284, 268
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Bureaublad-app toevoegen"
+FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "Bladeren...",IDC_BUTTON_BROWSE,7,246,50,14
+    LTEXT           "Draaiende bureaublad-apps",IDC_STATIC_RUNNING_APPS,7,7,265,8
+    CONTROL         "",IDC_LIST_ADD_APPS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,17,270,200
+    PUSHBUTTON      "Annuleren",IDCANCEL,227,247,50,14
+    DEFPUSHBUTTON   "Toevoegen",IDOK,172,247,50,14
+    LTEXT           "Programma",IDC_STATIC_APP_EXECUTABLE,8,226,36,8
+    EDITTEXT        IDC_EDIT_EXECUTABLE_NAME,49,224,227,14,ES_AUTOHSCROLL
+END
+
+IDD_ADD_WINDOW DIALOGEX 0, 0, 284, 268
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Venster toevoegen"
+FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+BEGIN
+    DEFPUSHBUTTON   "Toevoegen",IDOK,172,247,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,227,247,50,14
+    CONTROL         "",IDC_LIST_ADD_WINDOWS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,17,270,200
+    EDITTEXT        IDC_EDIT_CLASS_NAME,52,226,226,12,ES_AUTOHSCROLL
+    LTEXT           "Klassenaam:",IDC_STATIC_CLASS_NAME,7,227,39,8
+    LTEXT           "Zichtbare vensters",IDC_STATIC_RUNNING_APPS,7,7,268,8
+END
+
+IDD_SETTINGS DIALOGEX 0, 0, 287, 183
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Instellingen"
+FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "Start programma bij aanmelden",IDC_CHECKBOX_AUTO_STARTUP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,230,8
+    PUSHBUTTON      "Annuleren",IDCANCEL,232,162,50,14
+    DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
+    CONTROL         "Geen controle op updates bij starten",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,227,10
+END
+
+IDD_SETUP DIALOGEX 0, 0, 474, 318
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Spooky View"
+FONT 8, "Ms Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "Voorgrond",IDC_SLIDER_BACKGROUND,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | TBS_NOTICKS | TBS_TOOLTIPS | NOT WS_VISIBLE | WS_TABSTOP,276,120,180,15
+    CONTROL         "Achtergrond",IDC_SLIDER_FOREGROUND,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | TBS_NOTICKS | TBS_TOOLTIPS | NOT WS_VISIBLE | WS_TABSTOP,276,66,180,15
+    GROUPBOX        "Doorzichtigheid",IDC_STATIC_TRANSPARENCY,270,52,192,110,NOT WS_VISIBLE
+    CONTROL         "Doorzichtigheid inschakelen",IDC_CHECKBOX_ENABLE_TRANSPARENCY,
+                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,272,22,187,8
+    PUSHBUTTON      "Toevoegen...",IDC_BUTTON_WINDOW_ADD,142,267,50,14,WS_DISABLED
+    PUSHBUTTON      "Vewijderen",IDC_BUTTON_WINDOW_REMOVE,207,267,50,14,WS_DISABLED
+    PUSHBUTTON      "Toevoegen...",IDC_BUTTON_APP_ADD,12,267,50,14
+    PUSHBUTTON      "Verwijderen",IDC_BUTTON_APP_REMOVE,77,267,50,14,WS_DISABLED
+    LTEXT           "Vensters",IDC_STATIC_WINDOWS,142,12,30,8
+    LTEXT           "Apps",IDC_STATIC_APPS,12,12,45,8
+    CONTROL         "",IDC_LIST_WINDOWS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,142,22,115,240
+    CONTROL         "",IDC_LIST_APPS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,12,22,115,240
+    PUSHBUTTON      "Annuleren",IDCANCEL,362,297,50,14
+    PUSHBUTTON      "Toepassen",IDAPPLY,417,297,50,14
+    DEFPUSHBUTTON   "OK",IDOK,307,297,50,14
+    LTEXT           "Doorzichtig",IDC_STATIC_FOREGORUND_TRANSPARENT,276,84,40,8,NOT WS_VISIBLE
+    LTEXT           "Ondoorzichtig",IDC_STATIC_FOREGROUND_OPAQUE,410,84,44,8,NOT WS_VISIBLE
+    LTEXT           "Doorzichtig",IDC_STATIC_BACKGROUND_TRANSPARENT,276,144,40,8,NOT WS_VISIBLE
+    LTEXT           "Ondoorzichtig",IDC_STATIC_BACKGROUND_OPAQUE,407,144,46,8,NOT WS_VISIBLE
+    CONTROL         "Aparte waarde voor inactief venster",IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE,
+                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,276,102,129,10
+END
+
+IDD_UPDATE_AVAILABLE DIALOGEX 0, 0, 259, 125
+STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Spooky View update beschikbaar"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Downloaden",ID_DOWNLOAD,63,104,69,14
+    PUSHBUTTON      "Sluiten",ID_CLOSE,202,104,50,14
+    PUSHBUTTON      "Sla versie over",IDC_SKIP_VERSION,143,104,50,14
+    LTEXT           "Bericht!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+1 VERSIONINFO
+ FILEVERSION 1,0,6,0
+ PRODUCTVERSION 1,0,6,0
+ FILEFLAGSMASK 0x2L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x40004L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "04130025"
+        BEGIN
+            VALUE "Comments", "Deze toepassing valt onder de GNU GPL v3.0-licentie of hoger"
+            VALUE "CompanyName", "TynDomyn.net"
+            VALUE "FileDescription", "Spooky View"
+            VALUE "FileVersion", "1.0.6.0 (Nicely spoken release)"
+            VALUE "InternalName", "Spooky View"
+            VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
+            VALUE "OriginalFilename", "Spookyview.exe"
+            VALUE "ProductName", "Spooky View"
+            VALUE "ProductVersion", "1.0.6.0 (Nicely spoken release)"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x413, 37
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+    END
+
+    IDD_ADD_APP, DIALOG
+    BEGIN
+    END
+
+    IDD_ADD_WINDOW, DIALOG
+    BEGIN
+    END
+
+    IDD_SETTINGS, DIALOG
+    BEGIN
+    END
+
+    IDD_SETUP, DIALOG
+    BEGIN
+    END
+
+    IDD_UPDATE_AVAILABLE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 252
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 118
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDC_SPOOKYVIEW          "Spooky View"
+    IDS_ALL_OTHER_APPS      "[Alle andere apps]"
+    IDS_ALL_OTHER_WINDOWS   "[Alle andere vensters]"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE           "Spooky View"
+    IDS_APP_CLOSING_TITLE   "Spooky View - Afsluiten"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_FILE                "Bestand"
+    IDS_NAME                "Naam"
+    IDS_CLASS               "Klasse"
+    IDS_TITLE               "Titel"
+    IDS_SELECT_PROGRAM      "Selecteer programma"
+    IDS_PROGRAM_FILTER      "Programma's"
+    IDS_ALL_FILES_FILTER    "Alle bestanden"
+    IDS_ERROR_CANNOT_SAVE_SETTINGS 
+                            "Kon instellingen niet opslaan. Wijzigingen zijn niet opgeslagen."
+    IDS_ERROR_TITLE         "Fout"
+    IDS_ALREADY_RUNNING     "Spooky View is al actief"
+    DS_ALREADY_RUNNING_HINT_WIN10 
+                            "Klik met de rechtermuisknop op het icoon in het systeemvak om dit programma in te stellen."
+    DS_ALREADY_RUNNING_HINT "Klik met de rechtermuisknop op dit icoon om dit programma in te stellen."
+    IDS_WELCOME_TITLE       "Welkom bij Spooky View"
+    IDS_WELCOME_MESSAGE     "Klik met de rechtermuisknop op dit icoon om dit programma in te stellen."
+    IDS_WELCOME_MESSAGE_WIN10 
+                            "Klik met de rechtermuisknop op het icoon in het systeemvak om dit programma in te stellen."
+    IDS_PAUSED              "Gepauzeerd"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_ERROR_CANNOT_CREATE_MAIN_WINDOW "Kan hoofdvenster niet aanmaken."
+    IDS_ERROR_CANNOT_CREATE_NOTIFICATION_AREA_ICON 
+                            "Kan icoon in systeemvak niet aanmaken."
+    IDS_ERROR_CANNOT_CREATE_REGISTRY_KEY 
+                            "Kan sleutel in Windows register niet aanmaken. Instellingen worden niet opgeslagen."
+END
+
+#endif    // Dutch (Netherlands) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

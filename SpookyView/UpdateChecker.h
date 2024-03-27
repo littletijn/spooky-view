@@ -12,6 +12,7 @@ class UpdateChecker
 public:
 	void CheckForNewerVersion();
 	bool GetProductVersion(tstring* version);
+	void GetUserLanguage(tstring* version);
 protected:
 	void DownloadAndParseJson();
 };

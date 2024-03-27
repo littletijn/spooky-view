@@ -18,6 +18,7 @@ const int SINGLE_CLICK_TIMER = 1;
 //Constructor
 CMainWindow::CMainWindow(HINSTANCE hInstance) : CWindow(hInstance) 
 {
+	LoadString(hInstance, IDS_PAUSED, pausedString, ARRAYSIZE(pausedString));
 };
 
 BOOL CMainWindow::InitInstance()
@@ -193,7 +194,7 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 					windowsEnum.TogglePause();
 					if (windowsEnum.IsPaused())
 					{
-						cNotifyIcon->SetTooltipText(_T("Paused"));
+						cNotifyIcon->SetTooltipText(pausedString);
 					}
 					else
 					{
@@ -236,14 +237,18 @@ void CMainWindow::OpenSetupDialog()
 
 void CMainWindow::ShowAlreadyRunningBalloon()
 {
+	TCHAR titleString[100];
+	TCHAR messageString[100];
+	LoadString(hInst, IDS_ALREADY_RUNNING, titleString, sizeof(titleString) / sizeof(TCHAR));
 	if (isWindows10orNewer)
 	{
-		cNotifyIcon->ShowBalloon(_T("Spooky View is already running"), _T("Right click on the icon in the notification area to configure this application."));
+		LoadString(hInst, DS_ALREADY_RUNNING_HINT_WIN10, messageString, sizeof(messageString) / sizeof(TCHAR));
 	}
 	else
 	{
-		cNotifyIcon->ShowBalloon(_T("Spooky View is already running"), _T("Right click on this icon to configure this application."));
+		LoadString(hInst, DS_ALREADY_RUNNING_HINT, messageString, sizeof(messageString) / sizeof(TCHAR));
 	}
+	cNotifyIcon->ShowBalloon(titleString, messageString);
 }
 
 void CMainWindow::CheckIsFirstRun()
@@ -251,13 +256,17 @@ void CMainWindow::CheckIsFirstRun()
 	if (!settingsManager->GetSkipWelcome())
 	{
 		settingsManager->SetSkipWelcome();
+		TCHAR titleString[100];
+		TCHAR messageString[100];
+		LoadString(hInst, IDS_WELCOME_TITLE, titleString, sizeof(titleString) / sizeof(TCHAR));
 		if (isWindows10orNewer)
 		{
-			cNotifyIcon->ShowBalloon(_T("Welcome to Spooky View"), _T("Right click on the icon in the notification area to configure this application."));
+			LoadString(hInst, IDS_WELCOME_MESSAGE_WIN10, messageString, sizeof(messageString) / sizeof(TCHAR));
 		}
 		else
 		{
-			cNotifyIcon->ShowBalloon(_T("Welcome to Spooky View"), _T("Right click on this icon to configure this application."));
+			LoadString(hInst, IDS_WELCOME_MESSAGE, messageString, sizeof(messageString) / sizeof(TCHAR));
 		}
+		cNotifyIcon->ShowBalloon(titleString, messageString);
 	}
 }
