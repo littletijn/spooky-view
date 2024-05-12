@@ -29,10 +29,12 @@ When downloading from Github, make sure to choose the correct version.
 ## Known issues
 - WPF (Windows Presentation Foundation) apps cannot be set transparent.
 - When stopping Spooky View, some apps will not return opaque. Restart the affected apps to revert them.
+- Only when Spooky View is run as administrator will it be able to make high privileges app transparent, like Windows Task Mananger.
 
 ## FAQ
 
-*How do I enable automatic startup of Spooky View?*  
+*How do I enable automatic startup of Spooky View?*
+
 It depends on the installed version. When using the MSI or portable version:
 - Start Spooky View.
 - Right click on the icon of the app in the Notification Area.
@@ -45,6 +47,18 @@ When downloaded from the Microsoft Store or using the MSIX version:
 - Click the "Apps" category.
 - Click on the "Startup" option.
 - Set the slider to enabled for the Spooky View item in the list of apps.
+
+*How can I make high privileges apps (apps started as administrator) transparent?*
+
+When the app is installed from the Microsoft Store, MSIX or MSI:
+- Find the app in the start menu.
+- Right click on the app.
+- Click on the "Run as administrator" option.
+
+When the portable app is downloaded and extracted:
+- Find the executable of the app (SpookyView_version_Portable.exe).
+- Right click on the icon of the executable.
+- Click on the "Run as administrator" option.
 
 ## Building
 This project can be build with Visual Studio 2022. Install the "Desktop Development with C++" workload and the "C++ Windows XP Support for VS 2017 (v141) tools" component. Open the Solution file "SpookyView.sln" and build the SpookyView project within.
