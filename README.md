@@ -33,7 +33,7 @@ When downloading from Github, make sure to choose the correct version.
 
 ## FAQ
 
-*How do I enable automatic startup of Spooky View?*
+### How do I enable automatic startup of Spooky View?
 
 It depends on the installed version. When using the MSI or portable version:
 - Start Spooky View.
@@ -48,7 +48,7 @@ When downloaded from the Microsoft Store or using the MSIX version:
 - Click on the "Startup" option.
 - Set the slider to enabled for the Spooky View item in the list of apps.
 
-*How can I make high privileges apps (apps started as administrator) transparent?*
+### How can I make high privileges apps (apps started as administrator) transparent?
 
 When the app is installed from the Microsoft Store, MSIX or MSI:
 - Find the app in the start menu.
