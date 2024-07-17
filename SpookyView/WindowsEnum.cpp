@@ -48,7 +48,7 @@ BOOL WindowsEnum::HasProcessUsableWindows(DWORD processId)
 {
 	processIdToCheckForUsableWindows = processId;
 	processHasUsableWindow = FALSE;
-	EnumDesktopWindows(NULL, EnumProcessHasUsableWindows, NULL);
+	EnumDesktopWindows(NULL, EnumProcessHasUsableWindows, 0);
 	return processHasUsableWindow;
 }
 
@@ -58,7 +58,7 @@ BOOL WindowsEnum::HasProcessUWPCoreWindow(DWORD processId)
 	isMinimizedCoreWindow = FALSE;
 	applicationFrameHostWindows.clear();
 	processIdToCheckForUsableWindows = processId;
-	EnumDesktopWindows(NULL, EnumGetProcessApplicationFrameHost, NULL);
+	EnumDesktopWindows(NULL, EnumGetProcessApplicationFrameHost, 0);
 	if (isMinimizedCoreWindow)
 	{
 		//TODO: This will also find all suspended UWP apps as well.
@@ -87,18 +87,18 @@ std::map<tstring, tstring> WindowsEnum::GetWindowsForProcess(t_string processNam
 {
 	processNameOfWindowsToFind = processName;
 	foundWindowClasses.clear();
-	EnumDesktopWindows(NULL, EnumWindowsForProcess, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsForProcess, 0);
 	return foundWindowClasses;
 }
 
 void WindowsEnum::SetWindowsTransparency()
 {
-	EnumDesktopWindows(NULL, EnumWindowsProc, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsProc, 0);
 }
 
 void WindowsEnum::ResetWindowsTransparency()
 {
-	EnumDesktopWindows(NULL, EnumWindowsReset, NULL);
+	EnumDesktopWindows(NULL, EnumWindowsReset, 0);
 }
 
 BOOL WindowsEnum::IsWindowUsable(HWND hwnd, BOOL includeHidden)
@@ -220,9 +220,9 @@ BOOL CALLBACK WindowsEnum::EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam)
 {
 	if (IsWindowUsable(hwnd))
 	{
-		DWORD windowProcessId;
+		DWORD windowProcessId = 0;
 		GetWindowThreadProcessId(hwnd, &windowProcessId);
-		if (windowProcessId != NULL && windowProcessId == processIdToCheckForUsableWindows)
+		if (windowProcessId != 0 && windowProcessId == processIdToCheckForUsableWindows)
 		{
 			processHasUsableWindow = TRUE;
 			return FALSE; //Stop enumeration. We have found a usable window in the process
@@ -238,7 +238,7 @@ void WindowsEnum::CheckAndSetUWPProcessAndClass(HWND hwnd)
 		isUWPProcess = TRUE;
 		UWPProcessFound = FALSE;
 		//We have a UWP app. Check child window for process name. Store the processId belonging to the window
-		EnumChildWindows(hwnd, EnumUWPChildWindows, NULL);
+		EnumChildWindows(hwnd, EnumUWPChildWindows, 0);
 	}
 	else
 	{

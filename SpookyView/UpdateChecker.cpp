@@ -48,7 +48,7 @@ bool UpdateChecker::GetProductVersion(tstring* version)
 	std::vector<BYTE> data(dwSize);
 
 	// load the version info
-	if (!GetFileVersionInfo(szFilename, NULL, dwSize, &data[0]))
+	if (!GetFileVersionInfo(szFilename, 0, dwSize, &data[0]))
 	{
 		return false;
 	}
@@ -215,7 +215,7 @@ void UpdateChecker::DownloadAndParseJson()
 			updateResponse = j.get<UpdateResponse>();
 			if (updateResponse.update_available)
 			{
-				PostMessage(mainWindow->GetHwnd(), WM_UPDATE_AVAILABLE, NULL, NULL);
+				PostMessage(mainWindow->GetHwnd(), WM_UPDATE_AVAILABLE, 0, 0);
 			}
 		}
 		catch (nlohmann::json::exception& e)

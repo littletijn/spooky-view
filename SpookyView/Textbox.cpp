@@ -9,7 +9,7 @@ Textbox::Textbox(HWND parent, int intResource)
 
 void Textbox::SetText(LPTSTR text)
 {
-	SendMessage(this->hWnd, WM_SETTEXT, NULL, (LPARAM)text);
+	SendMessage(this->hWnd, WM_SETTEXT, 0, (LPARAM)text);
 }
 
 std::unique_ptr<TCHAR[]> Textbox::GetText(int* textLength)

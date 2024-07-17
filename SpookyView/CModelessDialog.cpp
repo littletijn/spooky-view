@@ -28,7 +28,7 @@ INT_PTR CModelessDialog::StaticDialogProc(HWND hDlg, UINT message, WPARAM wParam
 		{
 			//Remove pointer to window to make sure that our DlgProc is not called anymore.
 			//This pointer might be not valid anymore after calling OnDialogDestroyed()
-			SetWindowLongPtr(hDlg, DWLP_USER, NULL);
+			SetWindowLongPtr(hDlg, DWLP_USER, 0);
 			pThis->OnDialogDestroyed();
 		}
 		else
@@ -60,6 +60,6 @@ void CModelessDialog::OnDialogDestroyed()
 {
 	if (hParent != NULL && key > 0)
 	{
-		SendMessage(hParent, WM_MODELESS_DIALOG_DESTROYED, key, NULL);
+		SendMessage(hParent, WM_MODELESS_DIALOG_DESTROYED, key, 0);
 	}
 }
