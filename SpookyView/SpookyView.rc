@@ -214,7 +214,7 @@ BEGIN
     DEFPUSHBUTTON   "Close",IDCLOSE,150,234,50,14
     LTEXT           "Welcome to\n\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
     CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
-    LTEXT           "Double-click this app's icon in the notification area or open it again to set up the app.",IDC_INTRO_TEXT,7,77,193,19
+    LTEXT           "Double-click this app's icon in the notification area or open the app again to set it up.",IDC_INTRO_TEXT,7,77,193,19
     CONTROL         "Do not show this window again",IDC_SKIP_INTRO_CHECKBOX,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,238,115,10
     CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
@@ -492,7 +492,7 @@ BEGIN
     DEFPUSHBUTTON   "Sluiten",IDCLOSE,150,234,50,14
     LTEXT           "Welkom bij\n\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
     CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
-    LTEXT           "Dubbeklik op het icoon van deze app in het systeemvak of open het nogmaals om de app in te stellen.",IDC_INTRO_TEXT,7,77,193,19
+    LTEXT           "Dubbeklik op het icoon van deze app in het systeemvak of open de app nogmaals om deze in te stellen.",IDC_INTRO_TEXT,7,77,193,19
     CONTROL         "Toon dit venster niet opnieuw",IDC_SKIP_INTRO_CHECKBOX,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,238,111,10
     CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
