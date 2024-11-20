@@ -445,7 +445,7 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
     CONTROL         "Geen controle op updates bij starten",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,227,10
-    CONTROL         "Toon welkomstsvenster niet bij opstarten",IDC_CHECKBOX_SKIP_WELCOME,
+    CONTROL         "Toon welkomstvenster niet bij opstarten",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
 END
 
