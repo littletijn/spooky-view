@@ -283,6 +283,10 @@ BOOL WindowsEnum::GetWindowProcessAndClass(HWND hwnd)
 {
 	BOOL result = FALSE;
 	GetWindowThreadProcessId(hwnd, &processId);
+	if (processId == GetCurrentProcessId())
+	{
+		return FALSE;
+	}
 	HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, processId);
 	if (hProcess != NULL)
 	{
