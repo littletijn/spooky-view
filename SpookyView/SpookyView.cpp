@@ -15,6 +15,7 @@ HICON spookyIcon;
 PGNSI isImmersive;
 std::unique_ptr<CMainWindow> mainWindow;
 std::unique_ptr<CSettingsDialog> cSettingsDialog;
+std::unique_ptr<CSetupDialog> cSetupDialog;
 std::unique_ptr<ISettingsManager> settingsManager;
 UpdateResponse updateResponse;
 WindowsEnum windowsEnum;

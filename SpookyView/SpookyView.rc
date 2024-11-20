@@ -205,19 +205,20 @@ BEGIN
     LTEXT           "Message!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
 END
 
-IDD_INTRO DIALOGEX 0, 0, 207, 247
+IDD_INTRO DIALOGEX 0, 0, 207, 255
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Spooky View"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Close",IDCLOSE,150,226,50,14
+    DEFPUSHBUTTON   "Close",IDCLOSE,150,234,50,14
     LTEXT           "Welcome to\n\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
     CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
     LTEXT           "Double-click this app's icon in the notification area or open it again to set up the app.",IDC_INTRO_TEXT,7,77,193,19
     CONTROL         "Do not show this window again",IDC_SKIP_INTRO_CHECKBOX,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,211,115,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,238,115,10
     CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
-    PUSHBUTTON      "Open settings...",IDC_BUTTON_INTRO_SETTINGS,7,226,82,14
+    PUSHBUTTON      "Open settings...",IDC_BUTTON_INTRO_SETTINGS,118,211,82,14
+    PUSHBUTTON      "Setup apps...",IDC_BUTTON_SETUP_APPS,7,211,82,14
 END
 
 
@@ -302,7 +303,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 200
         TOPMARGIN, 7
-        BOTTOMMARGIN, 240
+        BOTTOMMARGIN, 248
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -489,19 +490,20 @@ BEGIN
     LTEXT           "Bericht!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
 END
 
-IDD_INTRO DIALOGEX 0, 0, 207, 247
+IDD_INTRO DIALOGEX 0, 0, 207, 255
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Spooky View"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Sluiten",IDCLOSE,150,226,50,14
+    DEFPUSHBUTTON   "Sluiten",IDCLOSE,150,234,50,14
     LTEXT           "Welkom bij\n\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
     CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
     LTEXT           "Dubbeklik op het icoon van deze app in het systeemvak of open het nogmaals om de app in te stellen.",IDC_INTRO_TEXT,7,77,193,19
     CONTROL         "Toon dit venster niet opnieuw",IDC_SKIP_INTRO_CHECKBOX,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,211,111,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,238,111,10
     CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
-    PUSHBUTTON      "Open instellingen...",IDC_BUTTON_INTRO_SETTINGS,7,226,82,14
+    PUSHBUTTON      "Open instellingen...",IDC_BUTTON_INTRO_SETTINGS,118,211,82,14
+    PUSHBUTTON      "Stel apps in...",IDC_BUTTON_SETUP_APPS,7,211,82,14
 END
 
 
@@ -586,7 +588,7 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 200
         TOPMARGIN, 7
-        BOTTOMMARGIN, 240
+        BOTTOMMARGIN, 248
     END
 END
 #endif    // APSTUDIO_INVOKED

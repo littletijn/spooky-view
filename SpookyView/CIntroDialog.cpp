@@ -43,6 +43,20 @@ INT_PTR CALLBACK CIntroDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 					cSettingsDialog->SetForeground();
 				}
 				break;
+			case IDC_BUTTON_SETUP_APPS:
+				if (!cSetupDialog)
+				{
+					cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance, mainHwnd);
+				}
+				if (!cSetupDialog->hasInitInstance())
+				{
+					cSetupDialog->InitInstance();
+				}
+				else
+				{
+					cSetupDialog->SetForeground();
+				}
+			break;
 		}
 		break;
 	}

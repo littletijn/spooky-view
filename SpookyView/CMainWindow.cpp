@@ -236,7 +236,10 @@ void CMainWindow::OpenSetupDialog()
 {
 	if (!cSetupDialog)
 	{
-		cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance, this->hWnd);
+		cSetupDialog = std::make_unique<CSetupDialog>(this->hInstance, mainHwnd);
+	}
+	if (!cSetupDialog->hasInitInstance())
+	{
 		cSetupDialog->InitInstance();
 	}
 	else
