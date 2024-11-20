@@ -4,6 +4,7 @@
 #include "CWindow.h"
 #include "CNotifyIcon.h"
 #include "CAbout.h"
+#include "CIntroDialog.h"
 #include "CSetupDialog.h"
 #include "CSettingsDialog.h"
 #include <memory>
@@ -30,9 +31,9 @@ private:
 	std::unique_ptr<CNotifyIcon> cNotifyIcon;
 	HMENU notifyIconContextMenu;
 	std::unique_ptr<CSetupDialog> cSetupDialog;
-	std::unique_ptr<CSettingsDialog> cSettingsDialog;
 	std::unique_ptr<CAbout> cAboutDialog;
 	std::unique_ptr<CUpdateAvailableDialog> cUpdateAvailableDialog;
+	std::unique_ptr<CIntroDialog> cIntroDialog;
 };
 
 #endif

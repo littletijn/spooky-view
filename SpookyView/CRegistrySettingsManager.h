@@ -19,7 +19,7 @@ public:
 	BOOL GetDisableUpdateCheck();
 	void SetDisableUpdateCheck(BOOL state);
 	BOOL GetSkipWelcome();
-	void SetSkipWelcome();
+	void SetSkipWelcome(BOOL state);
 protected:
 	std::unique_ptr<CSettings> settings;
 	void SaveAlphaSettingsValues(HKEY key, CAlphaSettings values);

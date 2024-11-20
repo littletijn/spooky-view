@@ -52,6 +52,8 @@ END
 
 IDB_SPOOK               BITMAP                  ".\\spook.bmp"
 
+IDB_NOTIFYICON          BITMAP                  "notifyicon.bmp"
+
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -154,11 +156,13 @@ CAPTION "Settings"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start program when this user logs in",IDC_CHECKBOX_AUTO_STARTUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,127,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,127,10
     PUSHBUTTON      "Cancel",IDCANCEL,232,162,50,14
     DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
     CONTROL         "Do not check for updates on start",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,124,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,127,10
+    CONTROL         "Do not show welcome window on startup",IDC_CHECKBOX_SKIP_WELCOME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -199,6 +203,21 @@ BEGIN
     PUSHBUTTON      "Close",ID_CLOSE,202,104,50,14
     PUSHBUTTON      "Skip version",IDC_SKIP_VERSION,143,104,50,14
     LTEXT           "Message!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
+END
+
+IDD_INTRO DIALOGEX 0, 0, 207, 247
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Spooky View"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Close",IDCLOSE,150,226,50,14
+    LTEXT           "Welcome to\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
+    CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
+    LTEXT           "Double-click this app's icon in the notification area or open it again to set up the app.",IDC_INTRO_TEXT,7,77,193,19
+    CONTROL         "Do not show this window again",IDC_SKIP_INTRO_CHECKBOX,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,211,115,10
+    CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
+    PUSHBUTTON      "Open settings...",IDC_BUTTON_INTRO_SETTINGS,7,226,82,14
 END
 
 
@@ -276,6 +295,14 @@ BEGIN
         RIGHTMARGIN, 252
         TOPMARGIN, 7
         BOTTOMMARGIN, 118
+    END
+
+    IDD_INTRO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 240
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -413,11 +440,13 @@ CAPTION "Instellingen"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start programma bij aanmelden",IDC_CHECKBOX_AUTO_STARTUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,230,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,230,10
     PUSHBUTTON      "Annuleren",IDCANCEL,232,162,50,14
     DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
     CONTROL         "Geen controle op updates bij starten",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,227,10
+    CONTROL         "Toon welkomstsvenster niet bij opstarten",IDC_CHECKBOX_SKIP_WELCOME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -458,6 +487,21 @@ BEGIN
     PUSHBUTTON      "Sluiten",ID_CLOSE,202,104,50,14
     PUSHBUTTON      "Sla versie over",IDC_SKIP_VERSION,143,104,50,14
     LTEXT           "Bericht!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
+END
+
+IDD_INTRO DIALOGEX 0, 0, 207, 247
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Spooky View"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Sluiten",IDCLOSE,150,226,50,14
+    LTEXT           "Welkom bij\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
+    CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
+    LTEXT           "Dubbeklik op het icoon van deze app in het systeemvak of open het nogmaals om de app in te stellen.",IDC_INTRO_TEXT,7,77,193,19
+    CONTROL         "Toon dit venster niet opnieuw",IDC_SKIP_INTRO_CHECKBOX,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,211,111,10
+    CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
+    PUSHBUTTON      "Open instellingen...",IDC_BUTTON_INTRO_SETTINGS,7,226,82,14
 END
 
 
@@ -535,6 +579,14 @@ BEGIN
         RIGHTMARGIN, 252
         TOPMARGIN, 7
         BOTTOMMARGIN, 118
+    END
+
+    IDD_INTRO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 240
     END
 END
 #endif    // APSTUDIO_INVOKED

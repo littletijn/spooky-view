@@ -4,6 +4,7 @@
 #include "Resource.h"
 #include "CLimitSingleInstance.h"
 #include "CSettingsDialog.h"
+#include "CIntroDialog.h"
 #include "Defines.h"
 #include "UpdateResponse.h"
 #include "ISettingsManager.h"
@@ -11,7 +12,6 @@
 #ifdef UNICODE
 #include "UnicodeConversion.h"
 #endif //UNICODE
-#include "SpookyView.h"
 
 const int SINGLE_CLICK_TIMER = 1;
 
@@ -25,6 +25,10 @@ BOOL CMainWindow::InitInstance()
 {
 	//Try to create window
 	BOOL canInit = CWindow::InitInstance(0);
+	if (canInit)
+	{
+		mainHwnd = this->hWnd;
+	}
 	return canInit;
 }
 
@@ -72,6 +76,9 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				break;
 			case IDD_ABOUTBOX:
 				cAboutDialog.reset();
+				break;
+			case IDD_INTRO:
+				cIntroDialog.reset();
 				break;
 			}
 			return FALSE;
@@ -156,7 +163,10 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			case IDM_SETTINGS:
 				if (!cSettingsDialog)
 				{
-					cSettingsDialog = std::make_unique<CSettingsDialog>(this->hInstance, this->hWnd);
+					cSettingsDialog = std::make_unique<CSettingsDialog>(this->hInstance, mainHwnd);
+				}
+				if (!cSettingsDialog->hasInitInstance())
+				{
 					cSettingsDialog->InitInstance();
 				}
 				else
@@ -255,18 +265,7 @@ void CMainWindow::CheckIsFirstRun()
 {
 	if (!settingsManager->GetSkipWelcome())
 	{
-		settingsManager->SetSkipWelcome();
-		TCHAR titleString[100];
-		TCHAR messageString[100];
-		LoadString(hInst, IDS_WELCOME_TITLE, titleString, sizeof(titleString) / sizeof(TCHAR));
-		if (isWindows10orNewer)
-		{
-			LoadString(hInst, IDS_WELCOME_MESSAGE_WIN10, messageString, sizeof(messageString) / sizeof(TCHAR));
-		}
-		else
-		{
-			LoadString(hInst, IDS_WELCOME_MESSAGE, messageString, sizeof(messageString) / sizeof(TCHAR));
-		}
-		cNotifyIcon->ShowBalloon(titleString, messageString);
+		cIntroDialog = std::make_unique<CIntroDialog>(this->hInstance, this->hWnd);
+		cIntroDialog->InitInstance();
 	}
 }

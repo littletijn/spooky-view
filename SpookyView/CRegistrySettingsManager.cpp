@@ -319,8 +319,8 @@ BOOL CRegistrySettingsManager::GetSkipWelcome()
 	return FALSE;
 }
 
-void CRegistrySettingsManager::SetSkipWelcome()
+void CRegistrySettingsManager::SetSkipWelcome(BOOL state)
 {
-	BYTE stateByte = '\x1';
+	BYTE stateByte = state ? '\x1' : '\x0';
 	SaveValue(_T("Software\\Spooky View"), _T("Skip welcome"), REG_BINARY, &stateByte);
 }

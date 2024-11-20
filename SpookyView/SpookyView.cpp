@@ -10,9 +10,11 @@
 
 // Global Variables:
 HINSTANCE hInst; // current instance
+HWND mainHwnd; // Main window hwnd
 HICON spookyIcon;
 PGNSI isImmersive;
 std::unique_ptr<CMainWindow> mainWindow;
+std::unique_ptr<CSettingsDialog> cSettingsDialog;
 std::unique_ptr<ISettingsManager> settingsManager;
 UpdateResponse updateResponse;
 WindowsEnum windowsEnum;
