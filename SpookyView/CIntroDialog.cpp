@@ -20,7 +20,7 @@ INT_PTR CALLBACK CIntroDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		SetStyle(hDlg);
+		SetupWindow(hDlg);
 		return TRUE;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
@@ -63,8 +63,9 @@ INT_PTR CALLBACK CIntroDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	return FALSE;
 }
 
-void CIntroDialog::SetStyle(HWND hDlg)
+void CIntroDialog::SetupWindow(HWND hDlg)
 {
+	//Set font of header
 	ZeroMemory(&introFont, sizeof(LOGFONT));
 	introFont.lfHeight = 20;
 	introFont.lfWeight = FW_BOLD;
@@ -73,6 +74,12 @@ void CIntroDialog::SetStyle(HWND hDlg)
 	{
 		HWND introStaticText = GetDlgItem(hDlg, ID_STATIC_INTRO_TITLE);
 		SetWindowFont(introStaticText, hFont, TRUE);
+	}
+	//Set state of checkbox
+	HWND skipIntroCheckbox = GetDlgItem(hDlg, IDC_SKIP_INTRO_CHECKBOX);
+	if (settingsManager->GetSkipWelcome())
+	{
+		Button_SetCheck(skipIntroCheckbox, TRUE);
 	}
 }
 

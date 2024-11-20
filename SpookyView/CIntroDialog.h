@@ -11,7 +11,7 @@ public:
 protected:
 	BOOL SetupDialog();
 	LOGFONT introFont;
-	void SetStyle(HWND hDlg);
+	void SetupWindow(HWND hDlg);
 	void ApplyChoice();
 };
 
