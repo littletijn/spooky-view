@@ -79,6 +79,7 @@
 #define IDC_STATIC_APPS                 40014
 #define IDC_STATIC_TRANSPARENCY         40015
 #define IDC_SLIDER_BACKGROUND           40016
+#define IDM_INTRO                       40019
 
 // Next default values for new objects
 // 
@@ -86,7 +87,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        131
-#define _APS_NEXT_COMMAND_VALUE         40017
+#define _APS_NEXT_COMMAND_VALUE         40020
 #define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

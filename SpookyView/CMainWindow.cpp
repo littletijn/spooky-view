@@ -193,6 +193,21 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 			}
 			return FALSE;
 
+			case IDM_INTRO:
+				if (!cIntroDialog)
+				{
+					cIntroDialog = std::make_unique<CIntroDialog>(this->hInstance, mainHwnd);
+				}
+				if (!cIntroDialog->hasInitInstance())
+				{
+					cIntroDialog->InitInstance();
+				}
+				else
+				{
+					cIntroDialog->SetForeground();
+				}
+				return false;
+
 			case IDM_EXIT:
 				DestroyWindow(this->hWnd);
 				return FALSE;
