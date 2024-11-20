@@ -18,7 +18,7 @@ public:
 	BOOL ShouldSkipVersion(tstring versionNumber);
 	BOOL GetDisableUpdateCheck();
 	void SetDisableUpdateCheck(BOOL state);
-	BOOL GetSkipWelcome();
+	int GetSkipWelcome();
 	void SetSkipWelcome(BOOL state);
 protected:
 	std::unique_ptr<CSettings> settings;

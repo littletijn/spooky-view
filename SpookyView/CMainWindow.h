@@ -31,7 +31,6 @@ private:
 	HMENU notifyIconContextMenu;
 	std::unique_ptr<CAbout> cAboutDialog;
 	std::unique_ptr<CUpdateAvailableDialog> cUpdateAvailableDialog;
-	std::unique_ptr<CIntroDialog> cIntroDialog;
 };
 
 #endif

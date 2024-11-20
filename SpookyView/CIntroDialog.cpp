@@ -77,7 +77,8 @@ void CIntroDialog::SetupWindow(HWND hDlg)
 	}
 	//Set state of checkbox
 	HWND skipIntroCheckbox = GetDlgItem(hDlg, IDC_SKIP_INTRO_CHECKBOX);
-	if (settingsManager->GetSkipWelcome())
+	BOOL skipValue = settingsManager->GetSkipWelcome();
+	if (skipValue == 1)
 	{
 		Button_SetCheck(skipIntroCheckbox, TRUE);
 	}
@@ -86,8 +87,11 @@ void CIntroDialog::SetupWindow(HWND hDlg)
 void CIntroDialog::ApplyChoice()
 {
 	HWND skipIntroCheckbox = GetDlgItem(hWnd, IDC_SKIP_INTRO_CHECKBOX);
-	if (Button_GetCheck(skipIntroCheckbox))
-	{
-		settingsManager->SetSkipWelcome(TRUE);
-	}
+	settingsManager->SetSkipWelcome(Button_GetCheck(skipIntroCheckbox));
+}
+
+void CIntroDialog::setSkipWelcomeCheckbox(BOOL state)
+{
+	HWND skipIntroCheckbox = GetDlgItem(hWnd, IDC_SKIP_INTRO_CHECKBOX);
+	Button_SetCheck(skipIntroCheckbox, state);
 }

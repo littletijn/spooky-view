@@ -265,7 +265,8 @@ void CMainWindow::OpenSetupDialog()
 
 void CMainWindow::CheckIsFirstRun()
 {
-	if (!settingsManager->GetSkipWelcome())
+	int skipValue = settingsManager->GetSkipWelcome();
+	if (skipValue == 0 || skipValue == -1)
 	{
 		cIntroDialog = std::make_unique<CIntroDialog>(this->hInstance, this->hWnd);
 		cIntroDialog->InitInstance();
