@@ -146,3 +146,8 @@ and for preparation of the GUI.
 - Added Dutch translation
 - Added user language to updater request
 - Upgrade installer creator from WiX 4.0.0-rc.1 to 4.0.5
+
+1.0.7 (A warm welcome release)
+- Added new welcome screen
+- Removed notification area balloons on first start
+- Prevent setting transparency on Spooky View itself

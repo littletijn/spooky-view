@@ -5,10 +5,23 @@ CDialog::CDialog(HINSTANCE hInstance) : CWnd(hInstance)
 {
 }
 
+BOOL CDialog::hasInitInstance()
+{
+	return hasInit;
+}
+
 BOOL CDialog::InitInstance()
 {
-	SetupDialog();
-	return Create();
+	if (!hasInit)
+	{
+		SetupDialog();
+		auto created = Create();
+		if (created)
+		{
+			hasInit = TRUE;
+		}
+	}
+	return hasInit;
 }
 
 void CDialog::SetForeground()

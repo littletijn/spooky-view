@@ -22,18 +22,14 @@
 #define IDS_ERROR_CANNOT_SAVE_SETTINGS  119
 #define IDD_ADD_WINDOW                  120
 #define IDS_ERROR_TITLE                 120
-#define IDS_ALREADY_RUNNING             121
 #define IDB_SPOOK                       122
-#define DS_ALREADY_RUNNING_HINT_WIN10   122
-#define DS_ALREADY_RUNNING_HINT         123
 #define IDI_SPOOKYVIEW                  124
-#define IDS_WELCOME_TITLE               124
-#define IDS_WELCOME_MESSAGE             125
-#define IDS_WELCOME_MESSAGE_WIN10       126
 #define IDS_PAUSED                      127
+#define IDD_INTRO                       127
 #define IDS_ERROR_CANNOT_CREATE_MAIN_WINDOW 128
 #define IDS_ERROR_CANNOT_CREATE_NOTIFICATION_AREA_ICON 129
 #define IDS_ERROR_CANNOT_CREATE_REGISTRY_KEY 130
+#define IDB_NOTIFYICON                  131
 #define ID_DOWNLOAD                     1000
 #define IDC_SKIP_VERSION                1001
 #define ID_CLOSE                        1002
@@ -42,12 +38,19 @@
 #define IDC_SPOOK_IMAGE                 1004
 #define IDC_CHECKBOX_DISABLE_UPDATE_CHECK 1005
 #define IDC_STATIC_APP_EXECUTABLE       1006
+#define IDC_CHECKBOX_DISABLE_UPDATE_CHECK2 1006
+#define IDC_CHECKBOX_SKIP_WELCOME       1006
 #define IDC_EDIT_EXECUTABLE_NAME        1007
 #define IDC_STATIC_FOREGORUND_TRANSPARENT 1008
 #define IDC_STATIC_FOREGROUND_OPAQUE    1009
 #define IDC_STATIC_BACKGROUND_TRANSPARENT 1010
 #define IDC_STATIC_BACKGROUND_OPAQUE    1011
 #define IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE 1012
+#define IDC_INTRO_TEXT                  1014
+#define IDC_SKIP_INTRO_CHECKBOX         1015
+#define IDC_BUTTON_INTRO_SETTINGS       1016
+#define ID_STATIC_INTRO_TITLE           1018
+#define IDC_BUTTON_SETUP_APPS           1020
 #define IDC_LIST_ADD_APPS               40000
 #define IDC_LIST_ADD_WINDOWS            40000
 #define IDC_LIST_APPS                   40000
@@ -76,15 +79,16 @@
 #define IDC_STATIC_APPS                 40014
 #define IDC_STATIC_TRANSPARENCY         40015
 #define IDC_SLIDER_BACKGROUND           40016
+#define IDM_INTRO                       40019
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        127
-#define _APS_NEXT_COMMAND_VALUE         40017
-#define _APS_NEXT_CONTROL_VALUE         1013
+#define _APS_NEXT_RESOURCE_VALUE        131
+#define _APS_NEXT_COMMAND_VALUE         40020
+#define _APS_NEXT_CONTROL_VALUE         1021
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -156,6 +156,9 @@
     <ClInclude Include="UnicodeConversion.h">
       <Filter>Header Files\Function</Filter>
     </ClInclude>
+    <ClInclude Include="CIntroDialog.h">
+      <Filter>Header Files\Classes\Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CWindow.cpp">
@@ -233,6 +236,9 @@
     <ClCompile Include="UnicodeConversion.cpp">
       <Filter>Source Files\Function</Filter>
     </ClCompile>
+    <ClCompile Include="CIntroDialog.cpp">
+      <Filter>Source Files\Classes\Windows</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="SpookyView.rc">
@@ -244,6 +250,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="spook.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="notifyicon.bmp">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

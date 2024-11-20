@@ -475,6 +475,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AppMain.h" />
+    <ClInclude Include="CIntroDialog.h" />
     <ClInclude Include="CUpdateAvailableDialog.h" />
     <ClInclude Include="Textbox.h" />
     <ClInclude Include="UnicodeConversion.h" />
@@ -512,6 +513,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AppMain.cpp" />
+    <ClCompile Include="CIntroDialog.cpp" />
     <ClCompile Include="CUpdateAvailableDialog.cpp" />
     <ClCompile Include="Textbox.cpp" />
     <ClCompile Include="UnicodeConversion.cpp" />
@@ -554,6 +556,7 @@
     <ResourceCompile Include="SpookyView.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="notifyicon.bmp" />
     <Image Include="spook.bmp" />
     <Image Include="spookyview.ico" />
   </ItemGroup>

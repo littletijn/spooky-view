@@ -52,10 +52,23 @@ void CSettingsDialog::ApplySettings()
 	}
 	HWND disableUpdateCheck = GetDlgItem(hWnd, IDC_CHECKBOX_DISABLE_UPDATE_CHECK);
 	settingsManager->SetDisableUpdateCheck(Button_GetCheck(disableUpdateCheck));
+	HWND skipIntroCheck = GetDlgItem(hWnd, IDC_CHECKBOX_SKIP_WELCOME);
+	settingsManager->SetSkipWelcome(Button_GetCheck(skipIntroCheck));
+	if (cIntroDialog && cIntroDialog->hasInitInstance())
+	{
+		cIntroDialog->setSkipWelcomeCheckbox(Button_GetCheck(skipIntroCheck));
+	}
 }
 
 void CSettingsDialog::SetFormValues(HWND hDlg)
 {
+	HWND skipIntroCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_SKIP_WELCOME);
+	int skipValue = settingsManager->GetSkipWelcome();
+	if (skipValue == 1)
+	{
+		Button_SetCheck(skipIntroCheckbox, TRUE);
+	}
+
 	HWND autoStartupCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_AUTO_STARTUP);
 #ifdef PACKAGING_STORE
 	ShowWindow(autoStartupCheckbox, SW_HIDE);

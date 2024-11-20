@@ -4,6 +4,7 @@
 #include "CWindow.h"
 #include "CNotifyIcon.h"
 #include "CAbout.h"
+#include "CIntroDialog.h"
 #include "CSetupDialog.h"
 #include "CSettingsDialog.h"
 #include <memory>
@@ -21,7 +22,6 @@ private:
 	void OpenContextMenu();
 	void OpenSetupDialog();
 	void CloseWindow();
-	void ShowAlreadyRunningBalloon();
 	HMENU GetContextMenu();
 	//Members
 	TCHAR pausedString[80];
@@ -29,8 +29,6 @@ private:
 	BOOL hasDoubleClicked;
 	std::unique_ptr<CNotifyIcon> cNotifyIcon;
 	HMENU notifyIconContextMenu;
-	std::unique_ptr<CSetupDialog> cSetupDialog;
-	std::unique_ptr<CSettingsDialog> cSettingsDialog;
 	std::unique_ptr<CAbout> cAboutDialog;
 	std::unique_ptr<CUpdateAvailableDialog> cUpdateAvailableDialog;
 };

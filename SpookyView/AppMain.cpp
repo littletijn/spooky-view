@@ -56,7 +56,6 @@ int AppMain::Run()
 		return FALSE;
 	}
 	GetIsWindows8();
-	GetIsWindows10orNewer();
 	windowsEnum.CreateHook();
 	settingsManager = std::make_unique<CRegistrySettingsManager>();
 	if (!settingsManager->Init())
@@ -162,39 +161,5 @@ void AppMain::GetIsWindows8()
 	);
 #ifdef _DEBUG
 	OutputDebugString(isWindows8 ? _T("Running on Windows 8 or 8.1\r\n") : _T("Not running on Windows 8 or 8.1\r\n"));
-#endif
-}
-
-void AppMain::GetIsWindows10orNewer()
-{
-	OSVERSIONINFOEX osvi;
-	DWORDLONG dwlConditionMask = 0;
-
-	// Initialize the OSVERSIONINFOEX structure.
-
-	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
-	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
-	osvi.dwMajorVersion = 10;
-	osvi.dwMinorVersion = 0;
-	osvi.wServicePackMajor = 0;
-	osvi.wServicePackMinor = 0;
-
-	// Initialize the condition mask.
-
-	VER_SET_CONDITION(dwlConditionMask, VER_MAJORVERSION, VER_GREATER_EQUAL);
-	VER_SET_CONDITION(dwlConditionMask, VER_MINORVERSION, VER_GREATER_EQUAL);
-	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMAJOR, VER_GREATER_EQUAL);
-	VER_SET_CONDITION(dwlConditionMask, VER_SERVICEPACKMINOR, VER_GREATER_EQUAL);
-
-	// Perform the test.
-
-	isWindows10orNewer = VerifyVersionInfo(
-		&osvi,
-		VER_MAJORVERSION | VER_MINORVERSION |
-		VER_SERVICEPACKMAJOR | VER_SERVICEPACKMINOR,
-		dwlConditionMask
-	);
-#ifdef _DEBUG
-	OutputDebugString(isWindows10orNewer ? _T("Running on Windows 10 or newer\r\n") : _T("Not running on Windows 10 or newer\r\n"));
 #endif
 }

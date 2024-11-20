@@ -52,6 +52,8 @@ END
 
 IDB_SPOOK               BITMAP                  ".\\spook.bmp"
 
+IDB_NOTIFYICON          BITMAP                  "notifyicon.bmp"
+
 #endif    // Neutral resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -94,6 +96,7 @@ BEGIN
     BEGIN
         MENUITEM "&Open...",                    IDM_OPEN,MFT_STRING,MFS_ENABLED | MFS_UNCHECKED | MFS_UNHILITE | MFS_DEFAULT
         MENUITEM "Settings...",                 IDM_SETTINGS,MFT_STRING,MFS_ENABLED
+        MENUITEM "Introduction...",             IDM_INTRO,MFT_STRING,MFS_ENABLED
         MENUITEM "&About...",                   IDM_ABOUT,MFT_STRING,MFS_ENABLED
         MENUITEM "&Pause",                      IDM_PAUSE,MFT_STRING,MFS_ENABLED
         MENUITEM "&Exit",                       IDM_EXIT,MFT_STRING,MFS_ENABLED
@@ -115,7 +118,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,78,130,8
     LTEXT           "Based on an idea by Mikey",IDC_STATIC,12,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
-    LTEXT           "1.0.6.0 (Nicely spoken release)",IDC_STATIC,12,18,136,18
+    LTEXT           "1.0.7.0 (A warm welcome release)",IDC_STATIC,12,18,136,18
     LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,66,138,8
     DEFPUSHBUTTON   "Close",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -154,11 +157,13 @@ CAPTION "Settings"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start program when this user logs in",IDC_CHECKBOX_AUTO_STARTUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,127,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,127,10
     PUSHBUTTON      "Cancel",IDCANCEL,232,162,50,14
     DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
     CONTROL         "Do not check for updates on start",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,124,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,127,10
+    CONTROL         "Do not show welcome window on startup",IDC_CHECKBOX_SKIP_WELCOME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -201,6 +206,22 @@ BEGIN
     LTEXT           "Message!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
 END
 
+IDD_INTRO DIALOGEX 0, 0, 207, 255
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Spooky View"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Close",IDCLOSE,150,234,50,14
+    LTEXT           "Welcome to\n\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
+    CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
+    LTEXT           "Double-click this app's icon in the notification area or open the app again to set it up.",IDC_INTRO_TEXT,7,77,193,19
+    CONTROL         "Do not show this window again",IDC_SKIP_INTRO_CHECKBOX,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,238,115,10
+    CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
+    PUSHBUTTON      "Open settings...",IDC_BUTTON_INTRO_SETTINGS,118,211,82,14
+    PUSHBUTTON      "Setup apps...",IDC_BUTTON_SETUP_APPS,7,211,82,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -208,8 +229,8 @@ END
 //
 
 1 VERSIONINFO
- FILEVERSION 1,0,6,0
- PRODUCTVERSION 1,0,6,0
+ FILEVERSION 1,0,7,0
+ PRODUCTVERSION 1,0,7,0
  FILEFLAGSMASK 0x2L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -227,12 +248,12 @@ BEGIN
             VALUE "Comments", "This application is licensed under the GNU GPL v3.0 or later"
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "Spooky View"
-            VALUE "FileVersion", "1.0.6.0 (Nicely spoken release)"
+            VALUE "FileVersion", "1.0.7.0 (A warm welcome release)"
             VALUE "InternalName", "Spooky View"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "OriginalFilename", "Spookyview.exe"
             VALUE "ProductName", "Spooky View"
-            VALUE "ProductVersion", "1.0.6.0 (Nicely spoken release)"
+            VALUE "ProductVersion", "1.0.7.0 (A warm welcome release)"
         END
     END
     BLOCK "VarFileInfo"
@@ -277,6 +298,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 118
     END
+
+    IDD_INTRO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 248
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -311,14 +340,6 @@ BEGIN
     IDS_ERROR_CANNOT_SAVE_SETTINGS 
                             "Could not save settings. Modifications are not stored."
     IDS_ERROR_TITLE         "Error"
-    IDS_ALREADY_RUNNING     "Spooky View is already running"
-    DS_ALREADY_RUNNING_HINT_WIN10 
-                            "Right click on the icon in the notification area to configure this application."
-    DS_ALREADY_RUNNING_HINT "Right click on this icon to configure this application."
-    IDS_WELCOME_TITLE       "Welcome to Spooky View"
-    IDS_WELCOME_MESSAGE     "Right click on this icon to configure this application."
-    IDS_WELCOME_MESSAGE_WIN10 
-                            "Right click on the icon in the notification area to configure this application."
     IDS_PAUSED              "Paused"
 END
 
@@ -353,6 +374,7 @@ BEGIN
     BEGIN
         MENUITEM "&Openen...",                  IDM_OPEN,MFT_STRING,MFS_ENABLED | MFS_UNCHECKED | MFS_UNHILITE | MFS_DEFAULT
         MENUITEM "Instellingen...",             IDM_SETTINGS,MFT_STRING,MFS_ENABLED
+        MENUITEM "Introductie...",              IDM_INTRO,MFT_STRING,MFS_ENABLED
         MENUITEM "&Over...",                    IDM_ABOUT,MFT_STRING,MFS_ENABLED
         MENUITEM "&Pauzeren",                   IDM_PAUSE,MFT_STRING,MFS_ENABLED
         MENUITEM "&Sluiten",                    IDM_EXIT,MFT_STRING,MFS_ENABLED
@@ -374,7 +396,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,78,130,8
     LTEXT           "Gebaseerd op een idee van Mikey",IDC_STATIC,12,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
-    LTEXT           "1.0.6.0 (Nicely spoken release)",IDC_STATIC,12,18,136,18
+    LTEXT           "1.0.7.0 (A warm welcome release)",IDC_STATIC,12,18,136,18
     LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,66,138,8
     DEFPUSHBUTTON   "Sluiten",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -413,11 +435,13 @@ CAPTION "Instellingen"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start programma bij aanmelden",IDC_CHECKBOX_AUTO_STARTUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,230,8
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,230,10
     PUSHBUTTON      "Annuleren",IDCANCEL,232,162,50,14
     DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
     CONTROL         "Geen controle op updates bij starten",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,227,10
+    CONTROL         "Toon welkomstvenster niet bij opstarten",IDC_CHECKBOX_SKIP_WELCOME,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -460,6 +484,22 @@ BEGIN
     LTEXT           "Bericht!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
 END
 
+IDD_INTRO DIALOGEX 0, 0, 207, 255
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Spooky View"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Sluiten",IDCLOSE,150,234,50,14
+    LTEXT           "Welkom bij\n\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
+    CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
+    LTEXT           "Dubbeklik op het icoon van deze app in het systeemvak of open de app nogmaals om deze in te stellen.",IDC_INTRO_TEXT,7,77,193,19
+    CONTROL         "Toon dit venster niet opnieuw",IDC_SKIP_INTRO_CHECKBOX,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,238,111,10
+    CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
+    PUSHBUTTON      "Open instellingen...",IDC_BUTTON_INTRO_SETTINGS,118,211,82,14
+    PUSHBUTTON      "Stel apps in...",IDC_BUTTON_SETUP_APPS,7,211,82,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -467,8 +507,8 @@ END
 //
 
 1 VERSIONINFO
- FILEVERSION 1,0,6,0
- PRODUCTVERSION 1,0,6,0
+ FILEVERSION 1,0,7,0
+ PRODUCTVERSION 1,0,7,0
  FILEFLAGSMASK 0x2L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -486,12 +526,12 @@ BEGIN
             VALUE "Comments", "Deze toepassing valt onder de GNU GPL v3.0-licentie of hoger"
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "Spooky View"
-            VALUE "FileVersion", "1.0.6.0 (Nicely spoken release)"
+            VALUE "FileVersion", "1.0.7.0 (A warm welcome release)"
             VALUE "InternalName", "Spooky View"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "OriginalFilename", "Spookyview.exe"
             VALUE "ProductName", "Spooky View"
-            VALUE "ProductVersion", "1.0.6.0 (Nicely spoken release)"
+            VALUE "ProductVersion", "1.0.7.0 (A warm welcome release)"
         END
     END
     BLOCK "VarFileInfo"
@@ -536,6 +576,14 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 118
     END
+
+    IDD_INTRO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 200
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 248
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -570,14 +618,6 @@ BEGIN
     IDS_ERROR_CANNOT_SAVE_SETTINGS 
                             "Kon instellingen niet opslaan. Wijzigingen zijn niet opgeslagen."
     IDS_ERROR_TITLE         "Fout"
-    IDS_ALREADY_RUNNING     "Spooky View is al actief"
-    DS_ALREADY_RUNNING_HINT_WIN10 
-                            "Klik met de rechtermuisknop op het icoon in het systeemvak om dit programma in te stellen."
-    DS_ALREADY_RUNNING_HINT "Klik met de rechtermuisknop op dit icoon om dit programma in te stellen."
-    IDS_WELCOME_TITLE       "Welkom bij Spooky View"
-    IDS_WELCOME_MESSAGE     "Klik met de rechtermuisknop op dit icoon om dit programma in te stellen."
-    IDS_WELCOME_MESSAGE_WIN10 
-                            "Klik met de rechtermuisknop op het icoon in het systeemvak om dit programma in te stellen."
     IDS_PAUSED              "Gepauzeerd"
 END
 

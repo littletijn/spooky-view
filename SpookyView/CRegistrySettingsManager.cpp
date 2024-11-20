@@ -309,18 +309,18 @@ void CRegistrySettingsManager::SetDisableUpdateCheck(BOOL state)
 	SaveValue(_T("Software\\Spooky View"), _T("Disable update check"), REG_BINARY, &stateByte);
 }
 
-BOOL CRegistrySettingsManager::GetSkipWelcome()
+int CRegistrySettingsManager::GetSkipWelcome()
 {
 	BYTE keyData[1];
 	if (ReadValue(_T("Software\\Spooky View"), _T("Skip welcome"), REG_BINARY, keyData, sizeof(keyData)))
 	{
 		return keyData[0];
 	}
-	return FALSE;
+	return -1;
 }
 
-void CRegistrySettingsManager::SetSkipWelcome()
+void CRegistrySettingsManager::SetSkipWelcome(BOOL state)
 {
-	BYTE stateByte = '\x1';
+	BYTE stateByte = state ? '\x1' : '\x0';
 	SaveValue(_T("Software\\Spooky View"), _T("Skip welcome"), REG_BINARY, &stateByte);
 }
