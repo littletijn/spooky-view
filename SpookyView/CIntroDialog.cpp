@@ -24,11 +24,11 @@ INT_PTR CALLBACK CIntroDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		return TRUE;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
+			case IDCANCEL:
 			case IDCLOSE:
 				ApplyChoice();
 				DestroyWindow(hDlg);
 				return TRUE;
-				break;
 			case IDC_BUTTON_INTRO_SETTINGS:
 				if (!cSettingsDialog)
 				{
