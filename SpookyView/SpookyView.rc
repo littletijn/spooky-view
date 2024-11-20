@@ -339,14 +339,6 @@ BEGIN
     IDS_ERROR_CANNOT_SAVE_SETTINGS 
                             "Could not save settings. Modifications are not stored."
     IDS_ERROR_TITLE         "Error"
-    IDS_ALREADY_RUNNING     "Spooky View is already running"
-    DS_ALREADY_RUNNING_HINT_WIN10 
-                            "Right click on the icon in the notification area to configure this application."
-    DS_ALREADY_RUNNING_HINT "Right click on this icon to configure this application."
-    IDS_WELCOME_TITLE       "Welcome to Spooky View"
-    IDS_WELCOME_MESSAGE     "Right click on this icon to configure this application."
-    IDS_WELCOME_MESSAGE_WIN10 
-                            "Right click on the icon in the notification area to configure this application."
     IDS_PAUSED              "Paused"
 END
 
@@ -624,14 +616,6 @@ BEGIN
     IDS_ERROR_CANNOT_SAVE_SETTINGS 
                             "Kon instellingen niet opslaan. Wijzigingen zijn niet opgeslagen."
     IDS_ERROR_TITLE         "Fout"
-    IDS_ALREADY_RUNNING     "Spooky View is al actief"
-    DS_ALREADY_RUNNING_HINT_WIN10 
-                            "Klik met de rechtermuisknop op het icoon in het systeemvak om dit programma in te stellen."
-    DS_ALREADY_RUNNING_HINT "Klik met de rechtermuisknop op dit icoon om dit programma in te stellen."
-    IDS_WELCOME_TITLE       "Welkom bij Spooky View"
-    IDS_WELCOME_MESSAGE     "Klik met de rechtermuisknop op dit icoon om dit programma in te stellen."
-    IDS_WELCOME_MESSAGE_WIN10 
-                            "Klik met de rechtermuisknop op het icoon in het systeemvak om dit programma in te stellen."
     IDS_PAUSED              "Gepauzeerd"
 END
 

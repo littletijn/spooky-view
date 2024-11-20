@@ -16,7 +16,6 @@ extern std::unique_ptr<CSetupDialog> cSetupDialog;
 extern WindowsEnum windowsEnum;
 extern PGNSI isImmersive;
 extern bool isWindows8;
-extern bool isWindows10orNewer;
 extern UpdateResponse updateResponse;
 
 #endif

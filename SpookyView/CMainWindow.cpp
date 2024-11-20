@@ -248,22 +248,6 @@ void CMainWindow::OpenSetupDialog()
 	}
 }
 
-void CMainWindow::ShowAlreadyRunningBalloon()
-{
-	TCHAR titleString[100];
-	TCHAR messageString[100];
-	LoadString(hInst, IDS_ALREADY_RUNNING, titleString, sizeof(titleString) / sizeof(TCHAR));
-	if (isWindows10orNewer)
-	{
-		LoadString(hInst, DS_ALREADY_RUNNING_HINT_WIN10, messageString, sizeof(messageString) / sizeof(TCHAR));
-	}
-	else
-	{
-		LoadString(hInst, DS_ALREADY_RUNNING_HINT, messageString, sizeof(messageString) / sizeof(TCHAR));
-	}
-	cNotifyIcon->ShowBalloon(titleString, messageString);
-}
-
 void CMainWindow::CheckIsFirstRun()
 {
 	if (!settingsManager->GetSkipWelcome())

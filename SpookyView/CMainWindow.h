@@ -22,7 +22,6 @@ private:
 	void OpenContextMenu();
 	void OpenSetupDialog();
 	void CloseWindow();
-	void ShowAlreadyRunningBalloon();
 	HMENU GetContextMenu();
 	//Members
 	TCHAR pausedString[80];

@@ -22,14 +22,8 @@
 #define IDS_ERROR_CANNOT_SAVE_SETTINGS  119
 #define IDD_ADD_WINDOW                  120
 #define IDS_ERROR_TITLE                 120
-#define IDS_ALREADY_RUNNING             121
 #define IDB_SPOOK                       122
-#define DS_ALREADY_RUNNING_HINT_WIN10   122
-#define DS_ALREADY_RUNNING_HINT         123
 #define IDI_SPOOKYVIEW                  124
-#define IDS_WELCOME_TITLE               124
-#define IDS_WELCOME_MESSAGE             125
-#define IDS_WELCOME_MESSAGE_WIN10       126
 #define IDS_PAUSED                      127
 #define IDD_INTRO                       127
 #define IDS_ERROR_CANNOT_CREATE_MAIN_WINDOW 128
