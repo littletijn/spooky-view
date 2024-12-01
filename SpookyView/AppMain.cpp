@@ -93,7 +93,7 @@ int AppMain::Run()
 	//Remove event hooks
 	windowsEnum.Unhook();
 	//Reset windows
-	windowsEnum.ResetWindowsTransparency();
+	windowsEnum.ResetWindowsModifications();
 
 	return (int)msg.wParam;
 }

@@ -3,7 +3,7 @@
 
 #include "MultiPlatformString.h"
 #include "CWindowSetting.h"
-#include "CAlphaSettings.h"
+#include "CModificationSettings.h"
 #include <map>
 #include <memory>
 
@@ -15,7 +15,7 @@ public:
 	~CProgramSetting();
 	t_string name;
 	t_string path;
-	CAlphaSettings alphaSettings;
+	CModificationSettings modificationSettings;
 	std::unique_ptr<std::map<t_string, std::unique_ptr<CWindowSetting>>> windows;
 };
 
