@@ -70,7 +70,7 @@ int AppMain::Run()
 	{
 		settingsManager->LoadSettings();
 	}
-	windowsEnum.SetWindowsTransparency();
+	windowsEnum.SetWindowsModifications();
 	mainWindow->CheckIsFirstRun();
 #ifdef UNICODE
 	if (!settingsManager->GetDisableUpdateCheck())
