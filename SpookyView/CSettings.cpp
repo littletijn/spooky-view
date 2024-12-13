@@ -45,9 +45,6 @@ CModificationSettings* CSettings::GetModificationSetting(TCHAR* processFileName,
 	else{
 		foundModificationSettings = &this->modificationSettings;
 	}
-	if (!foundModificationSettings->enabled) {
-		return NULL;
-	}
 	return foundModificationSettings;
 }
 

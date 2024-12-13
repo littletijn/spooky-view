@@ -160,12 +160,9 @@ void CALLBACK WindowsEnum::WinEventProcShow(HWINEVENTHOOK hWinEventHook, DWORD e
 void WindowsEnum::CheckAndSetWindowAlwaysOnTop(HWND hwnd)
 {
 	auto modificationSettings = GetWindowModificationSettings(hwnd);
-	if (modificationSettings)
+	if (modificationSettings && modificationSettings->alwaysOnTop)
 	{
-		if (modificationSettings->alwaysOnTop)
-		{
-			SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
-		}
+		SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	}
 }
 
@@ -202,11 +199,14 @@ BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
 			//Check if window is transparent
 			if ((GetWindowLongPtr(hwnd, GWL_STYLE) & WS_EX_LAYERED))
 			{
-				//Window is now transparent. Remove transparency
-				//https://docs.microsoft.com/en-us/windows/win32/winmsg/using-windows#using-layered-windows
-				SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED));
-				SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
-				RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
+				if (modificationSettings->enabled)
+				{
+					//Window is now transparent. Remove transparency
+					//https://docs.microsoft.com/en-us/windows/win32/winmsg/using-windows#using-layered-windows
+					SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED));
+					SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
+					RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
+				}
 			}
 			//Check if window is always-on-top
 			if ((GetWindowLongPtr(hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST))
@@ -321,7 +321,7 @@ void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 {
 	auto modificationSettings = GetWindowModificationSettings(hwnd);
 
-	if (modificationSettings)
+	if (modificationSettings && modificationSettings->enabled)
 	{
 		BYTE alpha;
 		switch (windowType)
