@@ -334,8 +334,8 @@ void CSetupDialog::SetTrackbarRanges(HWND hWnd)
 	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
 	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
 	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
-	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
-	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
+	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)0);
+	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)0);
 }
 
 void CSetupDialog::SetTrackbars()
