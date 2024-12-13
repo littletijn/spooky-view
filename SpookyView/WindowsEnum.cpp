@@ -35,7 +35,8 @@ BOOL WindowsEnum::IsPaused()
 void WindowsEnum::TogglePause()
 {
 	isPause = !isPause;
-	if (isPause) {
+	if (isPause)
+	{
 		Unhook();
 	}
 	else {
@@ -148,12 +149,15 @@ void CALLBACK WindowsEnum::WinEventProcForegroundChange(HWINEVENTHOOK hWinEventH
 
 void CALLBACK WindowsEnum::WinEventProcShow(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
 {
-	//When a window is set to show, check if it is a usable window.
-	// If so, check and set always on top value
-	if (idObject == OBJID_WINDOW && IsWindowUsable(hwnd))
+	//When a window is set to show, apply transparency for windows
+	if (idObject == OBJID_WINDOW)
 	{
-		CheckAndSetWindowAlwaysOnTop(hwnd);
 		SetWindowsTransparency();
+		// check if it is a usable window. If so, check and set always on top value
+		if (IsWindowUsable(hwnd))
+		{
+			CheckAndSetWindowAlwaysOnTop(hwnd);
+		}
 	}
 }
 
