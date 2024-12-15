@@ -8,7 +8,7 @@ CProgramSetting::CProgramSetting()
 
 CProgramSetting::CProgramSetting(const CProgramSetting& c) : CProgramSetting::CProgramSetting()
 {
-	this->alphaSettings = CAlphaSettings(c.alphaSettings);
+	this->modificationSettings = CModificationSettings(c.modificationSettings);
 	for (auto window = c.windows.get()->begin(); window != c.windows.get()->end(); ++window)
 	{
 		t_string firstCopy = t_string(window->first);

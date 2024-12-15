@@ -15,8 +15,8 @@ public:
 		Background
 	};
 
-	CAlphaSettings alphaSettings;
-	CAlphaSettings* GetAlphaSetting(TCHAR* processFileName, TCHAR* windowClassName);
+	CModificationSettings modificationSettings;
+	CModificationSettings* GetModificationSetting(TCHAR* processFileName, TCHAR* windowClassName);
 	std::unique_ptr<TCHAR*> ToLowerCase(TCHAR* string);
 	std::unique_ptr<std::map<t_string, std::unique_ptr<CProgramSetting>>> programs;
 	CSettings();

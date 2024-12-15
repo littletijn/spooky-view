@@ -118,7 +118,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,78,130,8
     LTEXT           "Based on an idea by Mikey",IDC_STATIC,12,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
-    LTEXT           "1.0.7.0 (A warm welcome release)",IDC_STATIC,12,18,136,18
+    LTEXT           "1.0.7.0 (Test build 4)",IDC_STATIC,12,18,136,18
     LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,66,138,8
     DEFPUSHBUTTON   "Close",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -193,6 +193,7 @@ BEGIN
     LTEXT           "Opaque",IDC_STATIC_BACKGROUND_OPAQUE,432,144,26,8,NOT WS_VISIBLE
     CONTROL         "Separate value for inactive window",IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE,
                     "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,276,102,129,10
+    CONTROL         "Always on top",IDC_CHECKBOX_ALWAYS_ON_TOP,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,272,37,115,10
 END
 
 IDD_UPDATE_AVAILABLE DIALOGEX 0, 0, 259, 125
@@ -396,7 +397,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,78,130,8
     LTEXT           "Gebaseerd op een idee van Mikey",IDC_STATIC,12,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
-    LTEXT           "1.0.7.0 (A warm welcome release)",IDC_STATIC,12,18,136,18
+    LTEXT           "1.0.7.0 (Test build 4)",IDC_STATIC,12,18,136,18
     LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,66,138,8
     DEFPUSHBUTTON   "Sluiten",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -471,6 +472,8 @@ BEGIN
     LTEXT           "Ondoorzichtig",IDC_STATIC_BACKGROUND_OPAQUE,407,144,46,8,NOT WS_VISIBLE
     CONTROL         "Aparte waarde voor inactief venster",IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE,
                     "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,276,102,129,10
+    CONTROL         "Altijd op voorgrond weergeven",IDC_CHECKBOX_ALWAYS_ON_TOP,
+                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,272,37,115,10
 END
 
 IDD_UPDATE_AVAILABLE DIALOGEX 0, 0, 259, 125

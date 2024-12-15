@@ -22,10 +22,10 @@ public:
 	void SetSkipWelcome(BOOL state);
 protected:
 	std::unique_ptr<CSettings> settings;
-	void SaveAlphaSettingsValues(HKEY key, CAlphaSettings values);
+	void SaveModificationValues(BOOL globalSettings, HKEY key, CModificationSettings values);
 	HKEY registryRootKey;
 	BOOL ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value);
-	void ReadAlphaValues(HKEY key, CAlphaSettings* settings);
+	void ReadModificationValues(HKEY key, CModificationSettings* settings);
 	BOOL ClearProgramSettings();
 	BOOL ReadValue(HKEY key, TCHAR* valueName, DWORD expectedKeyType, BYTE* dataBuffer, DWORD dataBufferSize);
 	BOOL ReadValue(TCHAR* subkey, TCHAR* valueName, DWORD expectedKeyType, BYTE* dataBuffer, DWORD dataBufferSize);
