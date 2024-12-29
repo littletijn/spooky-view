@@ -62,7 +62,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	{
 		auto senderHwnd = (HWND)lParam;
 		LONG identifier = GetWindowLong(senderHwnd, GWL_ID);
-		if (identifier == IDC_SLIDER_FOREGROUND || identifier == IDC_SLIDER_BACKGROUND)
+		if (identifier == IDC_SLIDER_FOREGROUND || identifier == IDC_SLIDER_BACKGROUND || identifier == IDC_SLIDER_MAX_FOREGROUND || identifier == IDC_SLIDER_MAX_BACKGROUND)
 		{
 			if (LOWORD(wParam) == TB_THUMBPOSITION || LOWORD(wParam) == TB_THUMBTRACK)
 			{
@@ -82,9 +82,12 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		//Create the listviews
 		appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_APPS);
 		windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_WINDOWS);
-		enabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_TRANSPARENCY);
 		alwaysOnTopCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ALWAYS_ON_TOP);
+		enabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_TRANSPARENCY);
 		separateBackgroundValueCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE);
+
+		maxEnabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_MAX_TRANSPARENCY);
+		maxSeparateBackgroundValueCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE_MAX);
 
 		PopulateProcessList();
 		SetTrackbarRanges(hDlg);
@@ -99,14 +102,20 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		{
 			switch (LOWORD(wParam))
 			{
-			case IDC_CHECKBOX_ENABLE_TRANSPARENCY:
-				EnabledCheckboxNotified();
-				return TRUE;
 			case IDC_CHECKBOX_ALWAYS_ON_TOP:
 				AlwaysOnTopCheckboxNotified();
 				return TRUE;
+			case IDC_CHECKBOX_ENABLE_TRANSPARENCY:
+				EnabledCheckboxNotified();
+				return TRUE;
 			case IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE:
 				SeparateBackgroundValueCheckboxNotified();
+				return TRUE;
+			case IDC_CHECKBOX_ENABLE_MAX_TRANSPARENCY:
+				EnabledMaximizedCheckboxNotified();
+				return TRUE;
+			case IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE_MAX:
+				SeparateMaximizedBackgroundValueCheckboxNotified();
 				return TRUE;
 			case IDAPPLY:
 				ApplySettings();
@@ -289,21 +298,33 @@ void CSetupDialog::WindowsListNotified()
 	}
 }
 
-void CSetupDialog::EnabledCheckboxNotified()
-{
-	currentModificationSettings->enabled = enabledCheckbox->GetCheckState();
-	SetFormElementsEnableState();
-}
-
 void CSetupDialog::AlwaysOnTopCheckboxNotified()
 {
 	currentModificationSettings->alwaysOnTop = alwaysOnTopCheckbox->GetCheckState();
 	SetFormElementsEnableState();
 }
 
+void CSetupDialog::EnabledCheckboxNotified()
+{
+	currentModificationSettings->enabled = enabledCheckbox->GetCheckState();
+	SetFormElementsEnableState();
+}
+
 void CSetupDialog::SeparateBackgroundValueCheckboxNotified()
 {
 	currentModificationSettings->separateBackgroundValue = separateBackgroundValueCheckbox->GetCheckState();
+	SetFormElementsEnableState();
+}
+
+void CSetupDialog::EnabledMaximizedCheckboxNotified()
+{
+	currentModificationSettings->maxEnabled = maxEnabledCheckbox->GetCheckState();
+	SetFormElementsEnableState();
+}
+
+void CSetupDialog::SeparateMaximizedBackgroundValueCheckboxNotified()
+{
+	currentModificationSettings->maxSeparateBackgroundValue = maxSeparateBackgroundValueCheckbox->GetCheckState();
 	SetFormElementsEnableState();
 }
 
@@ -330,20 +351,29 @@ void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)
 
 void CSetupDialog::SetTrackbarRanges(HWND hWnd)
 {
-	HWND foregroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_FOREGROUND);
-	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
-	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
-	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)0);
-	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)0);
+	const int itemIds[] = {
+		IDC_SLIDER_FOREGROUND,
+		IDC_SLIDER_BACKGROUND,
+		IDC_SLIDER_MAX_FOREGROUND,
+		IDC_SLIDER_MAX_BACKGROUND
+	};
+	for (const auto& itemId : itemIds) {
+		HWND trackbar = GetDlgItem(hWnd, itemId);
+		SendMessage(trackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)0);
+		SendMessage(trackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
+	}
 }
 
 void CSetupDialog::SetTrackbars()
 {
 	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
+	HWND maxForegroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_MAX_FOREGROUND);
+	HWND maxBackgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_MAX_BACKGROUND);
 	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentModificationSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
 	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentModificationSettings->background * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(maxForegroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentModificationSettings->maxForeground * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(maxBackgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentModificationSettings->maxBackground * TRANSPARENCY_TRACKER_STEPS));
 	SetFormElementsEnableState();
 }
 
@@ -352,6 +382,9 @@ void CSetupDialog::SetCheckboxes()
 	enabledCheckbox->SetCheckState(currentModificationSettings->enabled);
 	alwaysOnTopCheckbox->SetCheckState(currentModificationSettings->alwaysOnTop);
 	separateBackgroundValueCheckbox->SetCheckState(currentModificationSettings->separateBackgroundValue);
+
+	maxEnabledCheckbox->SetCheckState(currentModificationSettings->maxEnabled);
+	maxSeparateBackgroundValueCheckbox->SetCheckState(currentModificationSettings->maxSeparateBackgroundValue);
 }
 
 void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
@@ -365,23 +398,54 @@ void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 	case IDC_SLIDER_BACKGROUND:
 		currentModificationSettings->background = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
+	case IDC_SLIDER_MAX_FOREGROUND:
+		currentModificationSettings->maxForeground = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
+		break;
+	case IDC_SLIDER_MAX_BACKGROUND:
+		currentModificationSettings->maxBackground = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
+		break;
 	}
 }
 
 void CSetupDialog::SetFormVisibility(bool show)
 {
 	const int itemIds[] = {
+		// Checkboxes
 		IDC_CHECKBOX_ENABLE_TRANSPARENCY,
 		IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE,
+		IDC_CHECKBOX_ENABLE_MAX_TRANSPARENCY,
+		// Groups
 		IDC_STATIC_TRANSPARENCY,
-		IDC_STATIC_FOREGROUND,
-		IDC_SLIDER_FOREGROUND,
-		IDC_STATIC_BACKGROUND,
-		IDC_SLIDER_BACKGROUND,
+		//Labels
 		IDC_STATIC_FOREGORUND_TRANSPARENT,
-		IDC_STATIC_FOREGROUND_OPAQUE,
 		IDC_STATIC_BACKGROUND_TRANSPARENT,
-		IDC_STATIC_BACKGROUND_OPAQUE
+		IDC_STATIC_FOREGROUND_OPAQUE,
+		IDC_STATIC_BACKGROUND_OPAQUE,
+		//Sliders
+		IDC_SLIDER_FOREGROUND,
+		IDC_SLIDER_BACKGROUND,
+	};
+	for (const auto& itemId : itemIds) {
+		SetFormElementVisibility(itemId, show);
+	}
+	SetMaximzedFormVisibility(show);
+}
+
+void CSetupDialog::SetMaximzedFormVisibility(bool show)
+{
+	const int itemIds[] = {
+		// Checkboxes
+		IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE_MAX,
+		// Groups
+		IDC_STATIC_TRANSPARENCY_MAX,
+		//Labels
+		IDC_STATIC_FOREGROUND_TRANSPARENT_MAX,
+		IDC_STATIC_BACKGROUND_TRANSPARENT_MAX,
+		IDC_STATIC_FOREGROUND_OPAQUE_MAX,
+		IDC_STATIC_BACKGROUND_OPAQUE_MAX,
+		//Sliders
+		IDC_SLIDER_MAX_FOREGROUND,
+		IDC_SLIDER_MAX_BACKGROUND
 	};
 	for (const auto& itemId : itemIds) {
 		SetFormElementVisibility(itemId, show);
@@ -416,6 +480,24 @@ void CSetupDialog::SetFormElementsEnableState()
 	else
 	{
 		EnableWindow(slideBackground, FALSE);
+	}
+
+	auto maxEnabled = GetDlgItem(this->hWnd, IDC_CHECKBOX_ENABLE_MAX_TRANSPARENCY);
+	EnableWindow(maxEnabled, currentModificationSettings->enabled);
+	const int maxItemIds[] = { IDC_SLIDER_MAX_FOREGROUND, IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE_MAX };
+	for (const auto& itemId : maxItemIds) {
+		auto item = GetDlgItem(this->hWnd, itemId);
+		EnableWindow(item, currentModificationSettings->maxEnabled && currentModificationSettings->enabled);
+	}
+
+	auto maxSlideBackground = GetDlgItem(this->hWnd, IDC_SLIDER_MAX_BACKGROUND);
+	if (currentModificationSettings->maxSeparateBackgroundValue)
+	{
+		EnableWindow(maxSlideBackground, currentModificationSettings->maxSeparateBackgroundValue);
+	}
+	else
+	{
+		EnableWindow(maxSlideBackground, FALSE);
 	}
 }
 

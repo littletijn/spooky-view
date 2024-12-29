@@ -28,16 +28,20 @@ protected:
 	std::unique_ptr<CSettings> newSettings;
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<ListView> windowsListView;
-	std::unique_ptr<Checkbox> enabledCheckbox;
 	std::unique_ptr<Checkbox> alwaysOnTopCheckbox;
+	std::unique_ptr<Checkbox> enabledCheckbox;
 	std::unique_ptr<Checkbox> separateBackgroundValueCheckbox;
+	std::unique_ptr<Checkbox> maxEnabledCheckbox;
+	std::unique_ptr<Checkbox> maxSeparateBackgroundValueCheckbox;
 
 	bool ApplySettings();
 	void CopySettings();
 	void WindowsListNotified();
-	void EnabledCheckboxNotified();
 	void AlwaysOnTopCheckboxNotified();
+	void EnabledCheckboxNotified();
 	void SeparateBackgroundValueCheckboxNotified();
+	void EnabledMaximizedCheckboxNotified();
+	void SeparateMaximizedBackgroundValueCheckboxNotified();
 	void ProgramsListNotified();
 	void PopulateProcessList();
 	void PopulateWindowsList(CProgramSetting* settings = 0);
@@ -45,6 +49,7 @@ protected:
 	void SetCheckboxes();
 	void SetAlpha(BYTE value, HWND trackbar);
 	void SetFormVisibility(bool show);
+	void SetMaximzedFormVisibility(bool show);
 	void SetFormElementVisibility(int itemId, bool show);
 	void SetButtonEnableState(int controlId, bool show);
 	void SetFormElementsEnableState();

@@ -134,25 +134,43 @@ void CRegistrySettingsManager::LoadSettings()
 void CRegistrySettingsManager::ReadModificationValues(HKEY key, CModificationSettings* settings)
 {
 	BYTE value;
+	if (ReadKeyByteValue(key, _T("Always on top"), value))
+	{
+		settings->alwaysOnTop = value != 0;
+	}
+	//Transparency
+	if (ReadKeyByteValue(key, _T("Enabled"), value))
+	{
+		settings->enabled = value != 0;
+	}
 	if (ReadKeyByteValue(key, _T("Alpha foreground"), value))
 	{
 		settings->foreground = value;
+	}
+	if (ReadKeyByteValue(key, _T("Separate background value"), value))
+	{
+		settings->separateBackgroundValue = value != 0;
 	}
 	if (ReadKeyByteValue(key, _T("Alpha background"), value))
 	{
 		settings->background = value;
 	}
-	if (ReadKeyByteValue(key, _T("Enabled"), value))
+	//Maximized transparency
+	if (ReadKeyByteValue(key, _T("Enabled seperate value maximized"), value))
 	{
-		settings->enabled = value != 0;
+		settings->maxEnabled = value != 0;
 	}
-	if (ReadKeyByteValue(key, _T("Always on top"), value))
+	if (ReadKeyByteValue(key, _T("Alpha foreground maximized"), value))
 	{
-		settings->alwaysOnTop = value != 0;
+		settings->maxForeground = value;
 	}
-	if (ReadKeyByteValue(key, _T("Separate background value"), value))
+	if (ReadKeyByteValue(key, _T("Separate background value maximized"), value))
 	{
-		settings->separateBackgroundValue = value != 0;
+		settings->maxSeparateBackgroundValue = value != 0;
+	}
+	if (ReadKeyByteValue(key, _T("Alpha background maximized"), value))
+	{
+		settings->maxBackground = value;
 	}
 }
 
@@ -216,16 +234,25 @@ bool CRegistrySettingsManager::SaveSettings()
 
 void CRegistrySettingsManager::SaveModificationValues(BOOL globalSettings, HKEY key, CModificationSettings values)
 {
-	BYTE enabled = values.enabled ? '\x1' : '\x0';
-	BYTE separateBackgroundValue = values.separateBackgroundValue ? '\x1' : '\x0';
-	SaveValue(key, _T("Enabled"), REG_BINARY, &enabled);
-	SaveValue(key, _T("Alpha foreground"), REG_BINARY, &values.foreground);
-	SaveValue(key, _T("Alpha background"), REG_BINARY, &values.background);
-	SaveValue(key, _T("Separate background value"), REG_BINARY, &separateBackgroundValue);
 	if (!globalSettings) {
 		BYTE alwaysOnTop = values.alwaysOnTop ? '\x1' : '\x0';
 		SaveValue(key, _T("Always on top"), REG_BINARY, &alwaysOnTop);
 	}
+	//Transparency
+	BYTE enabled = values.enabled ? '\x1' : '\x0';
+	BYTE separateBackgroundValue = values.separateBackgroundValue ? '\x1' : '\x0';
+	SaveValue(key, _T("Enabled"), REG_BINARY, &enabled);
+	SaveValue(key, _T("Alpha foreground"), REG_BINARY, &values.foreground);
+	SaveValue(key, _T("Separate background value"), REG_BINARY, &separateBackgroundValue);
+	SaveValue(key, _T("Alpha background"), REG_BINARY, &values.background);
+
+	//Maximized transparency
+	BYTE maximizedEnabled = values.maxEnabled ? '\x1' : '\x0';
+	BYTE separateBackgroundValueMaximized = values.maxSeparateBackgroundValue ? '\x1' : '\x0';
+	SaveValue(key, _T("Enabled seperate value maximized"), REG_BINARY, &maximizedEnabled);
+	SaveValue(key, _T("Alpha foreground maximized"), REG_BINARY, &values.maxForeground);
+	SaveValue(key, _T("Separate background value maximized"), REG_BINARY, &separateBackgroundValueMaximized);
+	SaveValue(key, _T("Alpha background maximized"), REG_BINARY, &values.maxBackground);
 }
 
 BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value)
