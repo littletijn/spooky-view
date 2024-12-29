@@ -172,24 +172,39 @@ void WindowsEnum::CheckAndSetWindowAlwaysOnTop(HWND hwnd)
 
 BOOL CALLBACK WindowsEnum::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 {
-	if (IsWindowUsable(hwnd)){
-		if (!IsIconic(hwnd))
-		{
-			if (GetForegroundWindow() == hwnd)
-			{
-				SetWindowAlpha(hwnd, CSettings::WindowTypes::Foregound);
-			}
-			else
-			{
-				SetWindowAlpha(hwnd, CSettings::WindowTypes::Background);
-			}
-		}
+	if (IsWindowUsable(hwnd))
+	{
+		SetWindowTransparency(hwnd);
 		if (lParam == 1)
 		{
 			CheckAndSetWindowAlwaysOnTop(hwnd);
 		}
 	}
 	return TRUE;
+}
+
+void  WindowsEnum::SetWindowTransparency(HWND hwnd)
+{
+	if (!IsIconic(hwnd))
+	{
+		if (GetForegroundWindow() == hwnd)
+		{
+			SetWindowAlpha(hwnd, IsMaximized(hwnd) ? CSettings::WindowTypes::MaximizedForeground : CSettings::WindowTypes::Foregound);
+		}
+		else
+		{
+			SetWindowAlpha(hwnd, IsMaximized(hwnd) ? CSettings::WindowTypes::MaximizedBackground : CSettings::WindowTypes::Background);
+		}
+	}
+}
+
+void CALLBACK WindowsEnum::WinEventProcLocationChange(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
+{
+	//When a window is changed in size (or is moved because of a by-effect of the event), set transparency (for maximized)
+	if (idObject == OBJID_WINDOW && IsWindowUsable(hwnd))
+	{
+		SetWindowTransparency(hwnd);
+	}
 }
 
 BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
@@ -333,9 +348,21 @@ void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 		case CSettings::WindowTypes::Foregound:
 			alpha = modificationSettings->foreground;
 			break;
-
 		case CSettings::WindowTypes::Background:
 			alpha = modificationSettings->separateBackgroundValue ? modificationSettings->background : modificationSettings->foreground;
+			break;
+		case CSettings::WindowTypes::MaximizedForeground:
+			alpha = modificationSettings->maxEnabled ? modificationSettings->maxForeground : modificationSettings->foreground;
+			break;
+		case CSettings::WindowTypes::MaximizedBackground:
+			if (modificationSettings->maxEnabled)
+			{
+				alpha = modificationSettings->maxSeparateBackgroundValue ? modificationSettings->maxBackground : modificationSettings->maxForeground;
+			}
+			else
+			{
+				alpha = modificationSettings->separateBackgroundValue ? modificationSettings->background : modificationSettings->foreground;
+			}
 			break;
 		}
 		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED));
@@ -390,6 +417,8 @@ void WindowsEnum::CreateHook()
 	hWinEventHook[0] = SetWinEventHook(EVENT_OBJECT_SHOW, EVENT_OBJECT_SHOW, NULL, WinEventProcShow, 0, 0, WINEVENT_OUTOFCONTEXT);
 	hWinEventHook[1] = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, NULL, WinEventProcForegroundChange, 0, 0, WINEVENT_OUTOFCONTEXT);
 	hWinEventHook[2] = SetWinEventHook(EVENT_SYSTEM_MINIMIZESTART, EVENT_SYSTEM_MINIMIZEEND, NULL, WinEventProcMinimizeChange, 0, 0, WINEVENT_OUTOFCONTEXT);
+	hWinEventHook[3] = SetWinEventHook(EVENT_OBJECT_LOCATIONCHANGE, EVENT_OBJECT_LOCATIONCHANGE, NULL, WinEventProcLocationChange, 0, 0, WINEVENT_OUTOFCONTEXT);
+
 }
 
 void WindowsEnum::Unhook()

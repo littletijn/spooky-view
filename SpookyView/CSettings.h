@@ -12,7 +12,9 @@ public:
 	enum WindowTypes
 	{
 		Foregound,
-		Background
+		Background,
+		MaximizedForeground,
+		MaximizedBackground
 	};
 
 	CModificationSettings modificationSettings;

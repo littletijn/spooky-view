@@ -17,15 +17,17 @@ public:
 	static void CALLBACK WinEventProcMinimizeChange(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 	static void CALLBACK WinEventProcForegroundChange(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 	static void CALLBACK WinEventProcShow(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
+	static void CALLBACK WinEventProcLocationChange(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 	static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumUWPChildWindows(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam);
-	static BOOL IsMaximized(HWND hwnd);
 
 	//Static functions
+	static BOOL IsMaximized(HWND hwnd);
+	static void SetWindowTransparency(HWND hwnd);
 	static void CheckAndSetWindowAlwaysOnTop(HWND hwnd);
 	static void SetWindowsTransparency();
 	static void SetWindowsModifications();
@@ -40,7 +42,7 @@ public:
 	void ResetWindowsModifications();
 	void TogglePause();
 protected:
-	HWINEVENTHOOK hWinEventHook[3];
+	HWINEVENTHOOK hWinEventHook[4];
 
 	//Static variables for EnumWindowsForProcess
 	static t_string processNameOfWindowsToFind;
