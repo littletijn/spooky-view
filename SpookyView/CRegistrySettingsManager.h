@@ -11,6 +11,8 @@ public:
 	~CRegistrySettingsManager();
 	void LoadSettings();
 	bool SaveSettings();
+	CProgramSetting* AddProgramSettings(TCHAR* programName);
+	bool SaveAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName);
 	CSettings* GetSettings();
 	void ApplyNewSettings(CSettings *newSettings);
 	void AddSkipVersionKey(tstring versionNumber);
@@ -20,6 +22,8 @@ public:
 	void SetDisableUpdateCheck(BOOL state);
 	int GetSkipWelcome();
 	void SetSkipWelcome(BOOL state);
+	int GetEnableHotkeys();
+	void SetEnableHotkeys(BOOL state);
 protected:
 	std::unique_ptr<CSettings> settings;
 	void SaveAlphaSettingsValues(HKEY key, CAlphaSettings values);

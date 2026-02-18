@@ -44,6 +44,74 @@ void WindowsEnum::TogglePause()
 	}
 }
 
+CAlphaSettings* WindowsEnum::GetCurrentActiveWindowSettings()
+{
+	auto foregroundHwnd = GetForegroundWindow();
+	if (IsWindowUsable(foregroundHwnd, false))
+	{
+		return GetWindowAlphaSettings(foregroundHwnd, false);
+	}
+	return NULL;
+}
+
+CAlphaSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings()
+{
+	auto alphaSettings = GetCurrentActiveWindowSettings();
+	if (!alphaSettings)
+	{
+		auto settings = settingsManager->AddProgramSettings(fileName);
+		if (settings)
+		{
+			alphaSettings = &settings->alphaSettings;
+		}
+	}
+	return alphaSettings;
+}
+
+void WindowsEnum::ToggleTransparencyActiveWindow()
+{
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings();
+	if (alphaSettings)
+	{
+		auto foregroundHwnd = GetForegroundWindow();
+		alphaSettings->enabled = !alphaSettings->enabled;
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
+		if (!isPause)
+		{
+			ResetWindowTransparency(foregroundHwnd);
+			SetWindowsTransparency();
+		}
+	}
+}
+
+void WindowsEnum::IncreaseTransparencyActiveWindow()
+{
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings();
+	if (alphaSettings)
+	{
+		alphaSettings->foreground = alphaSettings->foreground < 230 ? alphaSettings->foreground + 25 : 255;
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
+		if (!isPause)
+		{
+			SetWindowsTransparency();
+		}
+	}
+}
+
+void WindowsEnum::DecreaseTransparencyActiveWindow()
+{
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings();
+	if (alphaSettings)
+	{
+		alphaSettings->foreground = alphaSettings->foreground > 50 ? alphaSettings->foreground -25 : 25;
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
+		if (!isPause)
+		{
+			SetWindowsTransparency();
+		}
+	}
+}
+
 BOOL WindowsEnum::HasProcessUsableWindows(DWORD processId)
 {
 	processIdToCheckForUsableWindows = processId;
@@ -68,7 +136,7 @@ BOOL WindowsEnum::HasProcessUWPCoreWindow(DWORD processId)
 	{
 		for (auto applicationFrameHostWindow : applicationFrameHostWindows)
 		{
-			HWND coreWindowHwnd = FindWindowEx(applicationFrameHostWindow, NULL, _T("Windows.UI.Core.CoreWindow"), NULL);
+			HWND coreWindowHwnd = FindWindowEx(applicationFrameHostWindow, NULL, UWP_WINDOW_UI_CLASSNAME, NULL);
 			if (coreWindowHwnd != NULL)
 			{
 				GetWindowThreadProcessId(coreWindowHwnd, &processId);
@@ -151,8 +219,13 @@ BOOL CALLBACK WindowsEnum::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 
 BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
 {
+	return ResetWindowTransparency(hwnd);
+}
+
+BOOL WindowsEnum::ResetWindowTransparency(HWND hwnd)
+{
 	//Only reset windows changed by our app
-	if (IsWindowUsable(hwnd, TRUE) && (GetWindowLongPtr(hwnd, GWL_STYLE) & WS_EX_LAYERED) && GetWindowAlphaSettings(hwnd))
+	if (IsWindowUsable(hwnd, TRUE) && IsWindowTransparent(hwnd) && GetWindowAlphaSettings(hwnd, TRUE))
 	{
 		//https://docs.microsoft.com/en-us/windows/win32/winmsg/using-windows#using-layered-windows
 		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED));
@@ -160,6 +233,11 @@ BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
 		RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
 	}
 	return TRUE;
+}
+
+BOOL WindowsEnum::IsWindowTransparent(HWND hwnd)
+{
+	return GetWindowLongPtr(hwnd, GWL_STYLE) & WS_EX_LAYERED;
 }
 
 BOOL CALLBACK WindowsEnum::EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
@@ -246,12 +324,12 @@ void WindowsEnum::CheckAndSetUWPProcessAndClass(HWND hwnd)
 	}
 }
 
-CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd)
+CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd, BOOL withGlobalSettings = false)
 {
 	if (GetWindowProcessAndClass(hwnd)) {
 		CheckAndSetUWPProcessAndClass(hwnd);
 		if (!isUWPProcess || UWPProcessFound) {
-			return settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName);
+			return settingsManager->GetSettings()->GetAlphaSetting(fileName, windowClassName, withGlobalSettings);
 		}
 	}
 	return NULL;
@@ -261,7 +339,7 @@ void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 {
 	auto alphaSettings = GetWindowAlphaSettings(hwnd);
 
-	if (alphaSettings)
+	if (alphaSettings && alphaSettings->enabled)
 	{
 		BYTE alpha;
 		switch (windowType)

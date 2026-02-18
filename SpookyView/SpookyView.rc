@@ -157,13 +157,14 @@ CAPTION "Settings"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start program when this user logs in",IDC_CHECKBOX_AUTO_STARTUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,127,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,272,10
     PUSHBUTTON      "Cancel",IDCANCEL,232,162,50,14
     DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
     CONTROL         "Do not check for updates on start",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,127,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,273,10
     CONTROL         "Do not show welcome window on startup",IDC_CHECKBOX_SKIP_WELCOME,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,274,10
+    CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -442,6 +443,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,227,10
     CONTROL         "Toon welkomstvenster niet bij opstarten",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
+    CONTROL         "Sneltoetsen inschakelen",IDC_CHECKBOX_ENABLE_HOTKEYS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318

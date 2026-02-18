@@ -44,6 +44,22 @@ BOOL CMainWindow::InitNotifyIcon()
 	return canInit == TRUE && notifyIconContextMenu != NULL;
 }
 
+BOOL CMainWindow::InitHotKeys()
+{
+	RegisterHotKey(this->hWnd, 1, MOD_CONTROL | MOD_SHIFT, VK_INSERT);
+	RegisterHotKey(this->hWnd, 2, MOD_CONTROL | MOD_SHIFT, VK_PRIOR);
+	RegisterHotKey(this->hWnd, 3, MOD_CONTROL | MOD_SHIFT, VK_NEXT);
+	return TRUE;
+}
+
+BOOL CMainWindow::RemoveHotKeys()
+{
+	UnregisterHotKey(this->hWnd, 1);
+	UnregisterHotKey(this->hWnd, 2);
+	UnregisterHotKey(this->hWnd, 3);
+	return TRUE;
+}
+
 void CMainWindow::CloseWindow()
 {
 	DestroyMenu(notifyIconContextMenu);
@@ -233,6 +249,20 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 	case WM_DESTROY:
 		this->CloseWindow();
 		return FALSE;
+	case WM_HOTKEY:
+		switch (wParam)
+		{
+			case 1:
+				windowsEnum.ToggleTransparencyActiveWindow();
+				break;
+			case 2:
+				windowsEnum.IncreaseTransparencyActiveWindow();
+				break;
+			case 3:
+				windowsEnum.DecreaseTransparencyActiveWindow();
+				break;
+		}
+		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}

@@ -28,6 +28,8 @@ public:
 	static std::map<tstring, tstring> GetWindowsForProcess(t_string processName);
 	static BOOL HasProcessUsableWindows(DWORD processId);
 	static BOOL HasProcessUWPCoreWindow(DWORD processId);
+	static BOOL ResetWindowTransparency(HWND hwnd);
+	static BOOL IsWindowTransparent(HWND hwnd);
 
 	//Functions
 	void CreateHook();
@@ -35,6 +37,11 @@ public:
 	BOOL IsPaused();
 	void ResetWindowsTransparency();
 	void TogglePause();
+	CAlphaSettings* GetCurrentActiveWindowSettings();
+	CAlphaSettings* GetOrCreateCurrentActiveWindowSettings();
+	void ToggleTransparencyActiveWindow();
+	void IncreaseTransparencyActiveWindow();
+	void DecreaseTransparencyActiveWindow();
 protected:
 	HWINEVENTHOOK hWinEventHook[4];
 
@@ -65,7 +72,7 @@ protected:
 	static BOOL IsWindowUsable(HWND hwnd, BOOL includeHidden = FALSE);
 	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 	static void CheckAndSetUWPProcessAndClass(HWND hwnd);
-	static CAlphaSettings* GetWindowAlphaSettings(HWND hwnd);
+	static CAlphaSettings* GetWindowAlphaSettings(HWND hwnd, BOOL withGlobalSettings);
 };
 
 #endif

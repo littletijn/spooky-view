@@ -70,6 +70,10 @@ int AppMain::Run()
 	{
 		settingsManager->LoadSettings();
 	}
+	if (settingsManager->GetEnableHotkeys() == 1)
+	{
+		mainWindow->InitHotKeys();
+	}
 	windowsEnum.SetWindowsTransparency();
 	mainWindow->CheckIsFirstRun();
 #ifdef UNICODE
@@ -89,6 +93,10 @@ int AppMain::Run()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+	}
+	if (settingsManager->GetEnableHotkeys() == 1)
+	{
+		mainWindow->RemoveHotKeys();
 	}
 	//Remove event hooks
 	windowsEnum.Unhook();
