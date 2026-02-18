@@ -230,25 +230,25 @@ bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, 
 	{
 		// Check if we already have a key for this program
 		LSTATUS programResult;
-		programResult = RegOpenKeyEx(programsKey, processFileName, 0, KEY_READ, &programKey);
+		programResult = RegOpenKeyEx(programsKey, processFileName, 0, KEY_SET_VALUE, &programKey);
 		if (programResult == ERROR_SUCCESS)
 		{
 			//We have a key. Check if we have a window key as well
 			LSTATUS windowsResult = -1;
 			LSTATUS windowResult = -1;
-			windowsResult = RegOpenKeyEx(programKey, _T("Windows"), 0, KEY_READ, &windowsKey);
+			windowsResult = RegOpenKeyEx(programKey, _T("Windows"), 0, KEY_SET_VALUE, &windowsKey);
 			if (windowsResult == ERROR_SUCCESS)
 			{
-				windowResult = RegOpenKeyEx(windowsKey, windowClassName, 0, KEY_READ, &windowKey);
+				windowResult = RegOpenKeyEx(windowsKey, windowClassName, 0, KEY_SET_VALUE, &windowKey);
 				if (windowResult == ERROR_SUCCESS)
 				{
 					SaveAlphaSettingsValues(windowKey, *alphaSettings);
 				}
-			}
-			if (windowsResult == ERROR_FILE_NOT_FOUND || windowResult == ERROR_FILE_NOT_FOUND)
-			{
-				//We have not found a window key. Store as program settings
-				SaveAlphaSettingsValues(programKey, *alphaSettings);
+				else
+				{
+					//We have not found a window key. Store as program settings
+					SaveAlphaSettingsValues(windowsKey, *alphaSettings);
+				}
 			}
 		}
 		else if (programResult == ERROR_FILE_NOT_FOUND)
@@ -259,9 +259,11 @@ bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, 
 				SaveStringValue(programKey, _T("File name"), processFileName);
 				//Create Windows key of program
 				HKEY windowsKey;
-				RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL);
-				//Store settings in new key
-				SaveAlphaSettingsValues(programKey, *alphaSettings);
+				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
+				{
+					//Store settings in new key
+					SaveAlphaSettingsValues(windowsKey, *alphaSettings);
+				}
 			}
 		}
 	}

@@ -67,6 +67,9 @@ protected:
 	static std::list<HWND> applicationFrameHostWindows;
 	static BOOL isMinimizedCoreWindow;
 
+	//Static variable for ResetWindowsTransparency
+	static BOOL onlyResetTransparencyOnDisabledSettings;
+
 	//Static functions
 	static BOOL GetWindowProcessAndClass(HWND hwnd);
 	static BOOL IsWindowUsable(HWND hwnd, BOOL includeHidden = FALSE);

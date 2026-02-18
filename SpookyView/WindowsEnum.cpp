@@ -26,6 +26,7 @@ BOOL WindowsEnum::isUWPProcess;
 BOOL WindowsEnum::UWPProcessFound;
 std::list<HWND> WindowsEnum::applicationFrameHostWindows;
 BOOL WindowsEnum::isMinimizedCoreWindow;
+BOOL WindowsEnum::onlyResetTransparencyOnDisabledSettings;
 
 BOOL WindowsEnum::IsPaused()
 {
@@ -73,12 +74,13 @@ void WindowsEnum::ToggleTransparencyActiveWindow()
 	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings();
 	if (alphaSettings)
 	{
-		auto foregroundHwnd = GetForegroundWindow();
 		alphaSettings->enabled = !alphaSettings->enabled;
 		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
 		if (!isPause)
 		{
-			ResetWindowTransparency(foregroundHwnd);
+			onlyResetTransparencyOnDisabledSettings = true;
+			ResetWindowsTransparency();
+			onlyResetTransparencyOnDisabledSettings = false;
 			SetWindowsTransparency();
 		}
 	}
@@ -225,12 +227,19 @@ BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
 BOOL WindowsEnum::ResetWindowTransparency(HWND hwnd)
 {
 	//Only reset windows changed by our app
-	if (IsWindowUsable(hwnd, TRUE) && IsWindowTransparent(hwnd) && GetWindowAlphaSettings(hwnd, TRUE))
+	if (IsWindowUsable(hwnd, TRUE) && IsWindowTransparent(hwnd))
 	{
-		//https://docs.microsoft.com/en-us/windows/win32/winmsg/using-windows#using-layered-windows
-		SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED));
-		SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
-		RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
+		auto settings = GetWindowAlphaSettings(hwnd, TRUE);
+		if (settings)
+		{
+			if (!onlyResetTransparencyOnDisabledSettings || !settings->enabled)
+			{
+				//https://docs.microsoft.com/en-us/windows/win32/winmsg/using-windows#using-layered-windows
+				SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED));
+				SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
+				RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
+			}
+		}
 	}
 	return TRUE;
 }
@@ -324,7 +333,7 @@ void WindowsEnum::CheckAndSetUWPProcessAndClass(HWND hwnd)
 	}
 }
 
-CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd, BOOL withGlobalSettings = false)
+CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd, BOOL withGlobalSettings)
 {
 	if (GetWindowProcessAndClass(hwnd)) {
 		CheckAndSetUWPProcessAndClass(hwnd);
@@ -337,7 +346,7 @@ CAlphaSettings* WindowsEnum::GetWindowAlphaSettings(HWND hwnd, BOOL withGlobalSe
 
 void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 {
-	auto alphaSettings = GetWindowAlphaSettings(hwnd);
+	auto alphaSettings = GetWindowAlphaSettings(hwnd, true);
 
 	if (alphaSettings && alphaSettings->enabled)
 	{
