@@ -47,8 +47,8 @@ BOOL CMainWindow::InitNotifyIcon()
 BOOL CMainWindow::InitHotKeys()
 {
 	RegisterHotKey(this->hWnd, 1, MOD_CONTROL | MOD_SHIFT, VK_INSERT);
-	RegisterHotKey(this->hWnd, 2, MOD_CONTROL | MOD_SHIFT, VK_PRIOR);
-	RegisterHotKey(this->hWnd, 3, MOD_CONTROL | MOD_SHIFT, VK_NEXT);
+	RegisterHotKey(this->hWnd, 2, MOD_CONTROL | MOD_SHIFT, VK_NEXT);
+	RegisterHotKey(this->hWnd, 3, MOD_CONTROL | MOD_SHIFT, VK_PRIOR);
 	return TRUE;
 }
 

@@ -38,7 +38,7 @@ public:
 	void ResetWindowsTransparency();
 	void TogglePause();
 	CAlphaSettings* GetCurrentActiveWindowSettings();
-	CAlphaSettings* GetOrCreateCurrentActiveWindowSettings();
+	CAlphaSettings* GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated);
 	void ToggleTransparencyActiveWindow();
 	void IncreaseTransparencyActiveWindow();
 	void DecreaseTransparencyActiveWindow();

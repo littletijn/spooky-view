@@ -55,7 +55,7 @@ CAlphaSettings* WindowsEnum::GetCurrentActiveWindowSettings()
 	return NULL;
 }
 
-CAlphaSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings()
+CAlphaSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated)
 {
 	auto alphaSettings = GetCurrentActiveWindowSettings();
 	if (!alphaSettings)
@@ -63,6 +63,11 @@ CAlphaSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings()
 		auto settings = settingsManager->AddProgramSettings(fileName);
 		if (settings)
 		{
+			if (setEnabledOnCreated)
+			{
+				settings->alphaSettings.enabled = true;
+			}
+			settings->alphaSettings.foreground = 128;
 			alphaSettings = &settings->alphaSettings;
 		}
 	}
@@ -71,7 +76,7 @@ CAlphaSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings()
 
 void WindowsEnum::ToggleTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings();
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(false);
 	if (alphaSettings)
 	{
 		alphaSettings->enabled = !alphaSettings->enabled;
@@ -88,10 +93,10 @@ void WindowsEnum::ToggleTransparencyActiveWindow()
 
 void WindowsEnum::IncreaseTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings();
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
 	if (alphaSettings)
 	{
-		alphaSettings->foreground = alphaSettings->foreground < 230 ? alphaSettings->foreground + 25 : 255;
+		alphaSettings->foreground = alphaSettings->foreground < 239 ? alphaSettings->foreground + 16 : 255;
 		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
 		if (!isPause)
 		{
@@ -102,10 +107,10 @@ void WindowsEnum::IncreaseTransparencyActiveWindow()
 
 void WindowsEnum::DecreaseTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings();
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
 	if (alphaSettings)
 	{
-		alphaSettings->foreground = alphaSettings->foreground > 50 ? alphaSettings->foreground -25 : 25;
+		alphaSettings->foreground = alphaSettings->foreground > 32 ? alphaSettings->foreground - 16 : 16;
 		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
 		if (!isPause)
 		{
