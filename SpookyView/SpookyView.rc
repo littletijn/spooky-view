@@ -165,6 +165,7 @@ BEGIN
     CONTROL         "Do not show welcome window on startup",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,274,10
     CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
+    LTEXT           "Hotkeys:\n\nCtrl + Shift + Insert: Enable/disable transparency\nCrtl + Shift + Page Up: Descrease transparency\nCtrl + Shift + Page Down: Increase transparency",IDC_STATIC,6,80,256,52
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -445,6 +446,7 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
     CONTROL         "Sneltoetsen inschakelen",IDC_CHECKBOX_ENABLE_HOTKEYS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
+    LTEXT           "Sneltoetsen:\n\nCtrl + Shift + Insert: In-/uitschakelen doorzichtigheid\nCrtl + Shift + Page Up: Doorzichtigheid verlagen\nCtrl + Shift + Page Down: Doorzichtigheid verhogen",IDC_STATIC,6,80,256,52
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
