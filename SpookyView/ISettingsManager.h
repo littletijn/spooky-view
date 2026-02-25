@@ -3,6 +3,7 @@
 
 #include "CSettings.h"
 #include "Unicode.h"
+#include "CSetupDialog.h"
 class ISettingsManager
 {
 
@@ -15,7 +16,7 @@ public:
 	virtual void LoadSettings() = 0;
 	virtual bool SaveSettings() = 0;
 	virtual CProgramSetting* AddProgramSettings(TCHAR* programName) = 0;
-	virtual bool SaveAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName) = 0;
+	virtual bool SaveAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type) = 0;
 	virtual void ApplyNewSettings(CSettings* newSettings) = 0;
 	virtual void AddSkipVersionKey(tstring versionNumber) = 0;
 	virtual BOOL ShouldSkipVersion(tstring versionNumber) = 0;

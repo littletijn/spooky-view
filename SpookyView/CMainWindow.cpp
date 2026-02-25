@@ -47,8 +47,11 @@ BOOL CMainWindow::InitNotifyIcon()
 BOOL CMainWindow::InitHotKeys()
 {
 	RegisterHotKey(this->hWnd, 1, MOD_CONTROL | MOD_SHIFT, VK_INSERT);
-	RegisterHotKey(this->hWnd, 2, MOD_CONTROL | MOD_SHIFT, VK_NEXT);
-	RegisterHotKey(this->hWnd, 3, MOD_CONTROL | MOD_SHIFT, VK_PRIOR);
+	RegisterHotKey(this->hWnd, 2, MOD_CONTROL | MOD_SHIFT, VK_DELETE);
+	RegisterHotKey(this->hWnd, 3, MOD_CONTROL | MOD_SHIFT, VK_NEXT);
+	RegisterHotKey(this->hWnd, 4, MOD_CONTROL | MOD_SHIFT, VK_PRIOR);
+	RegisterHotKey(this->hWnd, 5, MOD_CONTROL | MOD_SHIFT, VK_HOME);
+	RegisterHotKey(this->hWnd, 6, MOD_CONTROL | MOD_SHIFT, VK_END);
 	return TRUE;
 }
 
@@ -57,6 +60,9 @@ BOOL CMainWindow::RemoveHotKeys()
 	UnregisterHotKey(this->hWnd, 1);
 	UnregisterHotKey(this->hWnd, 2);
 	UnregisterHotKey(this->hWnd, 3);
+	UnregisterHotKey(this->hWnd, 4);
+	UnregisterHotKey(this->hWnd, 5);
+	UnregisterHotKey(this->hWnd, 6);
 	return TRUE;
 }
 
@@ -253,13 +259,22 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 		switch (wParam)
 		{
 			case 1: // Ctrl + Insert
-				windowsEnum.ToggleTransparencyActiveWindow();
+				windowsEnum.ToggleForegroundTransparencyActiveWindow();
 				break;
-			case 2: // Ctrl + Page Down
-				windowsEnum.DecreaseTransparencyActiveWindow();
+			case 2: // Ctrl + Home
+				windowsEnum.ToggleBackgroundTransparencyActiveWindow();
 				break;
-			case 3: // Ctrl + Page Up
-				windowsEnum.IncreaseTransparencyActiveWindow();
+			case 3: // Ctrl + Page Down
+				windowsEnum.DecreaseForegroundTransparencyActiveWindow();
+				break;
+			case 4: // Ctrl + Page Up
+				windowsEnum.IncreaseForegroundTransparencyActiveWindow();
+				break;
+			case 5: // Ctrl + Home
+				windowsEnum.IncreaseBackgroundTransparencyActiveWindow();
+				break;
+			case 6: // Ctrl + End
+				windowsEnum.DecreaseBackgroundTransparencyActiveWindow();
 				break;
 				
 		}

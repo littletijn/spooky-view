@@ -39,9 +39,12 @@ public:
 	void TogglePause();
 	CAlphaSettings* GetCurrentActiveWindowSettings();
 	CAlphaSettings* GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated);
-	void ToggleTransparencyActiveWindow();
-	void IncreaseTransparencyActiveWindow();
-	void DecreaseTransparencyActiveWindow();
+	void ToggleForegroundTransparencyActiveWindow();
+	void ToggleBackgroundTransparencyActiveWindow();
+	void IncreaseForegroundTransparencyActiveWindow();
+	void DecreaseForegroundTransparencyActiveWindow();
+	void IncreaseBackgroundTransparencyActiveWindow();
+	void DecreaseBackgroundTransparencyActiveWindow();
 protected:
 	HWINEVENTHOOK hWinEventHook[4];
 

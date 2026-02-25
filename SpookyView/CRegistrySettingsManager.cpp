@@ -219,7 +219,7 @@ bool CRegistrySettingsManager::SaveSettings()
 	return false;
 }
 
-bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName)
+bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
 {
 	HKEY programsKey;
 	HKEY programKey;
@@ -270,7 +270,7 @@ bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, 
 	if (cSetupDialog)
 	{
 		// Apply new alpha settings in open setup window
-		cSetupDialog->CreateOrUpdateAlphaSettings(alphaSettings, processFileName, windowClassName);
+		cSetupDialog->CreateOrUpdateAlphaSettings(alphaSettings, processFileName, windowClassName, type);
 	}
 	return true;
 }

@@ -12,11 +12,10 @@ public:
 	void LoadSettings();
 	bool SaveSettings();
 	CProgramSetting* AddProgramSettings(TCHAR* programName);
-	bool SaveAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName);
+	bool SaveAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type);
 	CSettings* GetSettings();
 	void ApplyNewSettings(CSettings *newSettings);
 	void AddSkipVersionKey(tstring versionNumber);
-
 	BOOL ShouldSkipVersion(tstring versionNumber);
 	BOOL GetDisableUpdateCheck();
 	void SetDisableUpdateCheck(BOOL state);

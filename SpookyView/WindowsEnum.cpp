@@ -74,13 +74,13 @@ CAlphaSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings(bool setEnab
 	return alphaSettings;
 }
 
-void WindowsEnum::ToggleTransparencyActiveWindow()
+void WindowsEnum::ToggleForegroundTransparencyActiveWindow()
 {
 	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(false);
 	if (alphaSettings)
 	{
 		alphaSettings->enabled = !alphaSettings->enabled;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::foreground);
 		if (!isPause)
 		{
 			onlyResetTransparencyOnDisabledSettings = true;
@@ -91,14 +91,31 @@ void WindowsEnum::ToggleTransparencyActiveWindow()
 	}
 }
 
-void WindowsEnum::IncreaseTransparencyActiveWindow()
+void WindowsEnum::ToggleBackgroundTransparencyActiveWindow()
+{
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(false);
+	if (alphaSettings)
+	{
+		alphaSettings->separateBackgroundValue = !alphaSettings->separateBackgroundValue;
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::background);
+		if (!isPause)
+		{
+			onlyResetTransparencyOnDisabledSettings = true;
+			ResetWindowsTransparency();
+			onlyResetTransparencyOnDisabledSettings = false;
+			SetWindowsTransparency();
+		}
+	}
+}
+
+void WindowsEnum::IncreaseForegroundTransparencyActiveWindow()
 {
 	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
 	if (alphaSettings)
 	{
 		alphaSettings->foreground = alphaSettings->foreground > 32 ? alphaSettings->foreground - 16 : 16;
 		alphaSettings->enabled = true;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::foreground);
 		if (!isPause)
 		{
 			SetWindowsTransparency();
@@ -106,14 +123,46 @@ void WindowsEnum::IncreaseTransparencyActiveWindow()
 	}
 }
 
-void WindowsEnum::DecreaseTransparencyActiveWindow()
+void WindowsEnum::DecreaseForegroundTransparencyActiveWindow()
 {
 	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
 	if (alphaSettings)
 	{
 		alphaSettings->foreground = alphaSettings->foreground < 239 ? alphaSettings->foreground + 16 : 255;
 		alphaSettings->enabled = true;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::foreground);
+		if (!isPause)
+		{
+			SetWindowsTransparency();
+		}
+	}
+}
+
+void WindowsEnum::IncreaseBackgroundTransparencyActiveWindow()
+{
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
+	if (alphaSettings)
+	{
+		alphaSettings->background = alphaSettings->background > 32 ? alphaSettings->background - 16 : 16;
+		alphaSettings->enabled = true;
+		alphaSettings->separateBackgroundValue = true;
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::background);
+		if (!isPause)
+		{
+			SetWindowsTransparency();
+		}
+	}
+}
+
+void WindowsEnum::DecreaseBackgroundTransparencyActiveWindow()
+{
+	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
+	if (alphaSettings)
+	{
+		alphaSettings->background = alphaSettings->background < 239 ? alphaSettings->background + 16 : 255;
+		alphaSettings->enabled = true;
+		alphaSettings->separateBackgroundValue = true;
+		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::background);
 		if (!isPause)
 		{
 			SetWindowsTransparency();
