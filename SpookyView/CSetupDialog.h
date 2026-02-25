@@ -47,6 +47,7 @@ protected:
 	void SetButtonEnableState(int controlId, bool show);
 	void SetFormElementsEnableState();
 	void SetTrackbarRanges(HWND hWnd);
+	void ApplyHotketSettings(CAlphaSettings* alphaSettings, CAlphaSettings* hotkeyAlphaSettings);
 };
 
 #endif

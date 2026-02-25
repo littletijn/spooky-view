@@ -47,13 +47,20 @@ int ListView::GetSelectedIndex()
 	return ListView_GetNextItem(this->hWnd, -1, LVNI_SELECTED);
 }
 
-int ListView::AddItem(LPTSTR text)
+int ListView::AddItem(LPTSTR text, int index)
 {
 	LVITEM item;
 	SecureZeroMemory(&item, sizeof(item));
 	item.mask = LVIF_TEXT;
 	item.pszText = text;
-
+	if (index > -1)
+	{
+		item.iItem = index;
+	}
+	else
+	{
+		item.iItem = GetItemCount(); //Put item as last
+	}
 	int result = ListView_InsertItem(this->hWnd, &item);
 	return result;
 }
@@ -65,11 +72,11 @@ void ListView::SetItem(int itemIndex, int subItemIndex, t_string text)
 	ListView_SetItemText(this->hWnd, itemIndex, subItemIndex, textBuffer->data());
 }
 
-int ListView::AddItem(t_string text)
+int ListView::AddItem(t_string text, int index)
 {	
 	auto textBuffer = std::make_unique<std::vector<TCHAR>>(text.begin(), text.end());
 	textBuffer->push_back(0); //Add null terminator for string
-	int result = this->AddItem(textBuffer->data());
+	int result = this->AddItem(textBuffer->data(), index);
 	return result;
 }
 
@@ -82,4 +89,9 @@ void ListView::DeleteSelectedItem()
 {
 	int index = GetSelectedIndex();
 	ListView_DeleteItem(this->hWnd, index);
+}
+
+int ListView::GetItemCount()
+{
+	return ListView_GetItemCount(this->hWnd);
 }

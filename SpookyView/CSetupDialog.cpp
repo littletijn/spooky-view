@@ -167,52 +167,58 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 
 void CSetupDialog::CreateOrUpdateAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName)
 {
-	// Check if app is in list already
+	//Check if app is in list already
 	auto lowerCaseProgramName = newSettings->ToLowerCase(processFileName);
 	auto existingProgram = newSettings->programs->find(*lowerCaseProgramName);
 	if (existingProgram != newSettings->programs->end())
 	{
-		//App is already in list. Check if we have selected a app
-		int selectedAppIndex = this->appsListView->GetSelectedIndex();
-		if (selectedAppIndex > 0)
+		//App is already in list. Check if window is in list
+		auto existingWindowClassName = existingProgram->second->windows->find(windowClassName);
+		if (existingWindowClassName != existingProgram->second->windows->end())
 		{
-			// Check if it is selected right now
-			if (this->currentProgramName == *lowerCaseProgramName)
+			//Update window alpha values in newSettings
+			ApplyHotketSettings(&existingWindowClassName->second->alphaSettings, alphaSettings);
+			//Check if this app and window is selected in the list.
+			if (this->currentProgramName == *lowerCaseProgramName && this->currentWindowClassName == windowClassName)
 			{
-				//App is selected, check if window is in list
-				auto existingWindowClassName = this->currentProgram->windows->find(windowClassName);
-				if (existingWindowClassName != this->currentProgram->windows->end())
+				//App and window is selected. Update GUI
+				SetTrackbars();
+				SetCheckboxes();
+			}
+		}
+		else
+		{
+			//If not in list, we update app global settings.
+			//Update app global aplha values newSettings
+			ApplyHotketSettings(&existingProgram->second->alphaSettings, alphaSettings);
+			//Check if we have selected a app
+			int selectedAppIndex = this->appsListView->GetSelectedIndex();
+			if (selectedAppIndex > 0)
+			{
+				//Check if it is selected right now
+				if (this->currentProgramName == *lowerCaseProgramName)
 				{
-					// If not in list, we update app global settings. Check if that is selected currently
-					int selectedWindowIndex = this->windowsListView->GetSelectedIndex();
-					if (selectedWindowIndex == 0)
-					{
-						//Update app global aplha settings
-						//TODO: Copy settings in newSettings
-						SetTrackbars();
-						SetCheckboxes();
-					}
-				}
-				else
-				{
-					// Check if this window is selected in the list.
-					if (this->currentWindowClassName == windowClassName)
-					{
-						//Update window alpha values
-						//TODO: Copy settings in newSettings
-						SetTrackbars();
-						SetCheckboxes();
-					}
+					//App is selected, update GUI
+					SetTrackbars();
+					SetCheckboxes();
 				}
 			}
 		}
 	}
 	else
 	{
-		//App is not in list. Create entry
+		//App is not in list. Create entry in newSettings and in app list
 		this->appsListView->AddItem(*lowerCaseProgramName);
-		//TODO: Create new entry in newSettings
+		auto newProgramSettings = std::make_unique<CProgramSetting>();
+		ApplyHotketSettings(&newProgramSettings->alphaSettings, alphaSettings);
+		newSettings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(*lowerCaseProgramName, std::move(newProgramSettings)));
 	}
+}
+
+void CSetupDialog::ApplyHotketSettings(CAlphaSettings* alphaSettings, CAlphaSettings* hotkeyAlphaSettings)
+{
+	alphaSettings->enabled = hotkeyAlphaSettings->enabled;
+	alphaSettings->foreground = hotkeyAlphaSettings->foreground;
 }
 
 bool CSetupDialog::ApplySettings()

@@ -252,15 +252,16 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 	case WM_HOTKEY:
 		switch (wParam)
 		{
-			case 1:
+			case 1: // Ctrl + Insert
 				windowsEnum.ToggleTransparencyActiveWindow();
 				break;
-			case 2:
-				windowsEnum.IncreaseTransparencyActiveWindow();
-				break;
-			case 3:
+			case 2: // Ctrl + Page Down
 				windowsEnum.DecreaseTransparencyActiveWindow();
 				break;
+			case 3: // Ctrl + Page Up
+				windowsEnum.IncreaseTransparencyActiveWindow();
+				break;
+				
 		}
 		break;
 	default:
