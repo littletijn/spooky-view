@@ -165,6 +165,56 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	return FALSE;
 }
 
+void CSetupDialog::CreateOrUpdateAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName)
+{
+	// Check if app is in list already
+	auto lowerCaseProgramName = newSettings->ToLowerCase(processFileName);
+	auto existingProgram = newSettings->programs->find(*lowerCaseProgramName);
+	if (existingProgram != newSettings->programs->end())
+	{
+		//App is already in list. Check if we have selected a app
+		int selectedAppIndex = this->appsListView->GetSelectedIndex();
+		if (selectedAppIndex > 0)
+		{
+			// Check if it is selected right now
+			if (this->currentProgramName == *lowerCaseProgramName)
+			{
+				//App is selected, check if window is in list
+				auto existingWindowClassName = this->currentProgram->windows->find(windowClassName);
+				if (existingWindowClassName != this->currentProgram->windows->end())
+				{
+					// If not in list, we update app global settings. Check if that is selected currently
+					int selectedWindowIndex = this->windowsListView->GetSelectedIndex();
+					if (selectedWindowIndex == 0)
+					{
+						//Update app global aplha settings
+						//TODO: Copy settings in newSettings
+						SetTrackbars();
+						SetCheckboxes();
+					}
+				}
+				else
+				{
+					// Check if this window is selected in the list.
+					if (this->currentWindowClassName == windowClassName)
+					{
+						//Update window alpha values
+						//TODO: Copy settings in newSettings
+						SetTrackbars();
+						SetCheckboxes();
+					}
+				}
+			}
+		}
+	}
+	else
+	{
+		//App is not in list. Create entry
+		this->appsListView->AddItem(*lowerCaseProgramName);
+		//TODO: Create new entry in newSettings
+	}
+}
+
 bool CSetupDialog::ApplySettings()
 {
 	windowsEnum.ResetWindowsTransparency();

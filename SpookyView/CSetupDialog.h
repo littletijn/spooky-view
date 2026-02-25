@@ -18,6 +18,7 @@ public:
 	~CSetupDialog();
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+	void CreateOrUpdateAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName);
 protected:
 	TCHAR allOtherAppsString[160];
 	TCHAR allOtherWindowsString[160];

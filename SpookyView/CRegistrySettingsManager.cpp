@@ -6,7 +6,7 @@
 #include <shlwapi.h>
 #include <intsafe.h>
 #include "Defines.h"
-
+#include "SpookyView.h"
 
 CRegistrySettingsManager::CRegistrySettingsManager()
 {
@@ -266,6 +266,11 @@ bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, 
 				}
 			}
 		}
+	}
+	if (cSetupDialog)
+	{
+		// Apply new alpha settings in open setup window
+		cSetupDialog->CreateOrUpdateAlphaSettings(alphaSettings, processFileName, windowClassName);
 	}
 	return true;
 }
