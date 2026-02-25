@@ -97,6 +97,7 @@ void WindowsEnum::IncreaseTransparencyActiveWindow()
 	if (alphaSettings)
 	{
 		alphaSettings->foreground = alphaSettings->foreground > 32 ? alphaSettings->foreground - 16 : 16;
+		alphaSettings->enabled = true;
 		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
 		if (!isPause)
 		{
@@ -111,6 +112,7 @@ void WindowsEnum::DecreaseTransparencyActiveWindow()
 	if (alphaSettings)
 	{
 		alphaSettings->foreground = alphaSettings->foreground < 239 ? alphaSettings->foreground + 16 : 255;
+		alphaSettings->enabled = true;
 		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName);
 		if (!isPause)
 		{
