@@ -234,7 +234,7 @@ std::map<tstring, tstring> WindowsEnum::GetWindowsForProcess(t_string processNam
 
 void WindowsEnum::SetWindowsModifications()
 {
-	EnumDesktopWindows(NULL, EnumWindowsProc, 0);
+	EnumDesktopWindows(NULL, EnumWindowsProc, 1);
 }
 
 void WindowsEnum::ResetWindowsModifications()
