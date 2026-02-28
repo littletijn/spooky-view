@@ -52,6 +52,7 @@ BOOL CMainWindow::InitHotKeys()
 	RegisterHotKey(this->hWnd, 4, MOD_CONTROL | MOD_SHIFT, VK_PRIOR);
 	RegisterHotKey(this->hWnd, 5, MOD_CONTROL | MOD_SHIFT, VK_HOME);
 	RegisterHotKey(this->hWnd, 6, MOD_CONTROL | MOD_SHIFT, VK_END);
+	RegisterHotKey(this->hWnd, 7, MOD_CONTROL | MOD_SHIFT, VK_OEM_PLUS);
 	return TRUE;
 }
 
@@ -63,6 +64,7 @@ BOOL CMainWindow::RemoveHotKeys()
 	UnregisterHotKey(this->hWnd, 4);
 	UnregisterHotKey(this->hWnd, 5);
 	UnregisterHotKey(this->hWnd, 6);
+	UnregisterHotKey(this->hWnd, 7);
 	return TRUE;
 }
 
@@ -275,6 +277,9 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				break;
 			case 6: // Ctrl + End
 				windowsEnum.DecreaseBackgroundTransparencyActiveWindow();
+				break;
+			case 7: // Ctrl + =
+				windowsEnum.ToggleAlwaysOnTopActiveWindow();
 				break;
 				
 		}

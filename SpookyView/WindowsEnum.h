@@ -42,6 +42,7 @@ public:
 	void TogglePause();
 	CModificationSettings* GetCurrentActiveWindowSettings();
 	CModificationSettings* GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated);
+	void ToggleAlwaysOnTopActiveWindow();
 	void ToggleForegroundTransparencyActiveWindow();
 	void ToggleBackgroundTransparencyActiveWindow();
 	void IncreaseForegroundTransparencyActiveWindow();

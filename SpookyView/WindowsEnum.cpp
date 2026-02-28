@@ -75,6 +75,20 @@ CModificationSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings(bool 
 	return modificationSettings;
 }
 
+void WindowsEnum::ToggleAlwaysOnTopActiveWindow()
+{
+	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(false);
+	if (modificationSettings)
+	{
+		modificationSettings->alwaysOnTop = !modificationSettings->alwaysOnTop;
+		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::alwaysOnTop);
+		if (!isPause)
+		{
+			SetWindowsModifications();
+		}
+	}
+}
+
 void WindowsEnum::ToggleForegroundTransparencyActiveWindow()
 {
 	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(false);

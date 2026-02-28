@@ -13,7 +13,8 @@
 
 enum HotkeyType {
 	foreground,
-	background
+	background,
+	alwaysOnTop
 };
 
 class CSetupDialog : public CModelessDialog

@@ -223,6 +223,9 @@ void CSetupDialog::ApplyHotketSettings(CModificationSettings* modificationSettin
 {
 	switch (type)
 	{
+		case HotkeyType::alwaysOnTop:
+			modificationSettings->alwaysOnTop = hotkeyModificationSettings->alwaysOnTop;
+			break;
 		case HotkeyType::foreground:
 			modificationSettings->enabled = hotkeyModificationSettings->enabled;
 			modificationSettings->foreground = hotkeyModificationSettings->foreground;
