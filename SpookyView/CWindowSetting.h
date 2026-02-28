@@ -2,12 +2,12 @@
 #define CWINDOWSETTIGS_H
 
 #include "MultiPlatformString.h"
-#include "CAlphaSettings.h"
+#include "CModificationSettings.h"
 
 struct CWindowSetting
 {
 	t_string className;
-	CAlphaSettings alphaSettings;
+	CModificationSettings modificationSettings;
 };
 
 #endif

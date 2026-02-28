@@ -22,9 +22,12 @@ public:
 	static BOOL CALLBACK EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumUWPChildWindows(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam);
+	static BOOL IsMaximized(HWND hwnd);
 
 	//Static functions
+	static void CheckAndSetWindowAlwaysOnTop(HWND hwnd);
 	static void SetWindowsTransparency();
+	static void SetWindowsModifications();
 	static std::map<tstring, tstring> GetWindowsForProcess(t_string processName);
 	static BOOL HasProcessUsableWindows(DWORD processId);
 	static BOOL HasProcessUWPCoreWindow(DWORD processId);
@@ -35,7 +38,7 @@ public:
 	void CreateHook();
 	void Unhook();
 	BOOL IsPaused();
-	void ResetWindowsTransparency();
+	void ResetWindowsModifications();
 	void TogglePause();
 	CAlphaSettings* GetCurrentActiveWindowSettings();
 	CAlphaSettings* GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated);
@@ -46,7 +49,7 @@ public:
 	void IncreaseBackgroundTransparencyActiveWindow();
 	void DecreaseBackgroundTransparencyActiveWindow();
 protected:
-	HWINEVENTHOOK hWinEventHook[4];
+	HWINEVENTHOOK hWinEventHook[3];
 
 	//Static variables for EnumWindowsForProcess
 	static t_string processNameOfWindowsToFind;
@@ -78,7 +81,7 @@ protected:
 	static BOOL IsWindowUsable(HWND hwnd, BOOL includeHidden = FALSE);
 	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 	static void CheckAndSetUWPProcessAndClass(HWND hwnd);
-	static CAlphaSettings* GetWindowAlphaSettings(HWND hwnd, BOOL withGlobalSettings);
+	static CModificationSettings* GetWindowModificationSettings(HWND hwnd, , BOOL withGlobalSettings);
 };
 
 #endif

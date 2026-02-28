@@ -62,7 +62,7 @@ void CRegistrySettingsManager::LoadSettings()
 	if (RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey) == ERROR_SUCCESS)
 	{
 		//Read global settings
-		ReadAlphaValues(programsKey, &settings->alphaSettings);
+		ReadModificationValues(programsKey, &settings->modificationSettings);
 
 		DWORD programsSubKeyLength;
 		DWORD programsSubKeyIndex = 0;
@@ -95,7 +95,7 @@ void CRegistrySettingsManager::LoadSettings()
 				if (RegOpenKeyEx(processKey, _T("Windows"), 0, KEY_READ, &windowsKey) == ERROR_SUCCESS)
 				{
 					ReadValue(processKey, _T("File name"), REG_SZ, (BYTE*)fileName.get(), MAX_PATH * sizeof(TCHAR));
-					ReadAlphaValues(windowsKey, &progSettings->alphaSettings);
+					ReadModificationValues(windowsKey, &progSettings->modificationSettings);
 					DWORD windowsSubKeyLength;
 					DWORD windowsSubKeyIndex = 0;
 					RegQueryInfoKey(windowsKey, NULL, NULL, NULL, NULL, &windowsSubKeyLength, NULL, NULL, NULL, NULL, NULL, NULL);
@@ -120,7 +120,7 @@ void CRegistrySettingsManager::LoadSettings()
 						{
 							auto windowSettings = std::make_unique<CWindowSetting>();
 							ReadValue(windowKey, _T("Window class name"), REG_SZ, (BYTE*)windowClassName.get(), MAX_WINDOW_CLASS_NAME * sizeof(TCHAR));
-							ReadAlphaValues(windowKey, &windowSettings->alphaSettings);
+							ReadModificationValues(windowKey, &windowSettings->modificationSettings);
 							progSettings->windows->insert(std::pair<t_string, std::unique_ptr<CWindowSetting>>(windowClassName.get(), std::move(windowSettings)));
 							RegCloseKey(windowKey);
 						}
@@ -140,7 +140,7 @@ void CRegistrySettingsManager::LoadSettings()
 	}
 }
 
-void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* settings)
+void CRegistrySettingsManager::ReadModificationValues(HKEY key, CModificationSettings* settings)
 {
 	BYTE value;
 	if (ReadKeyByteValue(key, _T("Alpha foreground"), value))
@@ -154,6 +154,10 @@ void CRegistrySettingsManager::ReadAlphaValues(HKEY key, CAlphaSettings* setting
 	if (ReadKeyByteValue(key, _T("Enabled"), value))
 	{
 		settings->enabled = value != 0;
+	}
+	if (ReadKeyByteValue(key, _T("Always on top"), value))
+	{
+		settings->alwaysOnTop = value != 0;
 	}
 	if (ReadKeyByteValue(key, _T("Separate background value"), value))
 	{
@@ -186,7 +190,7 @@ bool CRegistrySettingsManager::SaveSettings()
 	if (RegCreateKeyEx(registryRootKey, _T("Programs"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programsKey, NULL) == ERROR_SUCCESS)
 	{
 		//Save global settings
-		this->SaveAlphaSettingsValues(programsKey, settings->alphaSettings);
+		this->SaveModificationValues(TRUE, programsKey, settings->modificationSettings);
 		for (auto const &program : *settings->programs)
 		{
 			//Create key for program
@@ -199,7 +203,7 @@ bool CRegistrySettingsManager::SaveSettings()
 				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
 				{
 					//Save global settings of program
-					this->SaveAlphaSettingsValues(windowsKey, program.second->alphaSettings);
+					this->SaveModificationValues(FALSE, windowsKey, program.second->modificationSettings);
 
 					for (auto const &window : *program.second->windows)
 					{
@@ -208,7 +212,7 @@ bool CRegistrySettingsManager::SaveSettings()
 						if (RegCreateKeyEx(windowsKey, window.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowKey, NULL) == ERROR_SUCCESS)
 						{
 							SaveStringValue(windowKey, _T("Window class name"),window.first);
-							this->SaveAlphaSettingsValues(windowKey, window.second->alphaSettings);
+							this->SaveModificationValues(FALSE, windowKey, window.second->modificationSettings);
 						}
 					}
 				}
@@ -283,6 +287,10 @@ void CRegistrySettingsManager::SaveAlphaSettingsValues(HKEY key, CAlphaSettings 
 	SaveValue(key, _T("Alpha foreground"), REG_BINARY, &values.foreground);
 	SaveValue(key, _T("Alpha background"), REG_BINARY, &values.background);
 	SaveValue(key, _T("Separate background value"), REG_BINARY, &separateBackgroundValue);
+	if (!globalSettings) {
+		BYTE alwaysOnTop = values.alwaysOnTop ? '\x1' : '\x0';
+		SaveValue(key, _T("Always on top"), REG_BINARY, &alwaysOnTop);
+	}
 }
 
 BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value)
