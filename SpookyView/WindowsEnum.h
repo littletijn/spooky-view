@@ -49,7 +49,7 @@ public:
 	void IncreaseBackgroundTransparencyActiveWindow();
 	void DecreaseBackgroundTransparencyActiveWindow();
 protected:
-	HWINEVENTHOOK hWinEventHook[3];
+	HWINEVENTHOOK hWinEventHook[4];
 
 	//Static variables for EnumWindowsForProcess
 	static t_string processNameOfWindowsToFind;
