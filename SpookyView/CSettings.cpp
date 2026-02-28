@@ -25,7 +25,7 @@ CSettings::~CSettings()
 // Search settings maps for alpha settings for given process and window class
 CModificationSettings* CSettings::GetModificationSetting(TCHAR* processFileName, TCHAR* windowClassName, BOOL withGlobalSettings)
 {
-	CModificationSettings* foundModificationSettings;
+	CModificationSettings* foundModificationSettings = NULL;
 	auto lowerCaseProcessKeyName = ToLowerCase(processFileName);
 
 	auto result = this->programs->find(*lowerCaseProcessKeyName);
@@ -45,7 +45,7 @@ CModificationSettings* CSettings::GetModificationSetting(TCHAR* processFileName,
 	}
 	else if (withGlobalSettings)
 	{
-		foundModificationSettings = &this->alphaSettings;
+		foundModificationSettings = &this->modificationSettings;
 	}
 	return foundModificationSettings;
 }

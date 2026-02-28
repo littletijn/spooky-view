@@ -169,7 +169,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	return FALSE;
 }
 
-void CSetupDialog::CreateOrUpdateAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
+void CSetupDialog::CreateOrUpdateAlphaSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
 {
 	//Check if app is in list already
 	auto lowerCaseProgramName = newSettings->ToLowerCase(processFileName);
@@ -181,7 +181,7 @@ void CSetupDialog::CreateOrUpdateAlphaSettings(CAlphaSettings* alphaSettings, TC
 		if (existingWindowClassName != existingProgram->second->windows->end())
 		{
 			//Update window alpha values in newSettings
-			ApplyHotketSettings(&existingWindowClassName->second->alphaSettings, alphaSettings, type);
+			ApplyHotketSettings(&existingWindowClassName->second->modificationSettings, modificationSettings, type);
 			//Check if this app and window is selected in the list.
 			if (this->currentProgramName == *lowerCaseProgramName && this->currentWindowClassName == windowClassName)
 			{
@@ -194,7 +194,7 @@ void CSetupDialog::CreateOrUpdateAlphaSettings(CAlphaSettings* alphaSettings, TC
 		{
 			//If not in list, we update app global settings.
 			//Update app global aplha values newSettings
-			ApplyHotketSettings(&existingProgram->second->alphaSettings, alphaSettings, type);
+			ApplyHotketSettings(&existingProgram->second->modificationSettings, modificationSettings, type);
 			//Check if we have selected a app
 			int selectedAppIndex = this->appsListView->GetSelectedIndex();
 			if (selectedAppIndex > 0)
@@ -214,12 +214,12 @@ void CSetupDialog::CreateOrUpdateAlphaSettings(CAlphaSettings* alphaSettings, TC
 		//App is not in list. Create entry in newSettings and in app list
 		this->appsListView->AddItem(*lowerCaseProgramName);
 		auto newProgramSettings = std::make_unique<CProgramSetting>();
-		ApplyHotketSettings(&newProgramSettings->alphaSettings, alphaSettings, type);
+		ApplyHotketSettings(&newProgramSettings->modificationSettings, modificationSettings, type);
 		newSettings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(*lowerCaseProgramName, std::move(newProgramSettings)));
 	}
 }
 
-void CSetupDialog::ApplyHotketSettings(CAlphaSettings* alphaSettings, CAlphaSettings* hotkeyAlphaSettings, HotkeyType type)
+void CSetupDialog::ApplyHotketSettings(CModificationSettings* alphaSettings, CModificationSettings* hotkeyAlphaSettings, HotkeyType type)
 {
 	switch (type)
 	{

@@ -223,7 +223,7 @@ bool CRegistrySettingsManager::SaveSettings()
 	return false;
 }
 
-bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
+bool CRegistrySettingsManager::SaveAlphaSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
 {
 	HKEY programsKey;
 	HKEY programKey;
@@ -246,12 +246,12 @@ bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, 
 				windowResult = RegOpenKeyEx(windowsKey, windowClassName, 0, KEY_SET_VALUE, &windowKey);
 				if (windowResult == ERROR_SUCCESS)
 				{
-					SaveAlphaSettingsValues(windowKey, *alphaSettings);
+					SaveModificationValues(false, windowKey, *modificationSettings);
 				}
 				else
 				{
 					//We have not found a window key. Store as program settings
-					SaveAlphaSettingsValues(windowsKey, *alphaSettings);
+					SaveModificationValues(false, windowsKey, *modificationSettings);
 				}
 			}
 		}
@@ -266,7 +266,7 @@ bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, 
 				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
 				{
 					//Store settings in new key
-					SaveAlphaSettingsValues(windowsKey, *alphaSettings);
+					SaveModificationValues(false, windowsKey, *modificationSettings);
 				}
 			}
 		}
@@ -274,12 +274,12 @@ bool CRegistrySettingsManager::SaveAlphaSettings(CAlphaSettings* alphaSettings, 
 	if (cSetupDialog)
 	{
 		// Apply new alpha settings in open setup window
-		cSetupDialog->CreateOrUpdateAlphaSettings(alphaSettings, processFileName, windowClassName, type);
+		cSetupDialog->CreateOrUpdateAlphaSettings(modificationSettings, processFileName, windowClassName, type);
 	}
 	return true;
 }
 
-void CRegistrySettingsManager::SaveAlphaSettingsValues(HKEY key, CAlphaSettings values)
+void CRegistrySettingsManager::SaveModificationValues(BOOL globalSettings, HKEY key, CModificationSettings values)
 {
 	BYTE enabled = values.enabled ? '\x1' : '\x0';
 	BYTE separateBackgroundValue = values.separateBackgroundValue ? '\x1' : '\x0';
