@@ -23,7 +23,7 @@ public:
 	~CSetupDialog();
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-	void CreateOrUpdateAlphaSettings(CModificationSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type);
+	void CreateOrUpdateModifcationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type);
 protected:
 	TCHAR allOtherAppsString[160];
 	TCHAR allOtherWindowsString[160];
@@ -55,7 +55,7 @@ protected:
 	void SetButtonEnableState(int controlId, bool show);
 	void SetFormElementsEnableState();
 	void SetTrackbarRanges(HWND hWnd);
-	void ApplyHotketSettings(CModificationSettings* alphaSettings, CModificationSettings* hotkeyAlphaSettings, HotkeyType type);
+	void ApplyHotketSettings(CModificationSettings* modificationSettings, CModificationSettings* hotkeyModificationSettings, HotkeyType type);
 };
 
 #endif

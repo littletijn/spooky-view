@@ -16,7 +16,7 @@ public:
 	virtual void LoadSettings() = 0;
 	virtual bool SaveSettings() = 0;
 	virtual CProgramSetting* AddProgramSettings(TCHAR* programName) = 0;
-	virtual bool SaveAlphaSettings(CModificationSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type) = 0;
+	virtual bool SaveModificationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type) = 0;
 	virtual void ApplyNewSettings(CSettings* newSettings) = 0;
 	virtual void AddSkipVersionKey(tstring versionNumber) = 0;
 	virtual BOOL ShouldSkipVersion(tstring versionNumber) = 0;

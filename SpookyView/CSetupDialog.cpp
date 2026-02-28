@@ -169,7 +169,7 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	return FALSE;
 }
 
-void CSetupDialog::CreateOrUpdateAlphaSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
+void CSetupDialog::CreateOrUpdateModifcationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
 {
 	//Check if app is in list already
 	auto lowerCaseProgramName = newSettings->ToLowerCase(processFileName);
@@ -219,17 +219,17 @@ void CSetupDialog::CreateOrUpdateAlphaSettings(CModificationSettings* modificati
 	}
 }
 
-void CSetupDialog::ApplyHotketSettings(CModificationSettings* alphaSettings, CModificationSettings* hotkeyAlphaSettings, HotkeyType type)
+void CSetupDialog::ApplyHotketSettings(CModificationSettings* modificationSettings, CModificationSettings* hotkeyModificationSettings, HotkeyType type)
 {
 	switch (type)
 	{
 		case HotkeyType::foreground:
-			alphaSettings->enabled = hotkeyAlphaSettings->enabled;
-			alphaSettings->foreground = hotkeyAlphaSettings->foreground;
+			modificationSettings->enabled = hotkeyModificationSettings->enabled;
+			modificationSettings->foreground = hotkeyModificationSettings->foreground;
 			break;
 		case HotkeyType::background:
-			alphaSettings->separateBackgroundValue = hotkeyAlphaSettings->separateBackgroundValue;
-			alphaSettings->background = hotkeyAlphaSettings->background;
+			modificationSettings->separateBackgroundValue = hotkeyModificationSettings->separateBackgroundValue;
+			modificationSettings->background = hotkeyModificationSettings->background;
 			break;
 	}
 }

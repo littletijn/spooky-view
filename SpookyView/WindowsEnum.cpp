@@ -58,8 +58,8 @@ CModificationSettings* WindowsEnum::GetCurrentActiveWindowSettings()
 
 CModificationSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated)
 {
-	auto alphaSettings = GetCurrentActiveWindowSettings();
-	if (!alphaSettings)
+	auto modificationSettings = GetCurrentActiveWindowSettings();
+	if (!modificationSettings)
 	{
 		auto settings = settingsManager->AddProgramSettings(fileName);
 		if (settings)
@@ -69,19 +69,19 @@ CModificationSettings* WindowsEnum::GetOrCreateCurrentActiveWindowSettings(bool 
 				settings->modificationSettings.enabled = true;
 			}
 			settings->modificationSettings.foreground = 128;
-			alphaSettings = &settings->modificationSettings;
+			modificationSettings = &settings->modificationSettings;
 		}
 	}
-	return alphaSettings;
+	return modificationSettings;
 }
 
 void WindowsEnum::ToggleForegroundTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(false);
-	if (alphaSettings)
+	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(false);
+	if (modificationSettings)
 	{
-		alphaSettings->enabled = !alphaSettings->enabled;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::foreground);
+		modificationSettings->enabled = !modificationSettings->enabled;
+		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
 		if (!isPause)
 		{
 			onlyResetTransparencyOnDisabledSettings = true;
@@ -94,11 +94,11 @@ void WindowsEnum::ToggleForegroundTransparencyActiveWindow()
 
 void WindowsEnum::ToggleBackgroundTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(false);
-	if (alphaSettings)
+	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(false);
+	if (modificationSettings)
 	{
-		alphaSettings->separateBackgroundValue = !alphaSettings->separateBackgroundValue;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::background);
+		modificationSettings->separateBackgroundValue = !modificationSettings->separateBackgroundValue;
+		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
 		if (!isPause)
 		{
 			onlyResetTransparencyOnDisabledSettings = true;
@@ -111,12 +111,12 @@ void WindowsEnum::ToggleBackgroundTransparencyActiveWindow()
 
 void WindowsEnum::IncreaseForegroundTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
-	if (alphaSettings)
+	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(true);
+	if (modificationSettings)
 	{
-		alphaSettings->foreground = alphaSettings->foreground > 32 ? alphaSettings->foreground - 16 : 16;
-		alphaSettings->enabled = true;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::foreground);
+		modificationSettings->foreground = modificationSettings->foreground > 32 ? modificationSettings->foreground - 16 : 16;
+		modificationSettings->enabled = true;
+		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
 		if (!isPause)
 		{
 			SetWindowsModifications();
@@ -126,12 +126,12 @@ void WindowsEnum::IncreaseForegroundTransparencyActiveWindow()
 
 void WindowsEnum::DecreaseForegroundTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
-	if (alphaSettings)
+	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(true);
+	if (modificationSettings)
 	{
-		alphaSettings->foreground = alphaSettings->foreground < 239 ? alphaSettings->foreground + 16 : 255;
-		alphaSettings->enabled = true;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::foreground);
+		modificationSettings->foreground = modificationSettings->foreground < 239 ? modificationSettings->foreground + 16 : 255;
+		modificationSettings->enabled = true;
+		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
 		if (!isPause)
 		{
 			SetWindowsModifications();
@@ -141,13 +141,13 @@ void WindowsEnum::DecreaseForegroundTransparencyActiveWindow()
 
 void WindowsEnum::IncreaseBackgroundTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
-	if (alphaSettings)
+	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(true);
+	if (modificationSettings)
 	{
-		alphaSettings->background = alphaSettings->background > 32 ? alphaSettings->background - 16 : 16;
-		alphaSettings->enabled = true;
-		alphaSettings->separateBackgroundValue = true;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::background);
+		modificationSettings->background = modificationSettings->background > 32 ? modificationSettings->background - 16 : 16;
+		modificationSettings->enabled = true;
+		modificationSettings->separateBackgroundValue = true;
+		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
 		if (!isPause)
 		{
 			SetWindowsModifications();
@@ -157,13 +157,13 @@ void WindowsEnum::IncreaseBackgroundTransparencyActiveWindow()
 
 void WindowsEnum::DecreaseBackgroundTransparencyActiveWindow()
 {
-	auto alphaSettings = GetOrCreateCurrentActiveWindowSettings(true);
-	if (alphaSettings)
+	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(true);
+	if (modificationSettings)
 	{
-		alphaSettings->background = alphaSettings->background < 239 ? alphaSettings->background + 16 : 255;
-		alphaSettings->enabled = true;
-		alphaSettings->separateBackgroundValue = true;
-		settingsManager->SaveAlphaSettings(alphaSettings, fileName, windowClassName, HotkeyType::background);
+		modificationSettings->background = modificationSettings->background < 239 ? modificationSettings->background + 16 : 255;
+		modificationSettings->enabled = true;
+		modificationSettings->separateBackgroundValue = true;
+		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
 		if (!isPause)
 		{
 			SetWindowsModifications();
