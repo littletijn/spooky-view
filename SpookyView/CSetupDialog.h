@@ -4,7 +4,7 @@
 #include "CModelessDialog.h"
 #include <commctrl.h>
 #include "MultiPlatformString.h"
-#include "CAlphaSettings.h"
+#include "CModificationSettings.h"
 #include "CProgramSetting.h"
 #include "ListView.h"
 #include "Checkbox.h"
@@ -23,11 +23,11 @@ public:
 	~CSetupDialog();
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-	void CreateOrUpdateAlphaSettings(CAlphaSettings* alphaSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type);
+	void CreateOrUpdateModifcationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type);
 protected:
 	TCHAR allOtherAppsString[160];
 	TCHAR allOtherWindowsString[160];
-	CAlphaSettings* currentAlphaSettings;
+	CModificationSettings* currentModificationSettings;
 	CProgramSetting* currentProgram;
 	t_string currentProgramName;
 	t_string currentWindowClassName;
@@ -35,12 +35,14 @@ protected:
 	std::unique_ptr<ListView> appsListView;
 	std::unique_ptr<ListView> windowsListView;
 	std::unique_ptr<Checkbox> enabledCheckbox;
+	std::unique_ptr<Checkbox> alwaysOnTopCheckbox;
 	std::unique_ptr<Checkbox> separateBackgroundValueCheckbox;
 
 	bool ApplySettings();
 	void CopySettings();
 	void WindowsListNotified();
 	void EnabledCheckboxNotified();
+	void AlwaysOnTopCheckboxNotified();
 	void SeparateBackgroundValueCheckboxNotified();
 	void ProgramsListNotified();
 	void PopulateProcessList();
@@ -49,10 +51,11 @@ protected:
 	void SetCheckboxes();
 	void SetAlpha(BYTE value, HWND trackbar);
 	void SetFormVisibility(bool show);
+	void SetFormElementVisibility(int itemId, bool show);
 	void SetButtonEnableState(int controlId, bool show);
 	void SetFormElementsEnableState();
 	void SetTrackbarRanges(HWND hWnd);
-	void ApplyHotketSettings(CAlphaSettings* alphaSettings, CAlphaSettings* hotkeyAlphaSettings, HotkeyType type);
+	void ApplyHotketSettings(CModificationSettings* modificationSettings, CModificationSettings* hotkeyModificationSettings, HotkeyType type);
 };
 
 #endif

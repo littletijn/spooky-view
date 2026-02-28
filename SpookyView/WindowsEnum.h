@@ -14,31 +14,34 @@ public:
 	BOOL isPause = false;
 
 	//Callbacks
-	static void CALLBACK WinEventProcWithCheck(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
-	static void CALLBACK WinEventProcWithoutCheck(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
+	static void CALLBACK WinEventProcMinimizeChange(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
+	static void CALLBACK WinEventProcForegroundChange(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
+	static void CALLBACK WinEventProcShow(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 	static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumUWPChildWindows(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam);
+	static BOOL IsMaximized(HWND hwnd);
 
 	//Static functions
-	static void SetWindowsTransparency();
+	static void CheckAndSetWindowAlwaysOnTop(HWND hwnd);
+	static void SetWindowsModifications();
 	static std::map<tstring, tstring> GetWindowsForProcess(t_string processName);
 	static BOOL HasProcessUsableWindows(DWORD processId);
 	static BOOL HasProcessUWPCoreWindow(DWORD processId);
-	static BOOL ResetWindowTransparency(HWND hwnd);
+	static BOOL ResetWindowModifications(HWND hwnd);
 	static BOOL IsWindowTransparent(HWND hwnd);
 
 	//Functions
 	void CreateHook();
 	void Unhook();
 	BOOL IsPaused();
-	void ResetWindowsTransparency();
+	void ResetWindowsModifications();
 	void TogglePause();
-	CAlphaSettings* GetCurrentActiveWindowSettings();
-	CAlphaSettings* GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated);
+	CModificationSettings* GetCurrentActiveWindowSettings();
+	CModificationSettings* GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated);
 	void ToggleForegroundTransparencyActiveWindow();
 	void ToggleBackgroundTransparencyActiveWindow();
 	void IncreaseForegroundTransparencyActiveWindow();
@@ -70,7 +73,7 @@ protected:
 	static std::list<HWND> applicationFrameHostWindows;
 	static BOOL isMinimizedCoreWindow;
 
-	//Static variable for ResetWindowsTransparency
+	//Static variable for ReSetWindowsModifications
 	static BOOL onlyResetTransparencyOnDisabledSettings;
 
 	//Static functions
@@ -78,7 +81,7 @@ protected:
 	static BOOL IsWindowUsable(HWND hwnd, BOOL includeHidden = FALSE);
 	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 	static void CheckAndSetUWPProcessAndClass(HWND hwnd);
-	static CAlphaSettings* GetWindowAlphaSettings(HWND hwnd, BOOL withGlobalSettings);
+	static CModificationSettings* GetWindowModificationSettings(HWND hwnd, BOOL withGlobalSettings);
 };
 
 #endif
