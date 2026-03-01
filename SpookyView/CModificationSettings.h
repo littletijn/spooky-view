@@ -3,6 +3,7 @@
 
 struct CModificationSettings
 {
+	BOOL isGlobal = 0;
 	BOOL enabled = 0;
 	BOOL alwaysOnTop = 0;
 	BOOL separateBackgroundValue = 0;

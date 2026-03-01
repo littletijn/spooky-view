@@ -26,7 +26,6 @@ BOOL WindowsEnum::isUWPProcess;
 BOOL WindowsEnum::UWPProcessFound;
 std::list<HWND> WindowsEnum::applicationFrameHostWindows;
 BOOL WindowsEnum::isMinimizedCoreWindow;
-BOOL WindowsEnum::onlyResetTransparencyOnDisabledSettings;
 
 BOOL WindowsEnum::IsPaused()
 {
@@ -40,7 +39,8 @@ void WindowsEnum::TogglePause()
 	{
 		Unhook();
 	}
-	else {
+	else
+	{
 		CreateHook();
 		SetWindowsModifications();
 	}
@@ -51,7 +51,7 @@ CModificationSettings* WindowsEnum::GetCurrentActiveWindowSettings()
 	auto foregroundHwnd = GetForegroundWindow();
 	if (IsWindowUsable(foregroundHwnd, false))
 	{
-		return GetWindowModificationSettings(foregroundHwnd, false);
+		return GetWindowModificationSettings(foregroundHwnd, false, false);
 	}
 	return NULL;
 }
@@ -84,6 +84,7 @@ void WindowsEnum::ToggleAlwaysOnTopActiveWindow()
 		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::alwaysOnTop);
 		if (!isPause)
 		{
+			ApplyWindowsModificationsForHotkeys();
 			SetWindowsModifications();
 		}
 	}
@@ -98,9 +99,7 @@ void WindowsEnum::ToggleForegroundTransparencyActiveWindow()
 		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
 		if (!isPause)
 		{
-			onlyResetTransparencyOnDisabledSettings = true;
-			ResetWindowsModifications();
-			onlyResetTransparencyOnDisabledSettings = false;
+			ApplyWindowsModificationsForHotkeys();
 			SetWindowsModifications();
 		}
 	}
@@ -115,9 +114,7 @@ void WindowsEnum::ToggleBackgroundTransparencyActiveWindow()
 		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
 		if (!isPause)
 		{
-			onlyResetTransparencyOnDisabledSettings = true;
-			ResetWindowsModifications();
-			onlyResetTransparencyOnDisabledSettings = false;
+			ApplyWindowsModificationsForHotkeys();
 			SetWindowsModifications();
 		}
 	}
@@ -234,12 +231,22 @@ std::map<tstring, tstring> WindowsEnum::GetWindowsForProcess(t_string processNam
 
 void WindowsEnum::SetWindowsModifications()
 {
-	EnumDesktopWindows(NULL, EnumWindowsProc, 1);
+	EnumDesktopWindows(NULL, EnumWindowsProc, 0);
 }
 
-void WindowsEnum::ResetWindowsModifications()
+void WindowsEnum::RestoreWindows()
 {
-	EnumDesktopWindows(NULL, EnumWindowsReset, 0);
+	EnumDesktopWindows(NULL, EnumWindowsRestore, 0);
+}
+
+void WindowsEnum::ApplyWindowsModificationsForHotkeys()
+{
+	EnumDesktopWindows(NULL, EnumWindowsApply, 0);
+}
+
+void WindowsEnum::ApplyWindowsModificationsForNewSettings()
+{
+	EnumDesktopWindows(NULL, EnumWindowsApply, 1);
 }
 
 BOOL WindowsEnum::IsWindowUsable(HWND hwnd, BOOL includeHidden)
@@ -290,7 +297,7 @@ void CALLBACK WindowsEnum::WinEventProcShow(HWINEVENTHOOK hWinEventHook, DWORD e
 
 void WindowsEnum::CheckAndSetWindowAlwaysOnTop(HWND hwnd)
 {
-	auto modificationSettings = GetWindowModificationSettings(hwnd, false);
+	auto modificationSettings = GetWindowModificationSettings(hwnd, false, false);
 	if (modificationSettings && modificationSettings->alwaysOnTop)
 	{
 		SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
@@ -311,51 +318,106 @@ BOOL CALLBACK WindowsEnum::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 				SetWindowAlpha(hwnd, CSettings::WindowTypes::Background);
 			}
 		}
-		if (lParam == 1)
+		if (!IsWindowAlwaysOnTop(hwnd))
 		{
 			CheckAndSetWindowAlwaysOnTop(hwnd);
 		}
+		
 	}
 	return TRUE;
 }
 
-BOOL CALLBACK WindowsEnum::EnumWindowsReset(HWND hwnd, LPARAM lParam)
+/*
+* Callback that is called when Spooky View is closed. Will try to restore windows to previous state
+*/
+BOOL CALLBACK WindowsEnum::EnumWindowsRestore(HWND hwnd, LPARAM lParam)
 {
-	return ResetWindowModifications(hwnd);
-}
-
-BOOL WindowsEnum::ResetWindowModifications(HWND hwnd)
-{
-	auto settings = GetWindowModificationSettings(hwnd, TRUE);
+	// Check if app is modified by our app. If so, undo the changes
+	auto settings = GetWindowModificationSettings(hwnd, TRUE, false);
 	if (settings)
 	{
-		//Only reset windows changed by our app
+		// Check if window is transparent
 		if (IsWindowUsable(hwnd, TRUE) && IsWindowTransparent(hwnd))
 		{
-			if (!onlyResetTransparencyOnDisabledSettings || !settings->enabled)
+			if (settings->enabled)
 			{
-				//https://docs.microsoft.com/en-us/windows/win32/winmsg/using-windows#using-layered-windows
-				SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED));
-				SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
-				RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
+				RemoveTransparency(hwnd);
 			}
 		}
 		//Check if window is always-on-top
-		if ((GetWindowLongPtr(hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST))
+		if (IsWindowAlwaysOnTop(hwnd))
 		{
 			if (settings->alwaysOnTop)
 			{
-				//Window is always-on-top (most likely by our app), set as non top window
-				SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+				DisableAlwaysOnTop(hwnd);
 			}
 		}
 	}
 	return TRUE;
+}
+
+/*
+* Callback that is called when new modifications are set for windows.
+* Used by hotkeys and setup dialog to apply enable/disable transparency & always on top
+*/
+BOOL CALLBACK WindowsEnum::EnumWindowsApply(HWND hwnd, LPARAM lParam)
+{
+	CModificationSettings* newSettings = NULL;
+	auto settings = GetWindowModificationSettings(hwnd, TRUE, false);
+	if (settings)
+	{
+		if (lParam == 1)
+		{
+			// Check previous settings and apply new changes made
+			newSettings = GetWindowModificationSettings(hwnd, TRUE, true);
+		}
+		//Only reset windows changed by our app
+		if (IsWindowUsable(hwnd, TRUE) && IsWindowTransparent(hwnd))
+		{
+			//Check if the setting is disabled now, or that the new setting is to disable the option when it was enabled before
+			if ((lParam == 0 && !settings->enabled) || (lParam == 1 && settings->enabled && (newSettings == NULL || !newSettings->enabled)))
+			{
+				RemoveTransparency(hwnd);
+			}
+		}
+		if (!settings->isGlobal)
+		{
+			//Check if window is always-on-top
+			if (IsWindowAlwaysOnTop(hwnd))
+			{
+				//Check if the setting is disabled now, or that the new setting is to disable the option when it was enabled before
+				if ((lParam == 0 && !settings->alwaysOnTop) || (lParam == 1 && settings->alwaysOnTop && (newSettings == NULL || !newSettings->alwaysOnTop)))
+				{
+					//Window is always-on-top (most likely by our app), set as non top window
+					DisableAlwaysOnTop(hwnd);
+				}
+			}
+		}
+	}
+	return TRUE;
+}
+
+void WindowsEnum::RemoveTransparency(HWND hwnd)
+{
+	//https://docs.microsoft.com/en-us/windows/win32/winmsg/using-windows#using-layered-windows
+	SetWindowLongPtr(hwnd, GWL_EXSTYLE, (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & ~WS_EX_LAYERED));
+	SetLayeredWindowAttributes(hwnd, 0, 255, LWA_ALPHA);
+	RedrawWindow(hwnd, NULL, NULL, RDW_ERASE | RDW_INVALIDATE | RDW_FRAME | RDW_ALLCHILDREN);
+}
+
+void WindowsEnum::DisableAlwaysOnTop(HWND hwnd)
+{
+	SetWindowPos(hwnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 }
 
 BOOL WindowsEnum::IsWindowTransparent(HWND hwnd)
 {
 	return GetWindowLongPtr(hwnd, GWL_STYLE) & WS_EX_LAYERED;
+}
+
+BOOL WindowsEnum::IsWindowAlwaysOnTop(HWND hwnd)
+{
+	return (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & WS_EX_TOPMOST);
 }
 
 BOOL CALLBACK WindowsEnum::EnumWindowsForProcess(HWND hwnd, LPARAM lParam)
@@ -450,12 +512,23 @@ void WindowsEnum::CheckAndSetUWPProcessAndClass(HWND hwnd)
 	}
 }
 
-CModificationSettings* WindowsEnum::GetWindowModificationSettings(HWND hwnd, BOOL withGlobalSettings)
+CModificationSettings* WindowsEnum::GetWindowModificationSettings(HWND hwnd, BOOL withGlobalSettings, BOOL getNewSettings)
 {
 	if (GetWindowProcessAndClass(hwnd)) {
 		CheckAndSetUWPProcessAndClass(hwnd);
 		if (!isUWPProcess || UWPProcessFound) {
-			return settingsManager->GetSettings()->GetModificationSetting(fileName, windowClassName, withGlobalSettings);
+			if (getNewSettings)
+			{
+				//This are the new settings that are not applied yet in the setup dialog.
+				if (cSetupDialog != NULL)
+				{
+					return cSetupDialog->GetNewSettings()->GetModificationSetting(fileName, windowClassName, withGlobalSettings);
+				}
+			}
+			else
+			{
+				return settingsManager->GetSettings()->GetModificationSetting(fileName, windowClassName, withGlobalSettings);
+			}
 		}
 	}
 	return NULL;
@@ -463,7 +536,7 @@ CModificationSettings* WindowsEnum::GetWindowModificationSettings(HWND hwnd, BOO
 
 void WindowsEnum::SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType)
 {
-	auto modificationSettings = GetWindowModificationSettings(hwnd, true);
+	auto modificationSettings = GetWindowModificationSettings(hwnd, true, false);
 
 	if (modificationSettings && modificationSettings->enabled)
 	{

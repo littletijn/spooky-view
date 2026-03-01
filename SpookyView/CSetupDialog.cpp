@@ -219,6 +219,11 @@ void CSetupDialog::CreateOrUpdateModifcationSettings(CModificationSettings* modi
 	}
 }
 
+CSettings* CSetupDialog::GetNewSettings()
+{
+	return newSettings.get();
+}
+
 void CSetupDialog::ApplyHotketSettings(CModificationSettings* modificationSettings, CModificationSettings* hotkeyModificationSettings, HotkeyType type)
 {
 	switch (type)
@@ -239,7 +244,7 @@ void CSetupDialog::ApplyHotketSettings(CModificationSettings* modificationSettin
 
 bool CSetupDialog::ApplySettings()
 {
-	windowsEnum.ResetWindowsModifications();
+	windowsEnum.ApplyWindowsModificationsForNewSettings();
 	settingsManager->ApplyNewSettings(newSettings.get());
 	if (!settingsManager->SaveSettings())
 	{
@@ -325,16 +330,21 @@ void CSetupDialog::WindowsListNotified()
 			SetCheckboxes();
 		}
 		this->SetFormVisibility(TRUE);
+		SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, TRUE);
 	}
 	else if (index == 0)
 	{
 		//When first item (all windows) is selected, get the program global settings
 		//If no program is selected, get the global settings
-		if (this->currentProgram) {
+		if (this->currentProgram)
+		{
 			this->currentModificationSettings = &currentProgram->modificationSettings;
+			SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, TRUE);
 		}
-		else {
+		else
+		{
 			this->currentModificationSettings = &newSettings->modificationSettings;
+			SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, FALSE);
 		}
 		SetTrackbars();
 		SetCheckboxes();
@@ -344,6 +354,7 @@ void CSetupDialog::WindowsListNotified()
 	{
 		//When no item is selected, hide the form
 		this->SetFormVisibility(FALSE);
+		SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, FALSE);
 	}
 	//Enable the remove button when a window is selected
 	SetButtonEnableState(IDC_BUTTON_WINDOW_REMOVE, index > 0);

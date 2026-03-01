@@ -10,38 +10,32 @@
 class WindowsEnum
 {
 public:
-	//Other static variables
-	BOOL isPause = false;
-
 	//Callbacks
 	static void CALLBACK WinEventProcMinimizeChange(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 	static void CALLBACK WinEventProcForegroundChange(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 	static void CALLBACK WinEventProcShow(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime);
 	static BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam);
-	static BOOL CALLBACK EnumWindowsReset(HWND hwnd, LPARAM lParam);
+	static BOOL CALLBACK EnumWindowsRestore(HWND hwnd, LPARAM lParam);
+	static BOOL CALLBACK EnumWindowsApply(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumWindowsForProcess(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumUWPChildWindows(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam);
-	static BOOL IsMaximized(HWND hwnd);
 
 	//Static functions
-	static void CheckAndSetWindowAlwaysOnTop(HWND hwnd);
 	static void SetWindowsModifications();
 	static std::map<tstring, tstring> GetWindowsForProcess(t_string processName);
 	static BOOL HasProcessUsableWindows(DWORD processId);
 	static BOOL HasProcessUWPCoreWindow(DWORD processId);
-	static BOOL ResetWindowModifications(HWND hwnd);
-	static BOOL IsWindowTransparent(HWND hwnd);
 
 	//Functions
 	void CreateHook();
 	void Unhook();
 	BOOL IsPaused();
-	void ResetWindowsModifications();
+	void ApplyWindowsModificationsForHotkeys();
+	void ApplyWindowsModificationsForNewSettings();
+	void RestoreWindows();
 	void TogglePause();
-	CModificationSettings* GetCurrentActiveWindowSettings();
-	CModificationSettings* GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated);
 	void ToggleAlwaysOnTopActiveWindow();
 	void ToggleForegroundTransparencyActiveWindow();
 	void ToggleBackgroundTransparencyActiveWindow();
@@ -51,6 +45,8 @@ public:
 	void DecreaseBackgroundTransparencyActiveWindow();
 protected:
 	HWINEVENTHOOK hWinEventHook[4];
+
+	BOOL isPause = false;
 
 	//Static variables for EnumWindowsForProcess
 	static t_string processNameOfWindowsToFind;
@@ -74,15 +70,22 @@ protected:
 	static std::list<HWND> applicationFrameHostWindows;
 	static BOOL isMinimizedCoreWindow;
 
-	//Static variable for ReSetWindowsModifications
-	static BOOL onlyResetTransparencyOnDisabledSettings;
-
 	//Static functions
 	static BOOL GetWindowProcessAndClass(HWND hwnd);
 	static BOOL IsWindowUsable(HWND hwnd, BOOL includeHidden = FALSE);
 	static void SetWindowAlpha(HWND hwnd, CSettings::WindowTypes windowType);
 	static void CheckAndSetUWPProcessAndClass(HWND hwnd);
-	static CModificationSettings* GetWindowModificationSettings(HWND hwnd, BOOL withGlobalSettings);
+	static CModificationSettings* GetWindowModificationSettings(HWND hwnd, BOOL withGlobalSettings, BOOL getNewSettings);
+	static void CheckAndSetWindowAlwaysOnTop(HWND hwnd);
+	static void RemoveTransparency(HWND hwnd);
+	static void DisableAlwaysOnTop(HWND hwnd);
+	static BOOL IsWindowTransparent(HWND hwnd);
+	static BOOL IsWindowAlwaysOnTop(HWND hwnd);
+	static BOOL IsMaximized(HWND hwnd);
+
+	// Functions
+	CModificationSettings* GetOrCreateCurrentActiveWindowSettings(bool setEnabledOnCreated);
+	CModificationSettings* GetCurrentActiveWindowSettings();
 };
 
 #endif

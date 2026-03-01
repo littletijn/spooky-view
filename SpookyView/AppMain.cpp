@@ -100,8 +100,8 @@ int AppMain::Run()
 	}
 	//Remove event hooks
 	windowsEnum.Unhook();
-	//Reset windows
-	windowsEnum.ResetWindowsModifications();
+	//Restore windows to original state
+	windowsEnum.RestoreWindows();
 
 	return (int)msg.wParam;
 }
