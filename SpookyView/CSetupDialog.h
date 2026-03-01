@@ -57,7 +57,7 @@ protected:
 	void SetButtonEnableState(int controlId, bool show);
 	void SetFormElementsEnableState();
 	void SetTrackbarRanges(HWND hWnd);
-	void ApplyHotketSettings(CModificationSettings* modificationSettings, CModificationSettings* hotkeyModificationSettings, HotkeyType type);
+	void ApplyHotkeySettings(CModificationSettings* modificationSettings, CModificationSettings* hotkeyModificationSettings, HotkeyType type);
 };
 
 #endif
