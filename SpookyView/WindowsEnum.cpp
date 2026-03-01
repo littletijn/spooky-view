@@ -362,34 +362,37 @@ BOOL CALLBACK WindowsEnum::EnumWindowsRestore(HWND hwnd, LPARAM lParam)
 */
 BOOL CALLBACK WindowsEnum::EnumWindowsApply(HWND hwnd, LPARAM lParam)
 {
-	CModificationSettings* newSettings = NULL;
-	auto settings = GetWindowModificationSettings(hwnd, TRUE, false);
-	if (settings)
+	if (IsWindowUsable(hwnd, TRUE))
 	{
-		if (lParam == 1)
+		CModificationSettings* newSettings = NULL;
+		auto settings = GetWindowModificationSettings(hwnd, TRUE, false);
+		if (settings)
 		{
-			// Check previous settings and apply new changes made
-			newSettings = GetWindowModificationSettings(hwnd, TRUE, true);
-		}
-		//Only reset windows changed by our app
-		if (IsWindowUsable(hwnd, TRUE) && IsWindowTransparent(hwnd))
-		{
-			//Check if the setting is disabled now, or that the new setting is to disable the option when it was enabled before
-			if ((lParam == 0 && !settings->enabled) || (lParam == 1 && settings->enabled && (newSettings == NULL || !newSettings->enabled)))
+			if (lParam == 1)
 			{
-				RemoveTransparency(hwnd);
+				// Check previous settings and apply new changes made
+				newSettings = GetWindowModificationSettings(hwnd, TRUE, true);
 			}
-		}
-		if (!settings->isGlobal)
-		{
-			//Check if window is always-on-top
-			if (IsWindowAlwaysOnTop(hwnd))
+			//Only reset windows changed by our app
+			if (IsWindowTransparent(hwnd))
 			{
 				//Check if the setting is disabled now, or that the new setting is to disable the option when it was enabled before
-				if ((lParam == 0 && !settings->alwaysOnTop) || (lParam == 1 && settings->alwaysOnTop && (newSettings == NULL || !newSettings->alwaysOnTop)))
+				if ((lParam == 0 && !settings->enabled) || (lParam == 1 && settings->enabled && (newSettings == NULL || !newSettings->enabled)))
 				{
-					//Window is always-on-top (most likely by our app), set as non top window
-					DisableAlwaysOnTop(hwnd);
+					RemoveTransparency(hwnd);
+				}
+			}
+			if (!settings->isGlobal)
+			{
+				//Check if window is always-on-top
+				if (IsWindowAlwaysOnTop(hwnd))
+				{
+					//Check if the setting is disabled now, or that the new setting is to disable the option when it was enabled before
+					if ((lParam == 0 && !settings->alwaysOnTop) || (lParam == 1 && settings->alwaysOnTop && (newSettings == NULL || !newSettings->alwaysOnTop)))
+					{
+						//Window is always-on-top (most likely by our app), set as non top window
+						DisableAlwaysOnTop(hwnd);
+					}
 				}
 			}
 		}
