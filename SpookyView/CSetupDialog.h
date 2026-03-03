@@ -25,6 +25,7 @@ public:
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 	void CreateOrUpdateModifcationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type);
+	void ApplyFullTransparencySettings(bool state);
 	CSettings* GetNewSettings();
 protected:
 	TCHAR allOtherAppsString[160];

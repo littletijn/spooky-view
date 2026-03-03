@@ -26,6 +26,8 @@ public:
 	virtual void SetSkipWelcome(BOOL state) = 0;
 	virtual int GetEnableHotkeys() = 0;
 	virtual void SetEnableHotkeys(BOOL state) = 0;
+	virtual int GetEnableFullTransparent() = 0;
+	virtual void SetEnableFullTransparent(BOOL state) = 0;
 };
 
 #endif

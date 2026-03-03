@@ -59,6 +59,13 @@ void CSettingsDialog::ApplySettings()
 	{
 		cIntroDialog->setSkipWelcomeCheckbox(Button_GetCheck(skipIntroCheck));
 	}
+	HWND enableFullTransparency = GetDlgItem(hWnd, IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT);
+	auto enableFullTransparencyState = Button_GetCheck(enableFullTransparency);
+	settingsManager->SetEnableFullTransparent(enableFullTransparencyState);
+	if (cSetupDialog)
+	{
+		cSetupDialog->ApplyFullTransparencySettings(enableFullTransparencyState);
+	}
 }
 
 void CSettingsDialog::ApplyHotkeySettings()
@@ -97,6 +104,13 @@ void CSettingsDialog::SetFormValues(HWND hDlg)
 	if (hotkeysValue == 1)
 	{
 		Button_SetCheck(enableHotkeysCheckbox, TRUE);
+	}
+
+	HWND enableFullTransparentCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT);
+	int fullTransparentValue = settingsManager->GetEnableFullTransparent();
+	if (fullTransparentValue == 1)
+	{
+		Button_SetCheck(enableFullTransparentCheckbox, TRUE);
 	}
 
 	HWND autoStartupCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_AUTO_STARTUP);

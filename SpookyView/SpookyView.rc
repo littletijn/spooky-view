@@ -151,22 +151,26 @@ BEGIN
     LTEXT           "Visible window(s)",IDC_STATIC_RUNNING_APPS,7,7,54,8
 END
 
-IDD_SETTINGS DIALOGEX 0, 0, 287, 217
+IDD_SETTINGS DIALOGEX 0, 0, 287, 243
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Settings"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start program when this user logs in",IDC_CHECKBOX_AUTO_STARTUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,272,10
-    PUSHBUTTON      "Cancel",IDCANCEL,232,199,50,14
-    DEFPUSHBUTTON   "OK",IDOK,177,199,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,232,225,50,14
+    DEFPUSHBUTTON   "OK",IDOK,177,225,50,14
     CONTROL         "Do not check for updates on start",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,273,10
     CONTROL         "Do not show welcome window on startup",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,274,10
-    CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
-    LTEXT           "Hotkeys:\n\nFor active window and windows of same type as active:\n\nForeground windows:\nCtrl + Shift + Insert: Enable or disable transparency\nCrtl + Shift + Page Up: Increase transparency\nCtrl + Shift + Page Down: Reduce transparency\n\n",IDC_STATIC,6,80,256,68
-    LTEXT           "Background windows:\nCtrl + Shift + Delete: Enable or disable transparency\nCrtl + Shift + Home: Increase transparency \nCtrl + Shift + End: Reduce transparency",IDC_STATIC,6,152,243,41
+    CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 78, 248, 10
+    LTEXT           "Foreground windows:\nCtrl + Shift + Insert: Enable or disable transparency\nCrtl + Shift + Page Up: Increase transparency\nCtrl + Shift + Page Down: Reduce transparency", IDC_STATIC, 8, 143, 266, 34
+    LTEXT           "Background windows:\nCtrl + Shift + Delete: Enable or disable transparency\nCrtl + Shift + Home: Increase transparency \nCtrl + Shift + End: Reduce transparency", IDC_STATIC, 7, 183, 259, 39
+    CONTROL         "Allow full transparency", IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 60, 248, 10
+    LTEXT           "Hotkeys:\n\nFor active window and windows of same type as active:\n\nCtrl + Shift + =: Enable or disable always on top", IDC_STATIC,8,95,303,42
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -433,23 +437,26 @@ BEGIN
     LTEXT           "Zichtbare vensters",IDC_STATIC_RUNNING_APPS,7,7,268,8
 END
 
-IDD_SETTINGS DIALOGEX 0, 0, 287, 217
+IDD_SETTINGS DIALOGEX 0, 0, 287, 243
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Instellingen"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start programma bij aanmelden",IDC_CHECKBOX_AUTO_STARTUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,230,10
-    PUSHBUTTON      "Annuleren",IDCANCEL,232,199,50,14
-    DEFPUSHBUTTON   "OK",IDOK,177,199,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,232,225,50,14
+    DEFPUSHBUTTON   "OK",IDOK,177,225,50,14
     CONTROL         "Geen controle op updates bij starten",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,227,10
     CONTROL         "Toon welkomstvenster niet bij opstarten",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
     CONTROL         "Sneltoetsen inschakelen",IDC_CHECKBOX_ENABLE_HOTKEYS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,78,248,10
+    LTEXT           "Vensters in voorgrond:\nCtrl + Shift + Insert: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Page Up: Doorzichtigheid verhogen\nCtrl + Shift + Page Down: Doorzichtigheid verlagen",IDC_STATIC,8,143,266,34
+    LTEXT           "Vensters in achtergrond:\nCtrl + Shift + Delete: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Home: Doorzichtigheid verhogen\nCtrl + Shift + End: Doorzichtigheid verlagen",IDC_STATIC,7,183,259,39
+    CONTROL         "Volledig transparent toestaan",IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
-    LTEXT           "Sneltoetsen:\n\nVoor actieve venster en vensters van hetzelfde type als het actieve venster:\n\nVensters in voorgrond:\nCtrl + Shift + Insert: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Page Up: Doorzichtigheid verhogen\n",IDC_STATIC,6,80,266,68
-    LTEXT           "Ctrl + Shift + Page Down: Doorzichtigheid verlagen\n\nVensters in achtergrond:\nCtrl + Shift + Delete: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Home: Doorzichtigheid verhogen\nCtrl + Shift + End: Doorzichtigheid verlagen",IDC_STATIC,6,136,259,52
+    LTEXT           "Sneltoetsen:\n\nVoor actieve venster en vensters van hetzelfde type als het actieve venster:\n\nCtrl + Shift + =: Altijd op voorgrond in- of uitschakelen",IDC_STATIC,8,95,303,42
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318

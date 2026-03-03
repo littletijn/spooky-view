@@ -10,6 +10,7 @@
 
 CRegistrySettingsManager::CRegistrySettingsManager()
 {
+	fullTransparentEnabled = -1;
 	settings = std::make_unique<CSettings>();
 }
 
@@ -412,4 +413,28 @@ void CRegistrySettingsManager::SetEnableHotkeys(BOOL state)
 {
 	BYTE stateByte = state ? '\x1' : '\x0';
 	SaveValue(_T("Software\\Spooky View"), _T("Enable hotkeys"), REG_BINARY, &stateByte);
+}
+
+int CRegistrySettingsManager::GetEnableFullTransparent()
+{
+	if (fullTransparentEnabled == -1)
+	{
+		BYTE keyData[1];
+		if (ReadValue(_T("Software\\Spooky View"), _T("Enable full transparent"), REG_BINARY, keyData, sizeof(keyData)))
+		{
+			fullTransparentEnabled = keyData[0];
+		}
+		else
+		{
+			fullTransparentEnabled = 0;
+		}
+	}
+	return fullTransparentEnabled;
+}
+
+void CRegistrySettingsManager::SetEnableFullTransparent(BOOL state)
+{
+	BYTE stateByte = state ? '\x1' : '\x0';
+	SaveValue(_T("Software\\Spooky View"), _T("Enable full transparent"), REG_BINARY, &stateByte);
+	fullTransparentEnabled = state;
 }

@@ -23,8 +23,11 @@ public:
 	void SetSkipWelcome(BOOL state);
 	int GetEnableHotkeys();
 	void SetEnableHotkeys(BOOL state);
+	int GetEnableFullTransparent();
+	void SetEnableFullTransparent(BOOL state);
 protected:
 	std::unique_ptr<CSettings> settings;
+	BOOL fullTransparentEnabled;
 	void SaveModificationValues(BOOL globalSettings, HKEY key, CModificationSettings values);
 	HKEY registryRootKey;
 	BOOL ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value);

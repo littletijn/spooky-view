@@ -125,7 +125,14 @@ void WindowsEnum::IncreaseForegroundTransparencyActiveWindow()
 	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(true);
 	if (modificationSettings)
 	{
-		modificationSettings->foreground = modificationSettings->foreground > 32 ? modificationSettings->foreground - 16 : 16;
+		if (settingsManager->GetEnableFullTransparent())
+		{
+			modificationSettings->foreground = modificationSettings->foreground > 16 ? modificationSettings->foreground - 16 : 0;
+		}
+		else
+		{
+			modificationSettings->foreground = modificationSettings->foreground > 32 ? modificationSettings->foreground - 16 : 16;
+		}
 		modificationSettings->enabled = true;
 		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
 		if (!isPause)
@@ -155,7 +162,14 @@ void WindowsEnum::IncreaseBackgroundTransparencyActiveWindow()
 	auto modificationSettings = GetOrCreateCurrentActiveWindowSettings(true);
 	if (modificationSettings)
 	{
-		modificationSettings->background = modificationSettings->background > 32 ? modificationSettings->background - 16 : 16;
+		if (settingsManager->GetEnableFullTransparent())
+		{
+			modificationSettings->background = modificationSettings->background > 16 ? modificationSettings->background - 16 : 0;
+		}
+		else
+		{
+			modificationSettings->background = modificationSettings->background > 32 ? modificationSettings->background - 16 : 16;
+		}
 		modificationSettings->enabled = true;
 		modificationSettings->separateBackgroundValue = true;
 		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);

@@ -219,6 +219,14 @@ void CSetupDialog::CreateOrUpdateModifcationSettings(CModificationSettings* modi
 	}
 }
 
+void CSetupDialog::ApplyFullTransparencySettings(bool state)
+{
+	HWND foregroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_FOREGROUND);
+	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
+	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, state ? (LPARAM)0 : (LPARAM)10);
+	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, state ? (LPARAM)0 : (LPARAM)10);
+}
+
 CSettings* CSetupDialog::GetNewSettings()
 {
 	return newSettings.get();
@@ -409,12 +417,12 @@ void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)
 
 void CSetupDialog::SetTrackbarRanges(HWND hWnd)
 {
+	BOOL fullTransparentEnabled = settingsManager->GetEnableFullTransparent();
 	HWND foregroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
 	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
 	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
-	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
-	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
+	ApplyFullTransparencySettings(fullTransparentEnabled);
 }
 
 void CSetupDialog::SetTrackbars()
