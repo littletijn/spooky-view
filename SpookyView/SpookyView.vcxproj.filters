@@ -96,7 +96,7 @@
     <ClInclude Include="ISettingsManager.h">
       <Filter>Header Files\Classes\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="CAlphaSettings.h">
+    <ClInclude Include="CModificationSettings.h">
       <Filter>Header Files\Classes\Settings</Filter>
     </ClInclude>
     <ClInclude Include="CProgramSetting.h">

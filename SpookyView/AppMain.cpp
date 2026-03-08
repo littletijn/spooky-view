@@ -70,7 +70,11 @@ int AppMain::Run()
 	{
 		settingsManager->LoadSettings();
 	}
-	windowsEnum.SetWindowsTransparency();
+	if (settingsManager->GetEnableHotkeys() == 1)
+	{
+		mainWindow->InitHotKeys();
+	}
+	windowsEnum.SetWindowsModifications();
 	mainWindow->CheckIsFirstRun();
 #ifdef UNICODE
 	if (!settingsManager->GetDisableUpdateCheck())
@@ -90,10 +94,14 @@ int AppMain::Run()
 			DispatchMessage(&msg);
 		}
 	}
+	if (settingsManager->GetEnableHotkeys() == 1)
+	{
+		mainWindow->RemoveHotKeys();
+	}
 	//Remove event hooks
 	windowsEnum.Unhook();
-	//Reset windows
-	windowsEnum.ResetWindowsTransparency();
+	//Restore windows to original state
+	windowsEnum.RestoreWindows();
 
 	return (int)msg.wParam;
 }

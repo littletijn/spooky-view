@@ -17,6 +17,8 @@ public:
 	LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	HWND GetHwnd();
 	BOOL InitNotifyIcon();
+	BOOL InitHotKeys();
+	BOOL RemoveHotKeys();
 	void CheckIsFirstRun();
 private:
 	void OpenContextMenu();

@@ -50,6 +50,7 @@ void CSettingsDialog::ApplySettings()
 	{
 		RemoveAutoRun();
 	}
+	ApplyHotkeySettings();
 	HWND disableUpdateCheck = GetDlgItem(hWnd, IDC_CHECKBOX_DISABLE_UPDATE_CHECK);
 	settingsManager->SetDisableUpdateCheck(Button_GetCheck(disableUpdateCheck));
 	HWND skipIntroCheck = GetDlgItem(hWnd, IDC_CHECKBOX_SKIP_WELCOME);
@@ -58,6 +59,35 @@ void CSettingsDialog::ApplySettings()
 	{
 		cIntroDialog->setSkipWelcomeCheckbox(Button_GetCheck(skipIntroCheck));
 	}
+	HWND enableFullTransparency = GetDlgItem(hWnd, IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT);
+	auto enableFullTransparencyState = Button_GetCheck(enableFullTransparency);
+	settingsManager->SetEnableFullTransparent(enableFullTransparencyState);
+	if (cSetupDialog)
+	{
+		cSetupDialog->ApplyFullTransparencySettings(enableFullTransparencyState);
+	}
+}
+
+void CSettingsDialog::ApplyHotkeySettings()
+{
+	int oldHotkeyEnabled = settingsManager->GetEnableHotkeys();
+	HWND enableHotkeysCheck = GetDlgItem(hWnd, IDC_CHECKBOX_ENABLE_HOTKEYS);
+	int hotkeysEnabled = Button_GetCheck(enableHotkeysCheck);
+	if (hotkeysEnabled)
+	{
+		if (oldHotkeyEnabled != 1)
+		{
+			mainWindow->InitHotKeys();
+		}
+	}
+	else
+	{
+		if (oldHotkeyEnabled == 1)
+		{
+			mainWindow->RemoveHotKeys();
+		}
+	}
+	settingsManager->SetEnableHotkeys(Button_GetCheck(enableHotkeysCheck));
 }
 
 void CSettingsDialog::SetFormValues(HWND hDlg)
@@ -67,6 +97,20 @@ void CSettingsDialog::SetFormValues(HWND hDlg)
 	if (skipValue == 1)
 	{
 		Button_SetCheck(skipIntroCheckbox, TRUE);
+	}
+
+	HWND enableHotkeysCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_ENABLE_HOTKEYS);
+	int hotkeysValue = settingsManager->GetEnableHotkeys();
+	if (hotkeysValue == 1)
+	{
+		Button_SetCheck(enableHotkeysCheckbox, TRUE);
+	}
+
+	HWND enableFullTransparentCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT);
+	int fullTransparentValue = settingsManager->GetEnableFullTransparent();
+	if (fullTransparentValue == 1)
+	{
+		Button_SetCheck(enableFullTransparentCheckbox, TRUE);
 	}
 
 	HWND autoStartupCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_AUTO_STARTUP);

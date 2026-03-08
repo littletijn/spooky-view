@@ -83,12 +83,13 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 		appsListView = std::make_unique<ListView>(hDlg, IDC_LIST_APPS);
 		windowsListView = std::make_unique<ListView>(hDlg, IDC_LIST_WINDOWS);
 		enabledCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ENABLE_TRANSPARENCY);
+		alwaysOnTopCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_ALWAYS_ON_TOP);
 		separateBackgroundValueCheckbox = std::make_unique<Checkbox>(hDlg, IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE);
 
 		PopulateProcessList();
 		SetTrackbarRanges(hDlg);
 		//Set the trackbars on the global settings
-		this->currentAlphaSettings = &newSettings->alphaSettings;
+		this->currentModificationSettings = &newSettings->modificationSettings;
 		SetTrackbars();
 		SetCheckboxes();
 		return TRUE;
@@ -100,6 +101,9 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 			{
 			case IDC_CHECKBOX_ENABLE_TRANSPARENCY:
 				EnabledCheckboxNotified();
+				return TRUE;
+			case IDC_CHECKBOX_ALWAYS_ON_TOP:
+				AlwaysOnTopCheckboxNotified();
 				return TRUE;
 			case IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE:
 				SeparateBackgroundValueCheckboxNotified();
@@ -165,9 +169,90 @@ INT_PTR CALLBACK CSetupDialog::DlgProc(HWND hDlg, UINT message, WPARAM wParam, L
 	return FALSE;
 }
 
+void CSetupDialog::CreateOrUpdateModifcationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
+{
+	//Check if app is in list already
+	auto lowerCaseProgramName = newSettings->ToLowerCase(processFileName);
+	auto existingProgram = newSettings->programs->find(*lowerCaseProgramName);
+	if (existingProgram != newSettings->programs->end())
+	{
+		//App is already in list. Check if window is in list
+		auto existingWindowClassName = existingProgram->second->windows->find(windowClassName);
+		if (existingWindowClassName != existingProgram->second->windows->end())
+		{
+			//Update window alpha values in newSettings
+			ApplyHotkeySettings(&existingWindowClassName->second->modificationSettings, modificationSettings, type);
+			//Check if this app and window is selected in the list.
+			if (this->currentProgramName == *lowerCaseProgramName && this->currentWindowClassName == windowClassName)
+			{
+				//App and window is selected. Update GUI
+				SetTrackbars();
+				SetCheckboxes();
+			}
+		}
+		else
+		{
+			//If not in list, we update app global settings.
+			//Update app global aplha values newSettings
+			ApplyHotkeySettings(&existingProgram->second->modificationSettings, modificationSettings, type);
+			//Check if we have selected a app
+			int selectedAppIndex = this->appsListView->GetSelectedIndex();
+			if (selectedAppIndex > 0)
+			{
+				//Check if it is selected right now
+				if (this->currentProgramName == *lowerCaseProgramName)
+				{
+					//App is selected, update GUI
+					SetTrackbars();
+					SetCheckboxes();
+				}
+			}
+		}
+	}
+	else
+	{
+		//App is not in list. Create entry in newSettings and in app list
+		this->appsListView->AddItem(*lowerCaseProgramName);
+		auto newProgramSettings = std::make_unique<CProgramSetting>();
+		ApplyHotkeySettings(&newProgramSettings->modificationSettings, modificationSettings, type);
+		newSettings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(*lowerCaseProgramName, std::move(newProgramSettings)));
+	}
+}
+
+void CSetupDialog::ApplyFullTransparencySettings(bool state)
+{
+	HWND foregroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_FOREGROUND);
+	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
+	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, state ? (LPARAM)0 : (LPARAM)10);
+	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, state ? (LPARAM)0 : (LPARAM)10);
+}
+
+CSettings* CSetupDialog::GetNewSettings()
+{
+	return newSettings.get();
+}
+
+void CSetupDialog::ApplyHotkeySettings(CModificationSettings* modificationSettings, CModificationSettings* hotkeyModificationSettings, HotkeyType type)
+{
+	switch (type)
+	{
+		case HotkeyType::alwaysOnTop:
+			modificationSettings->alwaysOnTop = hotkeyModificationSettings->alwaysOnTop;
+			break;
+		case HotkeyType::foreground:
+			modificationSettings->enabled = hotkeyModificationSettings->enabled;
+			modificationSettings->foreground = hotkeyModificationSettings->foreground;
+			break;
+		case HotkeyType::background:
+			modificationSettings->separateBackgroundValue = hotkeyModificationSettings->separateBackgroundValue;
+			modificationSettings->background = hotkeyModificationSettings->background;
+			break;
+	}
+}
+
 bool CSetupDialog::ApplySettings()
 {
-	windowsEnum.ResetWindowsTransparency();
+	windowsEnum.ApplyWindowsModificationsForNewSettings();
 	settingsManager->ApplyNewSettings(newSettings.get());
 	if (!settingsManager->SaveSettings())
 	{
@@ -178,7 +263,7 @@ bool CSetupDialog::ApplySettings()
 		MessageBox(NULL, messageString, titleString, MB_OK | MB_ICONWARNING);
 		return false;
 	}
-	WindowsEnum::SetWindowsTransparency();
+	WindowsEnum::SetWindowsModifications();
 	return true;
 }
 
@@ -200,27 +285,30 @@ void CSetupDialog::ProgramsListNotified()
 		{
 			this->currentProgramName = program->first;
 			this->currentProgram = program->second.get();
-			this->currentAlphaSettings = &program->second->alphaSettings;
+			this->currentModificationSettings = &program->second->modificationSettings;
 			SetTrackbars();
 			SetCheckboxes();
 			PopulateWindowsList(program->second.get());
 		}
 		this->SetFormVisibility(TRUE);
+		SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, TRUE);
 	}
 	else if (index == 0)
 	{
 		//When first item (all programs) is selected, get the global settings
 		this->currentProgram = 0;
-		this->currentAlphaSettings = &newSettings->alphaSettings;
+		this->currentModificationSettings = &newSettings->modificationSettings;
 		SetTrackbars();
 		SetCheckboxes();
 		PopulateWindowsList();
 		this->SetFormVisibility(TRUE);
+		SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, FALSE);
 	} 
 	else
 	{
 		//When no item is selected, hide the controls and clear windows list
 		this->SetFormVisibility(FALSE);
+		SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, FALSE);
 		this->windowsListView->DeleteAllItems();
 		SetButtonEnableState(IDC_BUTTON_WINDOW_ADD, false);
 		SetButtonEnableState(IDC_BUTTON_WINDOW_REMOVE, false);
@@ -245,21 +333,26 @@ void CSetupDialog::WindowsListNotified()
 		if (window != currentProgram->windows->end())
 		{
 			this->currentWindowClassName = window->first;
-			this->currentAlphaSettings = &window->second->alphaSettings;
+			this->currentModificationSettings = &window->second->modificationSettings;
 			SetTrackbars();
 			SetCheckboxes();
 		}
 		this->SetFormVisibility(TRUE);
+		SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, TRUE);
 	}
 	else if (index == 0)
 	{
 		//When first item (all windows) is selected, get the program global settings
 		//If no program is selected, get the global settings
-		if (this->currentProgram) {
-			this->currentAlphaSettings = &currentProgram->alphaSettings;
+		if (this->currentProgram)
+		{
+			this->currentModificationSettings = &currentProgram->modificationSettings;
+			SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, TRUE);
 		}
-		else {
-			this->currentAlphaSettings = &newSettings->alphaSettings;
+		else
+		{
+			this->currentModificationSettings = &newSettings->modificationSettings;
+			SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, FALSE);
 		}
 		SetTrackbars();
 		SetCheckboxes();
@@ -269,6 +362,7 @@ void CSetupDialog::WindowsListNotified()
 	{
 		//When no item is selected, hide the form
 		this->SetFormVisibility(FALSE);
+		SetFormElementVisibility(IDC_CHECKBOX_ALWAYS_ON_TOP, FALSE);
 	}
 	//Enable the remove button when a window is selected
 	SetButtonEnableState(IDC_BUTTON_WINDOW_REMOVE, index > 0);
@@ -284,13 +378,19 @@ void CSetupDialog::WindowsListNotified()
 
 void CSetupDialog::EnabledCheckboxNotified()
 {
-	currentAlphaSettings->enabled = enabledCheckbox->GetCheckState();
+	currentModificationSettings->enabled = enabledCheckbox->GetCheckState();
+	SetFormElementsEnableState();
+}
+
+void CSetupDialog::AlwaysOnTopCheckboxNotified()
+{
+	currentModificationSettings->alwaysOnTop = alwaysOnTopCheckbox->GetCheckState();
 	SetFormElementsEnableState();
 }
 
 void CSetupDialog::SeparateBackgroundValueCheckboxNotified()
 {
-	currentAlphaSettings->separateBackgroundValue = separateBackgroundValueCheckbox->GetCheckState();
+	currentModificationSettings->separateBackgroundValue = separateBackgroundValueCheckbox->GetCheckState();
 	SetFormElementsEnableState();
 }
 
@@ -317,27 +417,28 @@ void CSetupDialog::PopulateWindowsList(CProgramSetting* settings)
 
 void CSetupDialog::SetTrackbarRanges(HWND hWnd)
 {
+	BOOL fullTransparentEnabled = settingsManager->GetEnableFullTransparent();
 	HWND foregroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(hWnd, IDC_SLIDER_BACKGROUND);
 	SendMessage(foregroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
 	SendMessage(backgroundTrackbar, TBM_SETRANGEMAX, (WPARAM)FALSE, (LPARAM)100);
-	SendMessage(foregroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
-	SendMessage(backgroundTrackbar, TBM_SETRANGEMIN, (WPARAM)TRUE, (LPARAM)10);
+	ApplyFullTransparencySettings(fullTransparentEnabled);
 }
 
 void CSetupDialog::SetTrackbars()
 {
 	HWND foregroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_FOREGROUND);
 	HWND backgroundTrackbar = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
-	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentAlphaSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
-	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentAlphaSettings->background * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(foregroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentModificationSettings->foreground * TRANSPARENCY_TRACKER_STEPS));
+	SendMessage(backgroundTrackbar, TBM_SETPOS, (WPARAM)TRUE, (LPARAM)std::round(currentModificationSettings->background * TRANSPARENCY_TRACKER_STEPS));
 	SetFormElementsEnableState();
 }
 
 void CSetupDialog::SetCheckboxes()
 {
-	enabledCheckbox->SetCheckState(currentAlphaSettings->enabled);
-	separateBackgroundValueCheckbox->SetCheckState(currentAlphaSettings->separateBackgroundValue);
+	enabledCheckbox->SetCheckState(currentModificationSettings->enabled);
+	alwaysOnTopCheckbox->SetCheckState(currentModificationSettings->alwaysOnTop);
+	separateBackgroundValueCheckbox->SetCheckState(currentModificationSettings->separateBackgroundValue);
 }
 
 void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
@@ -346,10 +447,10 @@ void CSetupDialog::SetAlpha(BYTE value, HWND trackbar)
 	switch (identifier)
 	{
 	case IDC_SLIDER_FOREGROUND:
-		currentAlphaSettings->foreground = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
+		currentModificationSettings->foreground = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
 	case IDC_SLIDER_BACKGROUND:
-		currentAlphaSettings->background = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
+		currentModificationSettings->background = (BYTE)std::round(value / TRANSPARENCY_TRACKER_STEPS);
 		break;
 	}
 }
@@ -370,9 +471,14 @@ void CSetupDialog::SetFormVisibility(bool show)
 		IDC_STATIC_BACKGROUND_OPAQUE
 	};
 	for (const auto& itemId : itemIds) {
-		auto item = GetDlgItem(this->hWnd, itemId);
-		ShowWindow(item, show ? SW_SHOW : SW_HIDE);
+		SetFormElementVisibility(itemId, show);
 	}
+}
+
+void CSetupDialog::SetFormElementVisibility(int itemId, bool show)
+{
+	auto item = GetDlgItem(this->hWnd, itemId);
+	ShowWindow(item, show ? SW_SHOW : SW_HIDE);
 }
 
 void CSetupDialog::SetButtonEnableState(int controlId, bool show)
@@ -386,13 +492,13 @@ void CSetupDialog::SetFormElementsEnableState()
 	const int itemIds[] = { IDC_SLIDER_FOREGROUND, IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE };
 	for (const auto& itemId : itemIds) {
 		auto item = GetDlgItem(this->hWnd, itemId);
-		EnableWindow(item, currentAlphaSettings->enabled);
+		EnableWindow(item, currentModificationSettings->enabled);
 	}
 
 	auto slideBackground = GetDlgItem(this->hWnd, IDC_SLIDER_BACKGROUND);
-	if (currentAlphaSettings->enabled)
+	if (currentModificationSettings->enabled)
 	{
-		EnableWindow(slideBackground, currentAlphaSettings->separateBackgroundValue);
+		EnableWindow(slideBackground, currentModificationSettings->separateBackgroundValue);
 	}
 	else
 	{
