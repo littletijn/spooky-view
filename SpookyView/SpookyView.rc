@@ -164,13 +164,13 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,273,10
     CONTROL         "Do not show welcome window on startup",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,274,10
-    CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,
-                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 78, 248, 10
-    LTEXT           "Foreground windows:\nCtrl + Shift + Insert: Enable or disable transparency\nCrtl + Shift + Page Up: Increase transparency\nCtrl + Shift + Page Down: Reduce transparency", IDC_STATIC, 8, 143, 266, 34
-    LTEXT           "Background windows:\nCtrl + Shift + Delete: Enable or disable transparency\nCrtl + Shift + Home: Increase transparency \nCtrl + Shift + End: Reduce transparency", IDC_STATIC, 7, 183, 259, 39
     CONTROL         "Allow full transparency", IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT,
                     "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 60, 248, 10
-    LTEXT           "Hotkeys:\n\nFor active window and windows of same type as active:\n\nCtrl + Shift + =: Enable or disable always on top", IDC_STATIC,8,95,303,42
+    CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 78, 248, 10
+    LTEXT           "Hotkeys:\n\nFor active window and windows of same type as active:\n\nCtrl + Shift + =: Enable or disable always on top", IDC_STATIC_HOTKEY1, 8, 95, 303, 42
+    LTEXT           "Foreground windows:\nCtrl + Shift + Insert: Enable or disable transparency\nCrtl + Shift + Page Up: Increase transparency\nCtrl + Shift + Page Down: Reduce transparency", IDC_STATIC_HOTKEY2, 8, 143, 266, 34
+    LTEXT           "Background windows:\nCtrl + Shift + Delete: Enable or disable transparency\nCrtl + Shift + Home: Increase transparency \nCtrl + Shift + End: Reduce transparency", IDC_STATIC_HOTKEY3, 7, 183, 259, 39
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -450,13 +450,13 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,227,10
     CONTROL         "Toon welkomstvenster niet bij opstarten",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
+    CONTROL         "Volledig transparent toestaan", IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 60, 248, 10
     CONTROL         "Sneltoetsen inschakelen",IDC_CHECKBOX_ENABLE_HOTKEYS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,78,248,10
-    LTEXT           "Vensters in voorgrond:\nCtrl + Shift + Insert: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Page Up: Doorzichtigheid verhogen\nCtrl + Shift + Page Down: Doorzichtigheid verlagen",IDC_STATIC,8,143,266,34
-    LTEXT           "Vensters in achtergrond:\nCtrl + Shift + Delete: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Home: Doorzichtigheid verhogen\nCtrl + Shift + End: Doorzichtigheid verlagen",IDC_STATIC,7,183,259,39
-    CONTROL         "Volledig transparent toestaan",IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
-    LTEXT           "Sneltoetsen:\n\nVoor actieve venster en vensters van hetzelfde type als het actieve venster:\n\nCtrl + Shift + =: Altijd op voorgrond in- of uitschakelen",IDC_STATIC,8,95,303,42
+    LTEXT           "Vensters in voorgrond:\nCtrl + Shift + Insert: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Page Up: Doorzichtigheid verhogen\nCtrl + Shift + Page Down: Doorzichtigheid verlagen", IDC_STATIC_HOTKEY1,8,143,266,34
+    LTEXT           "Vensters in achtergrond:\nCtrl + Shift + Delete: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Home: Doorzichtigheid verhogen\nCtrl + Shift + End: Doorzichtigheid verlagen", IDC_STATIC_HOTKEY2,7,183,259,39
+    LTEXT           "Sneltoetsen:\n\nVoor actieve venster en vensters van hetzelfde type als het actieve venster:\n\nCtrl + Shift + =: Altijd op voorgrond in- of uitschakelen", IDC_STATIC_HOTKEY3,8,95,303,42
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
