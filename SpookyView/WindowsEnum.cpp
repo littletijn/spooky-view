@@ -318,7 +318,7 @@ void WindowsEnum::CheckAndSetWindowAlwaysOnTop(HWND hwnd)
 	}
 }
 
-void CALLBACK WindowsEnum::WinEventProcShow(HWINEVENTHOOK hWinEventHook, DWORD event, HWND hwnd, LONG idObject, LONG idChild, DWORD dwEventThread, DWORD dwmsEventTime)
+BOOL CALLBACK WindowsEnum::EnumWindowsProc(HWND hwnd, LPARAM lParam)
 {
 	if (IsWindowUsable(hwnd)){
 		if (!IsIconic(hwnd))

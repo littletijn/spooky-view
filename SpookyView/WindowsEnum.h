@@ -21,7 +21,6 @@ public:
 	static BOOL CALLBACK EnumGetProcessApplicationFrameHost(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumUWPChildWindows(HWND hwnd, LPARAM lParam);
 	static BOOL CALLBACK EnumProcessHasUsableWindows(HWND hwnd, LPARAM lParam);
-	static BOOL IsMaximized(HWND hwnd);
 
 	//Static functions
 	static void SetWindowsModifications();
@@ -45,7 +44,7 @@ public:
 	void IncreaseBackgroundTransparencyActiveWindow();
 	void DecreaseBackgroundTransparencyActiveWindow();
 protected:
-	HWINEVENTHOOK hWinEventHook[3];
+	HWINEVENTHOOK hWinEventHook[4];
 
 	BOOL isPause = false;
 
