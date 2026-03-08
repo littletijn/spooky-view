@@ -260,25 +260,25 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 	case WM_HOTKEY:
 		switch (wParam)
 		{
-			case 1: // Ctrl + Insert
+			case 1: // Ctrl + Shift + Insert
 				windowsEnum.ToggleForegroundTransparencyActiveWindow();
 				break;
-			case 2: // Ctrl + Home
+			case 2: // Ctrl + Shift + Home
 				windowsEnum.ToggleBackgroundTransparencyActiveWindow();
 				break;
-			case 3: // Ctrl + Page Down
+			case 3: // Ctrl + Shift + Page Down
 				windowsEnum.DecreaseForegroundTransparencyActiveWindow();
 				break;
-			case 4: // Ctrl + Page Up
+			case 4: // Ctrl + Shift + Page Up
 				windowsEnum.IncreaseForegroundTransparencyActiveWindow();
 				break;
-			case 5: // Ctrl + Home
+			case 5: // Ctrl + Shift + Home
 				windowsEnum.IncreaseBackgroundTransparencyActiveWindow();
 				break;
-			case 6: // Ctrl + End
+			case 6: // Ctrl + Shift + End
 				windowsEnum.DecreaseBackgroundTransparencyActiveWindow();
 				break;
-			case 7: // Ctrl + =
+			case 7: // Ctrl + Shift + =
 				windowsEnum.ToggleAlwaysOnTopActiveWindow();
 				break;
 				
