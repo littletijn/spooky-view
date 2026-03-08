@@ -16,7 +16,7 @@ public:
 	};
 
 	CModificationSettings modificationSettings;
-	CModificationSettings* GetModificationSetting(TCHAR* processFileName, TCHAR* windowClassName);
+	CModificationSettings* GetModificationSetting(TCHAR* processFileName, TCHAR* windowClassName, BOOL withGlobalSettings);
 	std::unique_ptr<TCHAR*> ToLowerCase(TCHAR* string);
 	std::unique_ptr<std::map<t_string, std::unique_ptr<CProgramSetting>>> programs;
 	CSettings();

@@ -118,7 +118,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,78,130,8
     LTEXT           "Based on an idea by Mikey",IDC_STATIC,12,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
-    LTEXT           "1.0.7.0 (Test build 4)",IDC_STATIC,12,18,136,18
+    LTEXT           "1.1.0.0 (Hot new release)",IDC_STATIC,12,18,136,18
     LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,66,138,8
     DEFPUSHBUTTON   "Close",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -151,19 +151,26 @@ BEGIN
     LTEXT           "Visible window(s)",IDC_STATIC_RUNNING_APPS,7,7,54,8
 END
 
-IDD_SETTINGS DIALOGEX 0, 0, 287, 183
+IDD_SETTINGS DIALOGEX 0, 0, 287, 243
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Settings"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start program when this user logs in",IDC_CHECKBOX_AUTO_STARTUP,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,127,10
-    PUSHBUTTON      "Cancel",IDCANCEL,232,162,50,14
-    DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,272,10
+    PUSHBUTTON      "Cancel",IDCANCEL,232,225,50,14
+    DEFPUSHBUTTON   "OK",IDOK,177,225,50,14
     CONTROL         "Do not check for updates on start",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,127,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,273,10
     CONTROL         "Do not show welcome window on startup",IDC_CHECKBOX_SKIP_WELCOME,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,274,10
+    CONTROL         "Allow full transparency", IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 60, 248, 10
+    CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 78, 248, 10
+    LTEXT           "Hotkeys:\n\nFor active window and windows of same type as active:\n\nCtrl + Shift + =: Enable or disable always on top", IDC_STATIC_HOTKEY1, 8, 95, 303, 42
+    LTEXT           "Foreground windows:\nCtrl + Shift + Insert: Enable or disable transparency\nCrtl + Shift + Page Up: Increase transparency\nCtrl + Shift + Page Down: Reduce transparency", IDC_STATIC_HOTKEY2, 8, 143, 266, 34
+    LTEXT           "Background windows:\nCtrl + Shift + Delete: Enable or disable transparency\nCrtl + Shift + Home: Increase transparency \nCtrl + Shift + End: Reduce transparency", IDC_STATIC_HOTKEY3, 7, 183, 259, 39
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -182,8 +189,8 @@ BEGIN
     PUSHBUTTON      "Remove",IDC_BUTTON_APP_REMOVE,77,267,50,14,WS_DISABLED
     LTEXT           "Windows",IDC_STATIC_WINDOWS,142,12,30,8
     LTEXT           "Apps",IDC_STATIC_APPS,12,12,45,8
-    CONTROL         "",IDC_LIST_WINDOWS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,142,22,115,240
-    CONTROL         "",IDC_LIST_APPS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,12,22,115,240
+    CONTROL         "",IDC_LIST_WINDOWS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,142,22,115,240
+    CONTROL         "",IDC_LIST_APPS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,12,22,115,240
     PUSHBUTTON      "Cancel",IDCANCEL,362,297,50,14
     PUSHBUTTON      "Apply",IDAPPLY,417,297,50,14
     DEFPUSHBUTTON   "OK",IDOK,307,297,50,14
@@ -249,12 +256,12 @@ BEGIN
             VALUE "Comments", "This application is licensed under the GNU GPL v3.0 or later"
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "Spooky View"
-            VALUE "FileVersion", "1.0.7.0 (A warm welcome release)"
+            VALUE "FileVersion", "1.1.0.0 (Hot new release)"
             VALUE "InternalName", "Spooky View"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "OriginalFilename", "Spookyview.exe"
             VALUE "ProductName", "Spooky View"
-            VALUE "ProductVersion", "1.0.7.0 (A warm welcome release)"
+            VALUE "ProductVersion", "1.1.0.0 (Hot new release)"
         END
     END
     BLOCK "VarFileInfo"
@@ -397,7 +404,7 @@ BEGIN
     LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,78,130,8
     LTEXT           "Gebaseerd op een idee van Mikey",IDC_STATIC,12,102,130,8
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
-    LTEXT           "1.0.7.0 (Test build 4)",IDC_STATIC,12,18,136,18
+    LTEXT           "1.1.0.0 (Hot new release)",IDC_STATIC,12,18,136,18
     LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,66,138,8
     DEFPUSHBUTTON   "Sluiten",IDOK,180,114,50,14,WS_GROUP
     CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
@@ -430,19 +437,26 @@ BEGIN
     LTEXT           "Zichtbare vensters",IDC_STATIC_RUNNING_APPS,7,7,268,8
 END
 
-IDD_SETTINGS DIALOGEX 0, 0, 287, 183
+IDD_SETTINGS DIALOGEX 0, 0, 287, 243
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
 CAPTION "Instellingen"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start programma bij aanmelden",IDC_CHECKBOX_AUTO_STARTUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,230,10
-    PUSHBUTTON      "Annuleren",IDCANCEL,232,162,50,14
-    DEFPUSHBUTTON   "OK",IDOK,177,162,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,232,225,50,14
+    DEFPUSHBUTTON   "OK",IDOK,177,225,50,14
     CONTROL         "Geen controle op updates bij starten",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,227,10
     CONTROL         "Toon welkomstvenster niet bij opstarten",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,227,10
+    CONTROL         "Volledig transparent toestaan", IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT,
+                    "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 6, 60, 248, 10
+    CONTROL         "Sneltoetsen inschakelen",IDC_CHECKBOX_ENABLE_HOTKEYS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,78,248,10
+    LTEXT           "Vensters in voorgrond:\nCtrl + Shift + Insert: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Page Up: Doorzichtigheid verhogen\nCtrl + Shift + Page Down: Doorzichtigheid verlagen", IDC_STATIC_HOTKEY1,8,143,266,34
+    LTEXT           "Vensters in achtergrond:\nCtrl + Shift + Delete: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Home: Doorzichtigheid verhogen\nCtrl + Shift + End: Doorzichtigheid verlagen", IDC_STATIC_HOTKEY2,7,183,259,39
+    LTEXT           "Sneltoetsen:\n\nVoor actieve venster en vensters van hetzelfde type als het actieve venster:\n\nCtrl + Shift + =: Altijd op voorgrond in- of uitschakelen", IDC_STATIC_HOTKEY3,8,95,303,42
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -461,8 +475,8 @@ BEGIN
     PUSHBUTTON      "Verwijderen",IDC_BUTTON_APP_REMOVE,77,267,50,14,WS_DISABLED
     LTEXT           "Vensters",IDC_STATIC_WINDOWS,142,12,30,8
     LTEXT           "Apps",IDC_STATIC_APPS,12,12,45,8
-    CONTROL         "",IDC_LIST_WINDOWS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,142,22,115,240
-    CONTROL         "",IDC_LIST_APPS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,12,22,115,240
+    CONTROL         "",IDC_LIST_WINDOWS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,142,22,115,240
+    CONTROL         "",IDC_LIST_APPS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,12,22,115,240
     PUSHBUTTON      "Annuleren",IDCANCEL,362,297,50,14
     PUSHBUTTON      "Toepassen",IDAPPLY,417,297,50,14
     DEFPUSHBUTTON   "OK",IDOK,307,297,50,14
@@ -529,12 +543,12 @@ BEGIN
             VALUE "Comments", "Deze toepassing valt onder de GNU GPL v3.0-licentie of hoger"
             VALUE "CompanyName", "TynDomyn.net"
             VALUE "FileDescription", "Spooky View"
-            VALUE "FileVersion", "1.0.7.0 (A warm welcome release)"
+            VALUE "FileVersion", "1.1.0.0 (Hot new release)"
             VALUE "InternalName", "Spooky View"
             VALUE "LegalCopyright", "(c) Martijn van Antwerpen"
             VALUE "OriginalFilename", "Spookyview.exe"
             VALUE "ProductName", "Spooky View"
-            VALUE "ProductVersion", "1.0.7.0 (A warm welcome release)"
+            VALUE "ProductVersion", "1.1.0.0 (Hot new release)"
         END
     END
     BLOCK "VarFileInfo"

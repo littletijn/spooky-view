@@ -6,11 +6,13 @@
 CSettings::CSettings()
 {
 	this->programs = std::make_unique<std::map<t_string, std::unique_ptr<CProgramSetting>>>();
+	this->modificationSettings.isGlobal = true;
 }
 
 CSettings::CSettings(const CSettings& c) : CSettings::CSettings()
 {
 	this->modificationSettings = CModificationSettings(c.modificationSettings);
+	this->modificationSettings.isGlobal = true;
 	for (auto program = c.programs.get()->begin(); program != c.programs.get()->end(); ++program)
 	{
 		t_string firstCopy = t_string(program->first);
@@ -23,9 +25,9 @@ CSettings::~CSettings()
 }
 
 // Search settings maps for alpha settings for given process and window class
-CModificationSettings* CSettings::GetModificationSetting(TCHAR* processFileName, TCHAR* windowClassName)
+CModificationSettings* CSettings::GetModificationSetting(TCHAR* processFileName, TCHAR* windowClassName, BOOL withGlobalSettings)
 {
-	CModificationSettings* foundModificationSettings;
+	CModificationSettings* foundModificationSettings = NULL;
 	auto lowerCaseProcessKeyName = ToLowerCase(processFileName);
 
 	auto result = this->programs->find(*lowerCaseProcessKeyName);
@@ -38,11 +40,13 @@ CModificationSettings* CSettings::GetModificationSetting(TCHAR* processFileName,
 			auto& window = windowResult->second;
 			foundModificationSettings = &window->modificationSettings;
 		}
-		else{
+		else
+		{
 			foundModificationSettings = &setting->modificationSettings;
 		}
 	}
-	else{
+	else if (withGlobalSettings)
+	{
 		foundModificationSettings = &this->modificationSettings;
 	}
 	return foundModificationSettings;

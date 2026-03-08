@@ -11,6 +11,12 @@
 #include <memory>
 #include "CSettings.h"
 
+enum HotkeyType {
+	foreground,
+	background,
+	alwaysOnTop
+};
+
 class CSetupDialog : public CModelessDialog
 {
 public:
@@ -18,6 +24,9 @@ public:
 	~CSetupDialog();
 	BOOL SetupDialog();
 	INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+	void CreateOrUpdateModifcationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type);
+	void ApplyFullTransparencySettings(bool state);
+	CSettings* GetNewSettings();
 protected:
 	TCHAR allOtherAppsString[160];
 	TCHAR allOtherWindowsString[160];
@@ -49,6 +58,7 @@ protected:
 	void SetButtonEnableState(int controlId, bool show);
 	void SetFormElementsEnableState();
 	void SetTrackbarRanges(HWND hWnd);
+	void ApplyHotkeySettings(CModificationSettings* modificationSettings, CModificationSettings* hotkeyModificationSettings, HotkeyType type);
 };
 
 #endif

@@ -6,10 +6,11 @@
 #include <shlwapi.h>
 #include <intsafe.h>
 #include "Defines.h"
-
+#include "SpookyView.h"
 
 CRegistrySettingsManager::CRegistrySettingsManager()
 {
+	fullTransparentEnabled = -1;
 	settings = std::make_unique<CSettings>();
 }
 
@@ -32,6 +33,19 @@ CSettings* CRegistrySettingsManager::GetSettings()
 	return settings.get();
 }
 
+CProgramSetting* CRegistrySettingsManager::AddProgramSettings(TCHAR* programName)
+{
+	auto lowerCaseProgramName = settings->ToLowerCase(programName);
+	auto programSettings = std::make_unique<CProgramSetting>();
+	settings->programs->insert(std::pair<t_string, std::unique_ptr<CProgramSetting>>(*lowerCaseProgramName, std::move(programSettings)));
+	auto result = settings->programs->find(*lowerCaseProgramName);
+	if (result != settings->programs->end())
+	{
+		return result->second.get();
+	}
+	return NULL;
+}
+
 void CRegistrySettingsManager::ApplyNewSettings(CSettings* newSettings)
 {
 	if (settings) {
@@ -46,8 +60,7 @@ void CRegistrySettingsManager::LoadSettings()
 	//Create variables for return values
 	HKEY programsKey;
 
-	LSTATUS result = RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey);
-	if (result == ERROR_SUCCESS)
+	if (RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey) == ERROR_SUCCESS)
 	{
 		//Read global settings
 		ReadModificationValues(programsKey, &settings->modificationSettings);
@@ -74,15 +87,13 @@ void CRegistrySettingsManager::LoadSettings()
 			}
 			HKEY processKey;
 			//Open the Programs\PROCESSNAME key
-			LSTATUS processKeyResult = RegOpenKeyEx(programsKey, processKeyName.get(), 0, KEY_READ, &processKey);
-			if (processKeyResult == ERROR_SUCCESS)
+			if (RegOpenKeyEx(programsKey, processKeyName.get(), 0, KEY_READ, &processKey) == ERROR_SUCCESS)
 			{
 				HKEY windowsKey;
 				auto progSettings = std::make_unique<CProgramSetting>();
 
 				//Open the Programs\PROCESSNAME\Windows key
-				LSTATUS windowsKeyResult = RegOpenKeyEx(processKey, _T("Windows"), 0, KEY_READ, &windowsKey);
-				if (windowsKeyResult == ERROR_SUCCESS)
+				if (RegOpenKeyEx(processKey, _T("Windows"), 0, KEY_READ, &windowsKey) == ERROR_SUCCESS)
 				{
 					ReadValue(processKey, _T("File name"), REG_SZ, (BYTE*)fileName.get(), MAX_PATH * sizeof(TCHAR));
 					ReadModificationValues(windowsKey, &progSettings->modificationSettings);
@@ -103,11 +114,10 @@ void CRegistrySettingsManager::LoadSettings()
 						{
 							break;
 						}
-						HKEY windowKey;
 
+						HKEY windowKey;
 						//Open the Programs\PROCESSNAME\Windows\WINDOWCLASSNAME key
-						LSTATUS windowKeyResult = RegOpenKeyEx(windowsKey, windowKeyName.get(), 0, KEY_READ, &windowKey);
-						if (windowKeyResult == ERROR_SUCCESS)
+						if (RegOpenKeyEx(windowsKey, windowKeyName.get(), 0, KEY_READ, &windowKey) == ERROR_SUCCESS)
 						{
 							auto windowSettings = std::make_unique<CWindowSetting>();
 							ReadValue(windowKey, _T("Window class name"), REG_SZ, (BYTE*)windowClassName.get(), MAX_WINDOW_CLASS_NAME * sizeof(TCHAR));
@@ -212,6 +222,62 @@ bool CRegistrySettingsManager::SaveSettings()
 		return true;
 	}
 	return false;
+}
+
+bool CRegistrySettingsManager::SaveModificationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type)
+{
+	HKEY programsKey;
+	HKEY programKey;
+	HKEY windowsKey;
+	HKEY windowKey;
+
+	if (RegOpenKeyEx(registryRootKey, _T("Programs"), 0, KEY_READ, &programsKey) == ERROR_SUCCESS)
+	{
+		// Check if we already have a key for this program
+		LSTATUS programResult;
+		programResult = RegOpenKeyEx(programsKey, processFileName, 0, KEY_SET_VALUE, &programKey);
+		if (programResult == ERROR_SUCCESS)
+		{
+			//We have a key. Check if we have a window key as well
+			LSTATUS windowsResult = -1;
+			LSTATUS windowResult = -1;
+			windowsResult = RegOpenKeyEx(programKey, _T("Windows"), 0, KEY_SET_VALUE, &windowsKey);
+			if (windowsResult == ERROR_SUCCESS)
+			{
+				windowResult = RegOpenKeyEx(windowsKey, windowClassName, 0, KEY_SET_VALUE, &windowKey);
+				if (windowResult == ERROR_SUCCESS)
+				{
+					SaveModificationValues(false, windowKey, *modificationSettings);
+				}
+				else
+				{
+					//We have not found a window key. Store as program settings
+					SaveModificationValues(false, windowsKey, *modificationSettings);
+				}
+			}
+		}
+		else if (programResult == ERROR_FILE_NOT_FOUND)
+		{
+			//Create a new programs entry for settings
+			if (RegCreateKeyEx(programsKey, processFileName, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programKey, NULL) == ERROR_SUCCESS)
+			{
+				SaveStringValue(programKey, _T("File name"), processFileName);
+				//Create Windows key of program
+				HKEY windowsKey;
+				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
+				{
+					//Store settings in new key
+					SaveModificationValues(false, windowsKey, *modificationSettings);
+				}
+			}
+		}
+	}
+	if (cSetupDialog)
+	{
+		// Apply new alpha settings in open setup window
+		cSetupDialog->CreateOrUpdateModifcationSettings(modificationSettings, processFileName, windowClassName, type);
+	}
+	return true;
 }
 
 void CRegistrySettingsManager::SaveModificationValues(BOOL globalSettings, HKEY key, CModificationSettings values)
@@ -331,4 +397,44 @@ void CRegistrySettingsManager::SetSkipWelcome(BOOL state)
 {
 	BYTE stateByte = state ? '\x1' : '\x0';
 	SaveValue(_T("Software\\Spooky View"), _T("Skip welcome"), REG_BINARY, &stateByte);
+}
+
+int CRegistrySettingsManager::GetEnableHotkeys()
+{
+	BYTE keyData[1];
+	if (ReadValue(_T("Software\\Spooky View"), _T("Enable hotkeys"), REG_BINARY, keyData, sizeof(keyData)))
+	{
+		return keyData[0];
+	}
+	return -1;
+}
+
+void CRegistrySettingsManager::SetEnableHotkeys(BOOL state)
+{
+	BYTE stateByte = state ? '\x1' : '\x0';
+	SaveValue(_T("Software\\Spooky View"), _T("Enable hotkeys"), REG_BINARY, &stateByte);
+}
+
+int CRegistrySettingsManager::GetEnableFullTransparent()
+{
+	if (fullTransparentEnabled == -1)
+	{
+		BYTE keyData[1];
+		if (ReadValue(_T("Software\\Spooky View"), _T("Enable full transparent"), REG_BINARY, keyData, sizeof(keyData)))
+		{
+			fullTransparentEnabled = keyData[0];
+		}
+		else
+		{
+			fullTransparentEnabled = 0;
+		}
+	}
+	return fullTransparentEnabled;
+}
+
+void CRegistrySettingsManager::SetEnableFullTransparent(BOOL state)
+{
+	BYTE stateByte = state ? '\x1' : '\x0';
+	SaveValue(_T("Software\\Spooky View"), _T("Enable full transparent"), REG_BINARY, &stateByte);
+	fullTransparentEnabled = state;
 }

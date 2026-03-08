@@ -70,6 +70,10 @@ int AppMain::Run()
 	{
 		settingsManager->LoadSettings();
 	}
+	if (settingsManager->GetEnableHotkeys() == 1)
+	{
+		mainWindow->InitHotKeys();
+	}
 	windowsEnum.SetWindowsModifications();
 	mainWindow->CheckIsFirstRun();
 #ifdef UNICODE
@@ -90,10 +94,14 @@ int AppMain::Run()
 			DispatchMessage(&msg);
 		}
 	}
+	if (settingsManager->GetEnableHotkeys() == 1)
+	{
+		mainWindow->RemoveHotKeys();
+	}
 	//Remove event hooks
 	windowsEnum.Unhook();
-	//Reset windows
-	windowsEnum.ResetWindowsModifications();
+	//Restore windows to original state
+	windowsEnum.RestoreWindows();
 
 	return (int)msg.wParam;
 }

@@ -11,17 +11,23 @@ public:
 	~CRegistrySettingsManager();
 	void LoadSettings();
 	bool SaveSettings();
+	CProgramSetting* AddProgramSettings(TCHAR* programName);
+	bool SaveModificationSettings(CModificationSettings* modificationSettings, TCHAR* processFileName, TCHAR* windowClassName, HotkeyType type);
 	CSettings* GetSettings();
 	void ApplyNewSettings(CSettings *newSettings);
 	void AddSkipVersionKey(tstring versionNumber);
-
 	BOOL ShouldSkipVersion(tstring versionNumber);
 	BOOL GetDisableUpdateCheck();
 	void SetDisableUpdateCheck(BOOL state);
 	int GetSkipWelcome();
 	void SetSkipWelcome(BOOL state);
+	int GetEnableHotkeys();
+	void SetEnableHotkeys(BOOL state);
+	int GetEnableFullTransparent();
+	void SetEnableFullTransparent(BOOL state);
 protected:
 	std::unique_ptr<CSettings> settings;
+	BOOL fullTransparentEnabled;
 	void SaveModificationValues(BOOL globalSettings, HKEY key, CModificationSettings values);
 	HKEY registryRootKey;
 	BOOL ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE& value);

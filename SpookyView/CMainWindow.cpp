@@ -44,6 +44,30 @@ BOOL CMainWindow::InitNotifyIcon()
 	return canInit == TRUE && notifyIconContextMenu != NULL;
 }
 
+BOOL CMainWindow::InitHotKeys()
+{
+	RegisterHotKey(this->hWnd, 1, MOD_CONTROL | MOD_SHIFT, VK_INSERT);
+	RegisterHotKey(this->hWnd, 2, MOD_CONTROL | MOD_SHIFT, VK_DELETE);
+	RegisterHotKey(this->hWnd, 3, MOD_CONTROL | MOD_SHIFT, VK_NEXT);
+	RegisterHotKey(this->hWnd, 4, MOD_CONTROL | MOD_SHIFT, VK_PRIOR);
+	RegisterHotKey(this->hWnd, 5, MOD_CONTROL | MOD_SHIFT, VK_HOME);
+	RegisterHotKey(this->hWnd, 6, MOD_CONTROL | MOD_SHIFT, VK_END);
+	RegisterHotKey(this->hWnd, 7, MOD_CONTROL | MOD_SHIFT, VK_OEM_PLUS);
+	return TRUE;
+}
+
+BOOL CMainWindow::RemoveHotKeys()
+{
+	UnregisterHotKey(this->hWnd, 1);
+	UnregisterHotKey(this->hWnd, 2);
+	UnregisterHotKey(this->hWnd, 3);
+	UnregisterHotKey(this->hWnd, 4);
+	UnregisterHotKey(this->hWnd, 5);
+	UnregisterHotKey(this->hWnd, 6);
+	UnregisterHotKey(this->hWnd, 7);
+	return TRUE;
+}
+
 void CMainWindow::CloseWindow()
 {
 	DestroyMenu(notifyIconContextMenu);
@@ -233,6 +257,33 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 	case WM_DESTROY:
 		this->CloseWindow();
 		return FALSE;
+	case WM_HOTKEY:
+		switch (wParam)
+		{
+			case 1: // Ctrl + Shift + Insert
+				windowsEnum.ToggleForegroundTransparencyActiveWindow();
+				break;
+			case 2: // Ctrl + Shift + Home
+				windowsEnum.ToggleBackgroundTransparencyActiveWindow();
+				break;
+			case 3: // Ctrl + Shift + Page Down
+				windowsEnum.DecreaseForegroundTransparencyActiveWindow();
+				break;
+			case 4: // Ctrl + Shift + Page Up
+				windowsEnum.IncreaseForegroundTransparencyActiveWindow();
+				break;
+			case 5: // Ctrl + Shift + Home
+				windowsEnum.IncreaseBackgroundTransparencyActiveWindow();
+				break;
+			case 6: // Ctrl + Shift + End
+				windowsEnum.DecreaseBackgroundTransparencyActiveWindow();
+				break;
+			case 7: // Ctrl + Shift + =
+				windowsEnum.ToggleAlwaysOnTopActiveWindow();
+				break;
+				
+		}
+		break;
 	default:
 		return DefWindowProc(hWnd, message, wParam, lParam);
 	}

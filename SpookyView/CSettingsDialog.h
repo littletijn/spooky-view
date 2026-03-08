@@ -11,6 +11,7 @@ public:
 protected:
 	BOOL SetupDialog();
 	void ApplySettings();
+	void ApplyHotkeySettings();
 	void SetFormValues(HWND hDlg);
 	BOOL HasAutoRunValue();
 	void AddAutoRun();
