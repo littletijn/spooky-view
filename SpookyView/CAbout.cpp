@@ -43,6 +43,8 @@ void CAbout::SetVariant()
 	variant.append(_T("MSI "));
 #elif PACKAGING_PORTABLE
 	variant.append(_T("Portable "));
+#else
+	variant.append(_T("Unknown "));
 #endif
 #ifdef _DEBUG
 	variant.append(_T("Debug "));
