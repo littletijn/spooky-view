@@ -57,6 +57,7 @@
 #define IDC_STATIC_HOTKEY1              1024
 #define IDC_STATIC_HOTKEY2              1025
 #define IDC_STATIC_HOTKEY3              1026
+#define IDC_STATIC_VARIANT              1027
 #define IDC_LIST_ADD_APPS               40000
 #define IDC_LIST_ADD_WINDOWS            40000
 #define IDC_LIST_APPS                   40000
@@ -94,7 +95,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        132
 #define _APS_NEXT_COMMAND_VALUE         40020
-#define _APS_NEXT_CONTROL_VALUE         1027
+#define _APS_NEXT_CONTROL_VALUE         1028
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

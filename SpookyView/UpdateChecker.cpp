@@ -86,6 +86,9 @@ void UpdateChecker::DownloadAndParseJson()
 	tstring url(_T("spookyview/status?version="));
 	GetProductVersion(&version);
 	url.append(version);
+#ifdef PRE_RELEASE
+	url.append(_T("&pre_release=1"));
+#endif
 	url.append(_T("&language="));
 	GetUserLanguage(&language);
 	url.append(language);
