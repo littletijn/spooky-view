@@ -400,14 +400,14 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTI
 CAPTION "Over Spooky View"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "Deze toepassing valt onder de GNU GPL v3.0-licentie of hoger.",IDC_STATIC,12,47,120,18
-    LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,86,130,8
-    LTEXT           "Gebaseerd op een idee van Mikey",IDC_STATIC,12,110,130,8
+    CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
     LTEXT           "1.1.0.0 (Hot new release)",IDC_STATIC,12,18,136,9
-    LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,74,138,8
-    CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
     LTEXT           "Onbekende variant",IDC_STATIC_VARIANT,12,30,140,8
+    LTEXT           "Deze toepassing valt onder de GNU GPL v3.0-licentie of hoger.",IDC_STATIC,12,47,120,18
+    LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,74,138,8
+    LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,86,130,8
+    LTEXT           "Gebaseerd op een idee van Mikey",IDC_STATIC,12,110,130,8
     DEFPUSHBUTTON   "Sluiten",IDOK,180,120,50,14,WS_GROUP
 END
 
