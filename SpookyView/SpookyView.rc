@@ -114,15 +114,15 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTI
 CAPTION "About Spooky View"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    LTEXT           "This application is licensed under the GNU GPL v3.0 or later",IDC_STATIC,12,47,120,18
-    LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,86,130,8
-    LTEXT           "Based on an idea by Mikey",IDC_STATIC,12,110,130,8
+    CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
     LTEXT           "Spooky View",IDC_STATIC,12,6,130,8,SS_NOPREFIX
     LTEXT           "1.1.0.0 (Hot new release)",IDC_STATIC,12,18,136,9
-    LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,74,138,8
-    DEFPUSHBUTTON   "Close",IDOK,180,120,50,14,WS_GROUP
-    CONTROL         IDB_SPOOK,IDC_SPOOK_IMAGE,"Static",SS_BITMAP,162,6,67,62
     LTEXT           "Unknown variant",IDC_STATIC_VARIANT,12,30,140,8
+    LTEXT           "This application is licensed under the GNU GPL v3.0 or later",IDC_STATIC,12,47,120,18
+    LTEXT           "Copyright (c) 2022 Martijn van Antwerpen",IDC_STATIC,12,74,138,8
+    LTEXT           "https://www.tyndomyn.net",IDC_STATIC,12,86,130,8
+    LTEXT           "Based on an idea by Mikey",IDC_STATIC,12,110,130,8
+    DEFPUSHBUTTON   "Close",IDOK,180,120,50,14,WS_GROUP
 END
 
 IDD_ADD_APP DIALOGEX 0, 0, 284, 268
@@ -130,13 +130,13 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE
 CAPTION "Add desktop app"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
-    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE,7,246,50,14
     LTEXT           "Running desktop apps",IDC_STATIC_RUNNING_APPS,7,7,72,8
     CONTROL         "",IDC_LIST_ADD_APPS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_SORTASCENDING | LVS_ALIGNLEFT | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,7,17,270,200
-    PUSHBUTTON      "Cancel",IDCANCEL,227,247,50,14
-    DEFPUSHBUTTON   "Add",IDOK,172,247,50,14
-    LTEXT           "Executable",IDC_STATIC_APP_EXECUTABLE,8,226,36,8
+    LTEXT           "Executable:",IDC_STATIC_APP_EXECUTABLE,8,226,36,8
     EDITTEXT        IDC_EDIT_EXECUTABLE_NAME,49,224,227,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse...",IDC_BUTTON_BROWSE,7,246,50,14
+    DEFPUSHBUTTON   "Add",IDOK,172,247,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,227,247,50,14
 END
 
 IDD_ADD_WINDOW DIALOGEX 0, 0, 284, 268
@@ -144,12 +144,12 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_VISIBLE
 CAPTION "Add window"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
+    LTEXT           "Visible window(s)",IDC_STATIC_RUNNING_APPS,7,7,54,8
+    CONTROL         "",IDC_LIST_ADD_WINDOWS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,17,270,200
+    LTEXT           "Class name:",IDC_STATIC_CLASS_NAME,7,227,39,8
+    EDITTEXT        IDC_EDIT_CLASS_NAME,52,226,226,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "Add",IDOK,172,247,50,14
     PUSHBUTTON      "Cancel",IDCANCEL,227,247,50,14
-    CONTROL         "",IDC_LIST_ADD_WINDOWS,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SORTASCENDING | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,7,17,270,200
-    EDITTEXT        IDC_EDIT_CLASS_NAME,52,226,226,12,ES_AUTOHSCROLL
-    LTEXT           "Class name:",IDC_STATIC_CLASS_NAME,7,227,39,8
-    LTEXT           "Visible window(s)",IDC_STATIC_RUNNING_APPS,7,7,54,8
 END
 
 IDD_SETTINGS DIALOGEX 0, 0, 287, 243
@@ -159,18 +159,19 @@ FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "Start program when this user logs in",IDC_CHECKBOX_AUTO_STARTUP,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,6,272,10
-    PUSHBUTTON      "Cancel",IDCANCEL,232,225,50,14
-    DEFPUSHBUTTON   "OK",IDOK,177,225,50,14
     CONTROL         "Do not check for updates on start",IDC_CHECKBOX_DISABLE_UPDATE_CHECK,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,24,273,10
     CONTROL         "Do not show welcome window on startup",IDC_CHECKBOX_SKIP_WELCOME,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,42,274,10
     CONTROL         "Allow full transparency",IDC_CHECKBOX_ENABLE_FULL_TRANSPARENT,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
-    CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,78,248,10
+    CONTROL         "Enable hotkeys",IDC_CHECKBOX_ENABLE_HOTKEYS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,78,248,10
     LTEXT           "Hotkeys:\n\nFor active window and windows of same type as active:\n\nCtrl + Shift + =: Enable or disable always on top",IDC_STATIC_HOTKEY1,8,95,303,42
     LTEXT           "Foreground windows:\nCtrl + Shift + Insert: Enable or disable transparency\nCrtl + Shift + Page Up: Increase transparency\nCtrl + Shift + Page Down: Reduce transparency",IDC_STATIC_HOTKEY2,8,143,266,34
     LTEXT           "Background windows:\nCtrl + Shift + Delete: Enable or disable transparency\nCrtl + Shift + Home: Increase transparency \nCtrl + Shift + End: Reduce transparency",IDC_STATIC_HOTKEY3,7,183,259,39
+    DEFPUSHBUTTON   "OK",IDOK,177,225,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,232,225,50,14
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -178,29 +179,30 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_MINIMIZEBOX | WS_P
 CAPTION "Spooky View"
 FONT 8, "Ms Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "Background",IDC_SLIDER_BACKGROUND,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | TBS_NOTICKS | TBS_TOOLTIPS | NOT WS_VISIBLE | WS_TABSTOP,276,120,180,15
-    CONTROL         "Foreground",IDC_SLIDER_FOREGROUND,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | TBS_NOTICKS | TBS_TOOLTIPS | NOT WS_VISIBLE | WS_TABSTOP,276,66,180,15
-    GROUPBOX        "Transparency",IDC_STATIC_TRANSPARENCY,270,52,192,110,NOT WS_VISIBLE
-    CONTROL         "Enable transparency",IDC_CHECKBOX_ENABLE_TRANSPARENCY,
-                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,272,22,81,8
-    PUSHBUTTON      "Add...",IDC_BUTTON_WINDOW_ADD,142,267,50,14,WS_DISABLED
-    PUSHBUTTON      "Remove",IDC_BUTTON_WINDOW_REMOVE,207,267,50,14,WS_DISABLED
+    LTEXT           "Apps",IDC_STATIC_APPS,12,12,45,8
+    CONTROL         "",IDC_LIST_APPS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,12,22,115,240
     PUSHBUTTON      "Add...",IDC_BUTTON_APP_ADD,12,267,50,14
     PUSHBUTTON      "Remove",IDC_BUTTON_APP_REMOVE,77,267,50,14,WS_DISABLED
     LTEXT           "Windows",IDC_STATIC_WINDOWS,142,12,30,8
-    LTEXT           "Apps",IDC_STATIC_APPS,12,12,45,8
     CONTROL         "",IDC_LIST_WINDOWS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,142,22,115,240
-    CONTROL         "",IDC_LIST_APPS,"SysListView32",LVS_LIST | LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,12,22,115,240
-    PUSHBUTTON      "Cancel",IDCANCEL,362,297,50,14
-    PUSHBUTTON      "Apply",IDAPPLY,417,297,50,14
-    DEFPUSHBUTTON   "OK",IDOK,307,297,50,14
+    PUSHBUTTON      "Add...",IDC_BUTTON_WINDOW_ADD,142,267,50,14,WS_DISABLED
+    PUSHBUTTON      "Remove",IDC_BUTTON_WINDOW_REMOVE,207,267,50,14,WS_DISABLED
+    CONTROL         "Enable transparency",IDC_CHECKBOX_ENABLE_TRANSPARENCY,
+                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,272,22,81,8
+    CONTROL         "Always on top",IDC_CHECKBOX_ALWAYS_ON_TOP,
+                    "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,272,37,115,10
+    GROUPBOX        "Transparency",IDC_STATIC_TRANSPARENCY,270,52,192,110,NOT WS_VISIBLE
+    CONTROL         "Foreground",IDC_SLIDER_FOREGROUND,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | TBS_NOTICKS | TBS_TOOLTIPS | NOT WS_VISIBLE | WS_TABSTOP,276,66,180,15
     LTEXT           "Transparent",IDC_STATIC_FOREGORUND_TRANSPARENT,276,84,40,8,NOT WS_VISIBLE
     LTEXT           "Opaque",IDC_STATIC_FOREGROUND_OPAQUE,432,84,26,8,NOT WS_VISIBLE
-    LTEXT           "Transparent",IDC_STATIC_BACKGROUND_TRANSPARENT,276,144,40,8,NOT WS_VISIBLE
-    LTEXT           "Opaque",IDC_STATIC_BACKGROUND_OPAQUE,432,144,26,8,NOT WS_VISIBLE
     CONTROL         "Separate value for inactive window",IDC_CHECKBOX_SEPARATE_BACKGROUND_VALUE,
                     "Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,276,102,129,10
-    CONTROL         "Always on top",IDC_CHECKBOX_ALWAYS_ON_TOP,"Button",BS_AUTOCHECKBOX | NOT WS_VISIBLE | WS_TABSTOP,272,37,115,10
+    CONTROL         "Background",IDC_SLIDER_BACKGROUND,"msctls_trackbar32",TBS_AUTOTICKS | TBS_TOP | TBS_NOTICKS | TBS_TOOLTIPS | NOT WS_VISIBLE | WS_TABSTOP,276,120,180,15
+    LTEXT           "Transparent",IDC_STATIC_BACKGROUND_TRANSPARENT,276,144,40,8,NOT WS_VISIBLE
+    LTEXT           "Opaque",IDC_STATIC_BACKGROUND_OPAQUE,432,144,26,8,NOT WS_VISIBLE
+    DEFPUSHBUTTON   "OK",IDOK,307,297,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,362,297,50,14
+    PUSHBUTTON      "Apply",IDAPPLY,417,297,50,14
 END
 
 IDD_UPDATE_AVAILABLE DIALOGEX 0, 0, 259, 125
@@ -208,10 +210,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPU
 CAPTION "Spooky View update available"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Download",ID_DOWNLOAD,63,104,69,14
-    PUSHBUTTON      "Close",ID_CLOSE,202,104,50,14
-    PUSHBUTTON      "Skip version",IDC_SKIP_VERSION,143,104,50,14
     LTEXT           "Message!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
+    DEFPUSHBUTTON   "Download",ID_DOWNLOAD,63,104,69,14
+    PUSHBUTTON      "Skip version",IDC_SKIP_VERSION,143,104,50,14
+    PUSHBUTTON      "Close",ID_CLOSE,202,104,50,14
 END
 
 IDD_INTRO DIALOGEX 0, 0, 207, 255
@@ -219,15 +221,15 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTI
 CAPTION "Spooky View"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Close",IDCLOSE,150,234,50,14
     LTEXT           "Welcome to\n\nSpooky View",ID_STATIC_INTRO_TITLE,85,7,115,49
     CONTROL         IDB_NOTIFYICON,IDC_STATIC,"Static",SS_BITMAP,45,103,121,98
     LTEXT           "Double-click this app's icon in the notification area or open the app again to set it up.",IDC_INTRO_TEXT,7,77,193,19
+    CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
+    PUSHBUTTON      "Setup apps...",IDC_BUTTON_SETUP_APPS,7,211,82,14
+    PUSHBUTTON      "Open settings...",IDC_BUTTON_INTRO_SETTINGS,118,211,82,14
     CONTROL         "Do not show this window again",IDC_SKIP_INTRO_CHECKBOX,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,238,115,10
-    CONTROL         IDB_SPOOK,IDC_STATIC,"Static",SS_BITMAP,7,7,67,62
-    PUSHBUTTON      "Open settings...",IDC_BUTTON_INTRO_SETTINGS,118,211,82,14
-    PUSHBUTTON      "Setup apps...",IDC_BUTTON_SETUP_APPS,7,211,82,14
+    DEFPUSHBUTTON   "Close",IDCLOSE,150,234,50,14
 END
 
 
@@ -453,11 +455,11 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,60,248,10
     CONTROL         "Sneltoetsen inschakelen",IDC_CHECKBOX_ENABLE_HOTKEYS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,78,248,10
-    DEFPUSHBUTTON   "OK",IDOK,177,225,50,14
-    PUSHBUTTON      "Annuleren",IDCANCEL,232,225,50,14
+    LTEXT           "Sneltoetsen:\n\nVoor actieve venster en vensters van hetzelfde type als het actieve venster:\n\nCtrl + Shift + =: Altijd op voorgrond in- of uitschakelen",IDC_STATIC_HOTKEY3,8,95,303,42
     LTEXT           "Vensters in voorgrond:\nCtrl + Shift + Insert: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Page Up: Doorzichtigheid verhogen\nCtrl + Shift + Page Down: Doorzichtigheid verlagen",IDC_STATIC_HOTKEY1,8,143,266,34
     LTEXT           "Vensters in achtergrond:\nCtrl + Shift + Delete: In- of uitschakelen van doorzichtigheid\nCrtl + Shift + Home: Doorzichtigheid verhogen\nCtrl + Shift + End: Doorzichtigheid verlagen",IDC_STATIC_HOTKEY2,7,183,259,39
-    LTEXT           "Sneltoetsen:\n\nVoor actieve venster en vensters van hetzelfde type als het actieve venster:\n\nCtrl + Shift + =: Altijd op voorgrond in- of uitschakelen",IDC_STATIC_HOTKEY3,8,95,303,42
+    DEFPUSHBUTTON   "OK",IDOK,177,225,50,14
+    PUSHBUTTON      "Annuleren",IDCANCEL,232,225,50,14
 END
 
 IDD_SETUP DIALOGEX 0, 0, 474, 318
@@ -496,10 +498,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPU
 CAPTION "Spooky View update beschikbaar"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
+    LTEXT           "Bericht!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
     DEFPUSHBUTTON   "Downloaden",ID_DOWNLOAD,63,104,69,14
     PUSHBUTTON      "Sla versie over",IDC_SKIP_VERSION,138,104,60,14
     PUSHBUTTON      "Sluiten",ID_CLOSE,202,104,50,14
-    LTEXT           "Bericht!",IDC_UPDATE_MESSAGE,7,7,245,85,NOT WS_GROUP
 END
 
 IDD_INTRO DIALOGEX 0, 0, 207, 255
