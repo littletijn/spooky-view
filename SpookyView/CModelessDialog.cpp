@@ -12,15 +12,25 @@ INT_PTR CModelessDialog::StaticDialogProc(HWND hDlg, UINT message, WPARAM wParam
 {
 	CModelessDialog* pThis = NULL;
 
-	if (message == WM_INITDIALOG)
-	{
-		pThis = (CModelessDialog*)lParam;
-		SetWindowLongPtr(hDlg, DWLP_USER, (LONG_PTR)pThis);
-		pThis->hWnd = hDlg;
-	}
-	else
-	{
-		pThis = (CModelessDialog*)GetWindowLongPtr(hDlg, DWLP_USER);
+	switch (message) {
+		case WM_ACTIVATE:
+			if (wParam == 0)
+			{
+				hWndDialogCurrent = NULL;
+			}
+			else
+			{
+				hWndDialogCurrent = hDlg;
+			}
+			break;
+		case WM_INITDIALOG:
+			pThis = (CModelessDialog*)lParam;
+			SetWindowLongPtr(hDlg, DWLP_USER, (LONG_PTR)pThis);
+			pThis->hWnd = hDlg;
+			break;
+		default:
+			pThis = (CModelessDialog*)GetWindowLongPtr(hDlg, DWLP_USER);
+			break;
 	}
 	if (pThis)
 	{

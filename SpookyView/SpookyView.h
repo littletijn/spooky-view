@@ -9,6 +9,7 @@
 extern HICON spookyIcon;
 extern HINSTANCE hInst;
 extern HWND mainHwnd;
+extern HWND hWndDialogCurrent;
 extern std::unique_ptr<ISettingsManager> settingsManager;
 extern std::unique_ptr<CMainWindow> mainWindow;
 extern std::unique_ptr<CSettingsDialog> cSettingsDialog;

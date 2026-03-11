@@ -14,7 +14,6 @@
 int AppMain::Run()
 {
 	MSG msg;
-	HACCEL hAccelTable;
 
 	INITCOMMONCONTROLSEX init;
 	init.dwSize = sizeof(INITCOMMONCONTROLSEX);
@@ -82,13 +81,10 @@ int AppMain::Run()
 		CreateUpdateCheckerThread();
 	}
 #endif
-
-	hAccelTable = LoadAccelerators(hInst, MAKEINTRESOURCE(IDC_SPOOKYVIEW));
-
 	// Main message loop:
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
-		if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		if ((hWndDialogCurrent == NULL || !IsDialogMessage(hWndDialogCurrent, &msg)))
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);

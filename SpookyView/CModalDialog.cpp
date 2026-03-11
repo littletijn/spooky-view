@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CModalDialog.h"
 #include "CDialog.h"
+#include "SpookyView.h"
 
 CModalDialog::CModalDialog(HINSTANCE hInstance, HWND hParent) : CDialog(hInstance)
 {
@@ -11,15 +12,25 @@ INT_PTR CModalDialog::StaticDialogProc(HWND hDlg, UINT message, WPARAM wParam, L
 {
 	CModalDialog* pThis = NULL;
 
-	if (message == WM_INITDIALOG)
-	{
-		pThis = (CModalDialog*)lParam;
-		SetWindowLongPtr(hDlg, DWLP_USER, (LONG_PTR)pThis);
-		pThis->hWnd = hDlg;
-	}
-	else
-	{
-		pThis = (CModalDialog*)GetWindowLongPtr(hDlg, DWLP_USER);
+	switch (message) {
+		case WM_ACTIVATE:
+			if (wParam == 0)
+			{
+				hWndDialogCurrent = NULL;
+			}
+			else
+			{
+				hWndDialogCurrent = hDlg;
+			}
+			break;
+		case WM_INITDIALOG:
+			pThis = (CModalDialog*)lParam;
+			SetWindowLongPtr(hDlg, DWLP_USER, (LONG_PTR)pThis);
+			pThis->hWnd = hDlg;
+			break;
+		default:
+			pThis = (CModalDialog*)GetWindowLongPtr(hDlg, DWLP_USER);
+			break;
 	}
 	if (pThis)
 	{

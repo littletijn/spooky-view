@@ -92,14 +92,14 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDC_SPOOKYVIEW MENUEX
 BEGIN
-    POPUP "ContextMenu",                    0,MFT_STRING,MFS_ENABLED
+    POPUP "ContextMenu",0,MFT_STRING
     BEGIN
-        MENUITEM "&Open...",                    IDM_OPEN,MFT_STRING,MFS_ENABLED | MFS_UNCHECKED | MFS_UNHILITE | MFS_DEFAULT
-        MENUITEM "Settings...",                 IDM_SETTINGS,MFT_STRING,MFS_ENABLED
-        MENUITEM "Introduction...",             IDM_INTRO,MFT_STRING,MFS_ENABLED
-        MENUITEM "&About...",                   IDM_ABOUT,MFT_STRING,MFS_ENABLED
-        MENUITEM "&Pause",                      IDM_PAUSE,MFT_STRING,MFS_ENABLED
-        MENUITEM "&Exit",                       IDM_EXIT,MFT_STRING,MFS_ENABLED
+        MENUITEM "&Open...",                    IDM_OPEN,MFT_STRING,MFS_DEFAULT
+        MENUITEM "&Settings...",                IDM_SETTINGS,MFT_STRING
+        MENUITEM "&Introduction...",            IDM_INTRO,MFT_STRING
+        MENUITEM "&About...",                   IDM_ABOUT,MFT_STRING
+        MENUITEM "&Pause",                      IDM_PAUSE,MFT_STRING
+        MENUITEM "&Exit",                       IDM_EXIT,MFT_STRING
     END
 END
 
@@ -378,14 +378,14 @@ LANGUAGE LANG_DUTCH, SUBLANG_DUTCH
 
 IDC_SPOOKYVIEW MENUEX
 BEGIN
-    POPUP "ContextMenu",                    0,MFT_STRING,MFS_ENABLED
+    POPUP "ContextMenu",0,MFT_STRING
     BEGIN
-        MENUITEM "&Openen...",                  IDM_OPEN,MFT_STRING,MFS_ENABLED | MFS_UNCHECKED | MFS_UNHILITE | MFS_DEFAULT
-        MENUITEM "Instellingen...",             IDM_SETTINGS,MFT_STRING,MFS_ENABLED
-        MENUITEM "Introductie...",              IDM_INTRO,MFT_STRING,MFS_ENABLED
-        MENUITEM "&Over...",                    IDM_ABOUT,MFT_STRING,MFS_ENABLED
-        MENUITEM "&Pauzeren",                   IDM_PAUSE,MFT_STRING,MFS_ENABLED
-        MENUITEM "&Sluiten",                    IDM_EXIT,MFT_STRING,MFS_ENABLED
+        MENUITEM "&Openen...",                  IDM_OPEN,MFT_STRING,MFS_DEFAULT
+        MENUITEM "&Instellingen...",            IDM_SETTINGS,MFT_STRING
+        MENUITEM "In&troductie...",             IDM_INTRO,MFT_STRING
+        MENUITEM "O&ver...",                    IDM_ABOUT,MFT_STRING
+        MENUITEM "&Pauzeren",                   IDM_PAUSE,MFT_STRING
+        MENUITEM "&Sluiten",                    IDM_EXIT,MFT_STRING
     END
 END
 

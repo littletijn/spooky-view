@@ -11,6 +11,7 @@
 // Global Variables:
 HINSTANCE hInst; // current instance
 HWND mainHwnd; // Main window hwnd
+HWND hWndDialogCurrent = NULL; // Current active dialog hwnd
 HICON spookyIcon;
 PGNSI isImmersive;
 std::unique_ptr<CMainWindow> mainWindow;
