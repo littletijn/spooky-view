@@ -15,6 +15,14 @@ This application will run on Windows XP and newer.
 
 ## Downloads
 
+> ⚠️ **Fork download notice:** The logo above, the Microsoft Store badge,
+> and the GitHub releases link below all currently point at the **upstream**
+> [`littletijn/spooky-view`](https://github.com/littletijn/spooky-view)
+> project and its Microsoft Store listing. They do **not** distribute this
+> hardened fork. To get builds of this fork, use the GitHub Releases of
+> [`SchwartzKamel/spooky-view`](https://github.com/SchwartzKamel/spooky-view/releases)
+> instead of the upstream Store package.
+
 The application is available from the Microsoft Store and Github.
 
 ### Microsoft Store
@@ -34,7 +42,7 @@ When downloading from Github, make sure to choose the correct version.
 ## Known issues
 - WPF (Windows Presentation Foundation) apps cannot be set transparent.
 - When stopping Spooky View, some apps will not return opaque. Restart the affected apps to revert them.
-- Only when Spooky View is run as administrator will it be able to make high privileges app transparent, like Windows Task Mananger.
+- Only when Spooky View is run as administrator will it be able to make high privileges app transparent, like Windows Task Manager.
 
 ## Logging & Diagnostics
 
@@ -100,5 +108,16 @@ Quick paths:
   A VS Code build task (`Build Debug version with MinGW-w64`) is also
   provided.
 
+## Continuous fuzzing
+
+The portable, fuzz-amenable code paths (URL allowlist, update-response JSON
+post-parse extraction, and the `WM_COPYDATA` payload validator) are exercised
+by libFuzzer harnesses under [`fuzz/`](fuzz/README.md). The same harnesses are
+wired into ClusterFuzzLite (in-repo GitHub Actions, see
+[`.clusterfuzzlite/`](.clusterfuzzlite)) and ready for submission to upstream
+OSS-Fuzz (see [`docs/oss-fuzz/`](docs/oss-fuzz)). The full continuous-fuzzing
+guide — local repro, crash triage, adding new harnesses — lives in
+[`docs/OSS-FUZZ.md`](docs/OSS-FUZZ.md).
+
 ## License
-Spooky View is licensed under the GNU GLP v3.0 or later. See the LICENSE file for more details.
+Spooky View is licensed under the GNU GPL v3.0 or later. See the LICENSE file for more details.

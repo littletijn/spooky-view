@@ -9,10 +9,15 @@ OBJ := $(SRC:%.cpp=$(OBJ_DIR)/%.o)
 RES := $(OBJ_DIR)/SpookyViewRes.o $(OBJ_DIR)/Manifest.o
 
 CXXFLAGS := -std=c++14 -DWIN32 -D_WINDOWS -DDEBUG -DUNICODE -D_UNICODE -g \
-            -I. -I..\packages\nlohmann.json.3.10.5\build\native\include
+            -Wall -Wextra -Wformat=2 -Wformat-security \
+            -fstack-protector-strong -fno-strict-aliasing \
+            -I. -I..\packages\nlohmann.json.3.11.3\build\native\include
 # Static-link the C/C++ runtime so the resulting exe has no libgcc/libstdc++
 # DLL dependencies — fixes "missing DLL" errors on clean target machines.
+# PE hardening: ASLR (--dynamicbase), DEP (--nxcompat), High-Entropy VA
+# (effective on 64-bit, harmless warning on 32-bit).
 LDFLAGS  := -static -static-libgcc -static-libstdc++ \
+            -Wl,--dynamicbase,--nxcompat,--high-entropy-va \
             -lcomctl32 -lcomdlg32 -lshlwapi -lversion -lpsapi -lwinhttp \
             -lshell32 -ldbghelp -mwindows -municode
 

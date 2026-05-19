@@ -34,8 +34,8 @@ will be triaged as quickly as maintainer availability allows.
 
 **In scope** (please report):
 
-- Source code in this fork (`src/`, headers, resource scripts, manifest).
-- Build configuration (CMake, MSBuild project files, packaging scripts).
+- Source code in this fork (`SpookyView/`, headers, resource scripts, manifest).
+- Build configuration (MSBuild project files, top-level `Makefile`, packaging scripts).
 - Installer behavior (MSI / MSIX) produced from this repository.
 - Settings persistence and registry behavior under `HKCU`.
 - The in-app update-check mechanism (request construction, response parsing,
@@ -69,7 +69,9 @@ A third-party security review of this fork was performed in 2026. Findings,
 severity ratings, and a remediation table are documented in
 [`docs/SECURITY-AUDIT-2026.md`](docs/SECURITY-AUDIT-2026.md). Please consult
 that document before filing a report — your finding may already be tracked
-there.
+there. See also the
+[Post-audit stability hardening](docs/SECURITY-AUDIT-2026.md#post-audit-stability-hardening-2026-05)
+section for the S1 / S2 / S3 follow-up findings closed after the main audit.
 
 The audit was conducted against a **local snapshot** of this fork without a
 line-by-line diff against `littletijn/spooky-view`. As a result, residual risk

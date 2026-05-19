@@ -59,9 +59,10 @@ Core components:
   NUL-termination; the `ReadValue` overloads in
   `CRegistrySettingsManager.cpp` are the canonical pattern — copy it for new
   registry reads.
-- **`UpdateChecker`** — WinHTTP client that POSTs JSON (version, locale,
-  arch, packaging — see `PRIVACY.md`) to `updates.tyndomyn.net` over HTTPS,
-  parses the reply via `nlohmann::json` into `UpdateResponse`, and posts
+- **`UpdateChecker`** — WinHTTP client that issues an HTTPS GET to
+  `updates.tyndomyn.net` with query-string parameters (version, locale,
+  arch, packaging, pre_release — see `PRIVACY.md`), parses the JSON
+  response via `nlohmann::json` into `UpdateResponse`, and posts
   `WM_UPDATE_AVAILABLE` to `mainHwnd`. **The "Download" button in
   `CUpdateAvailableDialog` is gated by `IsTrustedDownloadUrl`** — extend
   that allowlist if the update host ever changes; never `ShellExecute` an
@@ -110,11 +111,19 @@ Core components:
   truncates. Use `%ls` for wchar_t* in wide formats if you need
   `_snwprintf`.
 - **Crash handler.** `CrashHandler::Install()` (called immediately after
-  `Logger::Init`) registers `SetUnhandledExceptionFilter` and writes a
-  minidump (`spookyview-crash-YYYYMMDD-HHMMSS-PID.dmp`) next to the log
-  on any unhandled SEH exception. Requires linking `dbghelp` (MSVC:
-  `#pragma comment(lib, "dbghelp.lib")` is already there; MinGW: the
-  makefile passes `-ldbghelp`).
+  `Logger::Init`) registers **both** a Vectored Exception Handler via
+  `AddVectoredExceptionHandler` **and** a last-chance
+  `SetUnhandledExceptionFilter`, and also calls
+  `SetProcessUserModeExceptionPolicy` to clear
+  `PROCESS_CALLBACK_FILTER_ENABLED`. The VEH is the primary catch-all on
+  x64, where the kernel's user-mode callback dispatcher will otherwise
+  swallow exceptions raised inside dialog procs before
+  `SetUnhandledExceptionFilter` ever sees them — see audit finding S3 in
+  `docs/SECURITY-AUDIT-2026.md`. On a fatal exception the handler writes
+  a minidump (`spookyview-crash-YYYYMMDD-HHMMSS-PID.dmp`) next to the
+  log. Requires linking `dbghelp` (MSVC: `#pragma comment(lib,
+  "dbghelp.lib")` is already there; MinGW: the makefile passes
+  `-ldbghelp`).
 - **MinGW link flags.** `SpookyView/makefile` static-links the C/C++
   runtime (`-static -static-libgcc -static-libstdc++`) so the produced
   exe has no `libgcc_s_seh-1.dll` / `libstdc++-6.dll` dependency.

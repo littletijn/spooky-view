@@ -228,6 +228,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -245,6 +246,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -262,6 +264,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -282,6 +285,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;PACKAGING_PORTABLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -289,6 +294,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -304,6 +311,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;PACKAGING_MSI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -311,6 +320,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -326,6 +337,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;PACKAGING_STORE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -333,6 +346,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -348,6 +363,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;PACKAGING_PORTABLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -355,6 +372,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <HighEntropyVA>true</HighEntropyVA>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -370,6 +390,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;PACKAGING_MSI;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -377,6 +399,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <HighEntropyVA>true</HighEntropyVA>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -395,6 +420,8 @@
       <ControlFlowGuard>Guard</ControlFlowGuard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnablePREfast>true</EnablePREfast>
+      <SpectreMitigation>Spectre</SpectreMitigation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -405,6 +432,7 @@
       <HighEntropyVA>true</HighEntropyVA>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -423,6 +451,8 @@
       <ControlFlowGuard>Guard</ControlFlowGuard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnablePREfast>true</EnablePREfast>
+      <SpectreMitigation>Spectre</SpectreMitigation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -433,6 +463,7 @@
       <HighEntropyVA>true</HighEntropyVA>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -448,6 +479,8 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;PACKAGING_STORE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <EnablePREfast>true</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -455,6 +488,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <RandomizedBaseAddress>true</RandomizedBaseAddress>
+      <HighEntropyVA>true</HighEntropyVA>
+      <DataExecutionPrevention>true</DataExecutionPrevention>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -473,6 +509,8 @@
       <ControlFlowGuard>Guard</ControlFlowGuard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <EnablePREfast>true</EnablePREfast>
+      <SpectreMitigation>Spectre</SpectreMitigation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -483,6 +521,7 @@
       <HighEntropyVA>true</HighEntropyVA>
       <DataExecutionPrevention>true</DataExecutionPrevention>
       <AdditionalDependencies>psapi.lib;version.lib;Comctl32.lib;Winhttp.lib;Shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <CETCompat>true</CETCompat>
     </Link>
     <Manifest>
       <EnableDpiAwareness>true</EnableDpiAwareness>
@@ -588,13 +627,13 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets" Condition="Exists('..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets')" />
+    <Import Project="..\packages\nlohmann.json.3.11.3\build\native\nlohmann.json.targets" Condition="Exists('..\packages\nlohmann.json.3.11.3\build\native\nlohmann.json.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.10.5\build\native\nlohmann.json.targets'))" />
+    <Error Condition="!Exists('..\packages\nlohmann.json.3.11.3\build\native\nlohmann.json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\nlohmann.json.3.11.3\build\native\nlohmann.json.targets'))" />
   </Target>
   <!--
   

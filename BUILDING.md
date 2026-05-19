@@ -199,3 +199,20 @@ the crashing stack.
   component listed above.
 * **windres errors on `Manifest.rc`** — confirm you're invoking windres from
   inside `SpookyView/` (the top-level `Makefile` already handles this).
+
+---
+
+## Note on the VS Code build task
+
+`.vscode/tasks.json` currently invokes `windres.exe` twice (once for
+`SpookyView.rc`, once for `Manifest.rc`) and then `mingw32-make.exe`
+directly. That is the **legacy pre-automation path**, kept working for
+backward compatibility — it predates the Makefile's `windres` dependency
+graph.
+
+Command-line users should prefer `make` from the repo root: the top-level
+`Makefile` and `SpookyView/makefile` now compile the `.rc` files via
+`windres` as part of the normal dependency graph, so a plain `make` is
+sufficient and avoids drift between the VS Code task and the canonical
+build. The VS Code task may be updated to simply invoke `make` in the
+future.

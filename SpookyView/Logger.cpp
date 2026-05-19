@@ -84,7 +84,8 @@ void Logger::Init()
 	lstrcpynW(logPath, logDir, MAX_PATH);
 	lstrcatW(logPath, L"\\spookyview.log");
 
-	// Naive rotation: if > 1 MiB, rename current → .old, start fresh.
+	// Naive rotation: if > 1 MiB, shift generations .1 → .2 → .3 and start fresh.
+	// Keeps at most 4 files (current + .1/.2/.3), bounding disk use to ~4 MiB.
 	WIN32_FILE_ATTRIBUTE_DATA fa;
 	if (GetFileAttributesExW(logPath, GetFileExInfoStandard, &fa))
 	{
@@ -93,11 +94,21 @@ void Logger::Init()
 		size.HighPart = fa.nFileSizeHigh;
 		if (size.QuadPart > (1ULL << 20))
 		{
-			wchar_t oldPath[MAX_PATH];
-			lstrcpynW(oldPath, logPath, MAX_PATH);
-			lstrcatW(oldPath, L".old");
-			DeleteFileW(oldPath);
-			MoveFileW(logPath, oldPath);
+			// Need room for ".3" (2 wchars) plus the existing NUL.
+			if (lstrlenW(logPath) + 2 < MAX_PATH)
+			{
+				wchar_t p1[MAX_PATH], p2[MAX_PATH], p3[MAX_PATH];
+				lstrcpynW(p1, logPath, MAX_PATH); lstrcatW(p1, L".1");
+				lstrcpynW(p2, logPath, MAX_PATH); lstrcatW(p2, L".2");
+				lstrcpynW(p3, logPath, MAX_PATH); lstrcatW(p3, L".3");
+
+				DeleteFileW(p3);        // ignore failure (may not exist)
+				MoveFileW(p2, p3);      // ignore failure (may not exist)
+				MoveFileW(p1, p2);      // ignore failure (may not exist)
+				MoveFileW(logPath, p1); // real move; CreateFile below recreates current
+			}
+			// If the path is too long to safely append a suffix, skip rotation
+			// rather than risk a truncated path. The log may grow past 1 MiB.
 		}
 	}
 
