@@ -1,0 +1,14 @@
+homepage: "https://github.com/SchwartzKamel/spooky-view"
+language: c++
+primary_contact: "FILL_IN@example.com"
+auto_ccs:
+  - "FILL_IN@example.com"
+main_repo: "https://github.com/SchwartzKamel/spooky-view"
+sanitizers:
+  - address
+  - undefined
+architectures:
+  - x86_64
+fuzzing_engines:
+  - libfuzzer
+  - honggfuzz

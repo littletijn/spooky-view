@@ -1,0 +1,16 @@
+findings/
+# libFuzzer mutates and grows the corpus directory in-place; regenerate
+# seeds with `python3 seed_corpus.py`. Do not commit fuzzer-discovered
+# units.
+corpus/
+*.profraw
+*.profdata
+build/
+url_allowlist_fuzz
+update_json_fuzz
+copydata_fuzz
+crash-*
+leak-*
+oom-*
+timeout-*
+slow-unit-*
