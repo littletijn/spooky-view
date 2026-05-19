@@ -9,6 +9,7 @@
 #include "UpdateResponse.h"
 #include "ISettingsManager.h"
 #include "WindowsEnum.h"
+#include "Logger.h"
 #ifdef UNICODE
 #include "UnicodeConversion.h"
 #endif //UNICODE
@@ -131,13 +132,32 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				ReplyMessage(TRUE);
 			}
 			PCOPYDATASTRUCT dataCopy = (PCOPYDATASTRUCT)lParam;
-			if (dataCopy->dwData == ALREADY_RUNNING_NOTIFY)
+			if (dataCopy != NULL
+				&& dataCopy->dwData == ALREADY_RUNNING_NOTIFY
+				&& dataCopy->lpData != NULL
+				&& dataCopy->cbData >= sizeof("Spooky View - already running"))
 			{
-				CHAR *message = (CHAR*)dataCopy->lpData;
-				if (strrchr(message, *"Spooky View - already running"))
+				// Treat the payload as bytes and ensure NUL-termination within the declared length
+				// before any string compare. Drop anything that does not match exactly.
+				CHAR buffer[64];
+				DWORD copyLen = dataCopy->cbData < sizeof(buffer) ? dataCopy->cbData : (DWORD)sizeof(buffer) - 1;
+				memcpy(buffer, dataCopy->lpData, copyLen);
+				buffer[copyLen] = '\0';
+				if (strcmp(buffer, "Spooky View - already running") == 0)
 				{
+					LOG_INFO("WM_COPYDATA: already-running ping accepted");
 					OpenSetupDialog();
 				}
+				else
+				{
+					LOG_WARN("WM_COPYDATA: dwData=%lu cbData=%lu payload mismatch; dropping",
+						(unsigned long)dataCopy->dwData, (unsigned long)dataCopy->cbData);
+				}
+			}
+			else if (dataCopy != NULL)
+			{
+				LOG_WARN("WM_COPYDATA: rejected dwData=%lu cbData=%lu",
+					(unsigned long)dataCopy->dwData, (unsigned long)dataCopy->cbData);
 			}
 		}
 		return FALSE;
@@ -191,7 +211,10 @@ LRESULT CALLBACK CMainWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
 				}
 				if (!cSettingsDialog->hasInitInstance())
 				{
-					cSettingsDialog->InitInstance();
+					if (!cSettingsDialog->InitInstance())
+					{
+						LOG_ERROR("CSettingsDialog::InitInstance returned FALSE");
+					}
 				}
 				else
 				{
@@ -306,7 +329,10 @@ void CMainWindow::OpenSetupDialog()
 	}
 	if (!cSetupDialog->hasInitInstance())
 	{
-		cSetupDialog->InitInstance();
+		if (!cSetupDialog->InitInstance())
+		{
+			LOG_ERROR("CSetupDialog::InitInstance returned FALSE");
+		}
 	}
 	else
 	{

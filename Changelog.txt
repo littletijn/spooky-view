@@ -1,3 +1,27 @@
+SchwartzKamel fork - 2026-05
+----------------------------
+- Added top-level Makefile and BUILDING.md for MinGW build flow (d357b1d)
+- Added structured logging to %LOCALAPPDATA%\SpookyView\spookyview.log with 1 MiB rotation; statically linked C++ runtime (9c2aa34)
+- Added crash handler with minidump output alongside the log (9c2aa34)
+- Documented security review in docs/SECURITY-AUDIT-2026.md (274a0f9)
+- Security and quality hardening from internal review (9311a0a)
+- Fixed `make clean` removing bin/.gitkeep and obj/.gitkeep (09c0863)
+- Fixed uninitialized CDialog::hasInit causing modeless dialogs to silently no-op (4d95df9)
+- Fixed crash on Add App: %s->%ls in MinGW UCRT _snwprintf_s wide format string (7406459)
+- Caught SEH crashes in dialog procs via AddVectoredExceptionHandler; Windows x64 kernel callback dispatcher silently swallowed them otherwise (ae6960b)
+
+1.1.1 (Hardened Build)
+--- Security hardening ---
+- Validated update download URL against the trusted update host before launching the browser (no more arbitrary URI handlers from a compromised update server)
+- Fixed stack buffer issues in the "Start at logon" registry write and in the ListView text retrieval helper
+- Single-instance mutex moved to a unique Local\ namespace to prevent cross-process squatting
+- WM_COPYDATA "already running" handshake now validates payload size and matches the message exactly
+- Tray icon text now uses safe copy APIs (no user strings used as printf-style format strings)
+- IsWindowTransparent now reads the correct window style flag so restore-on-exit works reliably
+- Hardened registry string reads to always be null-terminated
+- Enabled ControlFlowGuard, BufferSecurityCheck, RandomizedBaseAddress/HighEntropyVA, and DataExecutionPrevention on the v143 ARM64 release configurations
+- Documented the `pre_release=1` flag in PRIVACY.md
+
 0.0.0.1 (Funky Build!)
 Initial release
 - Read transparency values from registry

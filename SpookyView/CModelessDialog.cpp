@@ -2,6 +2,7 @@
 #include "CModelessDialog.h"
 #include "Defines.h"
 #include "SpookyView.h"
+#include "Logger.h"
 
 CModelessDialog::CModelessDialog(HINSTANCE hInstance, HWND hParent) : CDialog(hInstance)
 {
@@ -63,6 +64,8 @@ BOOL CModelessDialog::Create()
 		ShowWindow(this->hWnd, SW_NORMAL);
 		return TRUE;
 	}
+	LOG_ERROR("CreateDialogParam failed key=%d resource=%p hInstance=%p lastError=%lu",
+		key, (void*)this->dialogResource, (void*)this->hInstance, GetLastError());
 	return FALSE;
 }
 

@@ -12,8 +12,8 @@ public:
 	BOOL InitInstance();
 	void SetForeground();
 protected:
-	LPCTSTR dialogResource;
-	BOOL hasInit;
+	LPCTSTR dialogResource = NULL;
+	BOOL hasInit = FALSE;
 	virtual BOOL SetupDialog() = 0;
 	virtual BOOL Create() = 0;
 };

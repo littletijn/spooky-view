@@ -24,7 +24,7 @@ CRegistrySettingsManager::~CRegistrySettingsManager()
 
 BOOL CRegistrySettingsManager::Init()
 {
-	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &registryRootKey, NULL);
+	DWORD result = RegCreateKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, &registryRootKey, NULL);
 	return result == ERROR_SUCCESS;
 }
 
@@ -188,7 +188,7 @@ bool CRegistrySettingsManager::SaveSettings()
 	//Recreate keys
 	//Create the Programs key
 	HKEY programsKey;
-	if (RegCreateKeyEx(registryRootKey, _T("Programs"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programsKey, NULL) == ERROR_SUCCESS)
+	if (RegCreateKeyEx(registryRootKey, _T("Programs"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, &programsKey, NULL) == ERROR_SUCCESS)
 	{
 		//Save global settings
 		this->SaveModificationValues(TRUE, programsKey, settings->modificationSettings);
@@ -196,12 +196,12 @@ bool CRegistrySettingsManager::SaveSettings()
 		{
 			//Create key for program
 			HKEY programKey;
-			if (RegCreateKeyEx(programsKey, program.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programKey, NULL) == ERROR_SUCCESS)
+			if (RegCreateKeyEx(programsKey, program.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, &programKey, NULL) == ERROR_SUCCESS)
 			{
 				SaveStringValue(programKey, _T("File name"), program.first);
 				//Create Windows key of program
 				HKEY windowsKey;
-				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
+				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
 				{
 					//Save global settings of program
 					this->SaveModificationValues(FALSE, windowsKey, program.second->modificationSettings);
@@ -210,7 +210,7 @@ bool CRegistrySettingsManager::SaveSettings()
 					{
 						HKEY windowKey;
 						//Create key of window
-						if (RegCreateKeyEx(windowsKey, window.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowKey, NULL) == ERROR_SUCCESS)
+						if (RegCreateKeyEx(windowsKey, window.first.c_str(), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, &windowKey, NULL) == ERROR_SUCCESS)
 						{
 							SaveStringValue(windowKey, _T("Window class name"),window.first);
 							this->SaveModificationValues(FALSE, windowKey, window.second->modificationSettings);
@@ -259,12 +259,12 @@ bool CRegistrySettingsManager::SaveModificationSettings(CModificationSettings* m
 		else if (programResult == ERROR_FILE_NOT_FOUND)
 		{
 			//Create a new programs entry for settings
-			if (RegCreateKeyEx(programsKey, processFileName, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &programKey, NULL) == ERROR_SUCCESS)
+			if (RegCreateKeyEx(programsKey, processFileName, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, &programKey, NULL) == ERROR_SUCCESS)
 			{
 				SaveStringValue(programKey, _T("File name"), processFileName);
 				//Create Windows key of program
 				HKEY windowsKey;
-				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
+				if (RegCreateKeyEx(programKey, _T("Windows"), 0, NULL, REG_OPTION_NON_VOLATILE, KEY_READ | KEY_WRITE, NULL, &windowsKey, NULL) == ERROR_SUCCESS)
 				{
 					//Store settings in new key
 					SaveModificationValues(false, windowsKey, *modificationSettings);
@@ -305,15 +305,45 @@ BOOL CRegistrySettingsManager::ReadKeyByteValue(HKEY key, TCHAR* valueName, BYTE
 BOOL CRegistrySettingsManager::ReadValue(HKEY key, TCHAR *valueName, DWORD expectedKeyType, BYTE *dataBuffer, DWORD dataBufferSize)
 {
 	DWORD keyType;
-	auto result = RegQueryValueEx(key, valueName, NULL, &keyType, dataBuffer, &dataBufferSize);
-	return result == ERROR_SUCCESS && keyType == expectedKeyType;
+	DWORD bytesAvailable = dataBufferSize;
+	auto result = RegQueryValueEx(key, valueName, NULL, &keyType, dataBuffer, &bytesAvailable);
+	if (result != ERROR_SUCCESS || keyType != expectedKeyType)
+	{
+		return FALSE;
+	}
+	// REG_SZ values are not guaranteed to be NUL-terminated by the registry.
+	// Force termination inside the caller's buffer to avoid downstream OOB reads.
+	if ((expectedKeyType == REG_SZ || expectedKeyType == REG_EXPAND_SZ || expectedKeyType == REG_MULTI_SZ)
+		&& dataBuffer != NULL && dataBufferSize >= sizeof(TCHAR))
+	{
+		dataBuffer[dataBufferSize - 1] = 0;
+		if (dataBufferSize >= 2 * sizeof(TCHAR))
+		{
+			dataBuffer[dataBufferSize - 2] = 0;
+		}
+	}
+	return TRUE;
 }
 
 BOOL CRegistrySettingsManager::ReadValue(TCHAR *subkey, TCHAR *valueName, DWORD expectedKeyType, BYTE *dataBuffer, DWORD dataBufferSize)
 {
 	DWORD keyType;
-	auto result = SHGetValue(HKEY_CURRENT_USER, subkey, valueName, &keyType, dataBuffer, &dataBufferSize);
-	return result == ERROR_SUCCESS && keyType == expectedKeyType;
+	DWORD bytesAvailable = dataBufferSize;
+	auto result = SHGetValue(HKEY_CURRENT_USER, subkey, valueName, &keyType, dataBuffer, &bytesAvailable);
+	if (result != ERROR_SUCCESS || keyType != expectedKeyType)
+	{
+		return FALSE;
+	}
+	if ((expectedKeyType == REG_SZ || expectedKeyType == REG_EXPAND_SZ || expectedKeyType == REG_MULTI_SZ)
+		&& dataBuffer != NULL && dataBufferSize >= sizeof(TCHAR))
+	{
+		dataBuffer[dataBufferSize - 1] = 0;
+		if (dataBufferSize >= 2 * sizeof(TCHAR))
+		{
+			dataBuffer[dataBufferSize - 2] = 0;
+		}
+	}
+	return TRUE;
 }
 
 BOOL CRegistrySettingsManager::SaveValue(HKEY hKey, TCHAR* valueName, DWORD keyType, BYTE* value, DWORD valueSize)
@@ -328,9 +358,9 @@ BOOL CRegistrySettingsManager::SaveValue(TCHAR* subkey, TCHAR* valueName, DWORD 
 {
 	BOOL result = false;
 	HKEY hKey;
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, subkey, 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, subkey, 0, KEY_SET_VALUE, &hKey) == ERROR_SUCCESS)
 	{
-		BOOL result = SaveValue(hKey, valueName, keyType, value);
+		result = SaveValue(hKey, valueName, keyType, value);
 		RegCloseKey(hKey);
 	}
 	return result;
@@ -349,9 +379,10 @@ BOOL CRegistrySettingsManager::SaveStringValue(HKEY hKey, TCHAR* valueName, tstr
 
 BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
 {
-	TCHAR keyData[100];
+	TCHAR keyData[100] = { 0 };
 	if (ReadValue(_T("Software\\Spooky View"), _T("Skip version"), REG_SZ, (BYTE*)keyData, sizeof(keyData)))
 	{
+		keyData[_countof(keyData) - 1] = _T('\0');
 		return versionNumber.compare(keyData) == 0;
 	}
 	return FALSE;
@@ -360,7 +391,7 @@ BOOL CRegistrySettingsManager::ShouldSkipVersion(tstring versionNumber)
 void CRegistrySettingsManager::AddSkipVersionKey(tstring versionNumber)
 {
 	HKEY hKey;
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Spooky View"), 0, KEY_READ | KEY_WRITE, &hKey) == ERROR_SUCCESS)
 	{
 		SaveStringValue(hKey, _T("Skip version"), versionNumber);
 		RegCloseKey(hKey);

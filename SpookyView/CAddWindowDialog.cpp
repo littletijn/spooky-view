@@ -84,7 +84,7 @@ void CAddWindowDialog::SetSelectedWindow()
 	if (index >= 0)
 	{
 		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
-		LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
+		LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer, _countof(textBuffer));
 		this->classTextbox->SetText(text);
 	}
 }

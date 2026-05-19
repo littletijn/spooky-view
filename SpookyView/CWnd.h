@@ -13,8 +13,8 @@ public:
 protected:
 	//members
 	HINSTANCE hInstance;
-	HWND hParent;
-	HWND hWnd;
+	HWND hParent = NULL;
+	HWND hWnd = NULL;
 };
 
 #endif

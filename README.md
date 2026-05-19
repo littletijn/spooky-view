@@ -5,10 +5,23 @@
 # Spooky View
 A Windows application to make any window transparent.
 
+> **Fork notice:** This is the SchwartzKamel hardened fork of
+> [littletijn/spooky-view](https://github.com/littletijn/spooky-view).
+> See [docs/SECURITY-AUDIT-2026.md](docs/SECURITY-AUDIT-2026.md) for the
+> security review and [Changelog.txt](Changelog.txt) for changes.
+
 ## System requirements
 This application will run on Windows XP and newer.
 
 ## Downloads
+
+> ⚠️ **Fork download notice:** The logo above, the Microsoft Store badge,
+> and the GitHub releases link below all currently point at the **upstream**
+> [`littletijn/spooky-view`](https://github.com/littletijn/spooky-view)
+> project and its Microsoft Store listing. They do **not** distribute this
+> hardened fork. To get builds of this fork, use the GitHub Releases of
+> [`SchwartzKamel/spooky-view`](https://github.com/SchwartzKamel/spooky-view/releases)
+> instead of the upstream Store package.
 
 The application is available from the Microsoft Store and Github.
 
@@ -29,7 +42,22 @@ When downloading from Github, make sure to choose the correct version.
 ## Known issues
 - WPF (Windows Presentation Foundation) apps cannot be set transparent.
 - When stopping Spooky View, some apps will not return opaque. Restart the affected apps to revert them.
-- Only when Spooky View is run as administrator will it be able to make high privileges app transparent, like Windows Task Mananger.
+- Only when Spooky View is run as administrator will it be able to make high privileges app transparent, like Windows Task Manager.
+
+## Logging & Diagnostics
+
+- Log file: `%LOCALAPPDATA%\SpookyView\spookyview.log`. The log rotates at
+  ~1 MiB to `spookyview.log.old`. It is written locally and is never
+  uploaded anywhere by the app.
+- On an unhandled crash, a minidump named
+  `spookyview-crash-YYYYMMDD-HHMMSS-PID.dmp` is written to the same
+  directory by an internal Vectored Exception Handler. Windows Error
+  Reporting (WER) `LocalDumps` can additionally be enabled as a backup.
+
+### Troubleshooting
+
+- If a dialog doesn't open or the app exits unexpectedly, check
+  `spookyview.log` and any `.dmp` file in `%LOCALAPPDATA%\SpookyView\`.
 
 ## FAQ
 
@@ -62,22 +90,34 @@ When the portable app is downloaded and extracted:
 
 ## Building
 
-### Microsoft Visual Studio
-This project can be build with Visual Studio 2022. Install the "Desktop Development with C++" workload and the "C++ Windows XP Support for VS 2017 (v141) tools" component. Open the Solution file "SpookyView.sln" and build the SpookyView project within.
+See [BUILDING.md](BUILDING.md) for full toolchain setup, including
+Chocolatey / Scoop one-liners to install MinGW-w64 + GNU make.
 
-### MinGW-w64 with Microsoft Visual Studio Code
-To build with the MinGW-w64 standalone version, use the Build task available for Microsoft Visual Studio Code. Debugging is also available with the included debug configuration. Simply build the project first and start the debugger afterwards.
+Quick paths:
 
-### MinGW-w64 on the command line
-The project can also be build via the command line and the MinGW-w64 standalone version. First build the resource and manifest file:
-- ```windres.exe SpookyView.rc .\\obj\\SpookyViewRes.o```
-- ```windres.exe Manifest.rc .\\obj\\Manifest.o```
+* **Visual Studio 2022** — install *Desktop Development with C++* plus the
+  *C++ Windows XP Support for VS 2017 (v141) tools* component, then open
+  `SpookyView.sln` and build the `SpookyView` project.
+* **MinGW-w64** (Debug only) — from the repo root:
 
-Then build the rest of the project:
+  ```
+  make restore
+  make
+  ```
 
-```mingw32-make.exe```
+  A VS Code build task (`Build Debug version with MinGW-w64`) is also
+  provided.
 
-When using MSYS2 or another Unix based environment, use the  ```windres``` and ```make``` executables instead.
+## Continuous fuzzing
+
+The portable, fuzz-amenable code paths (URL allowlist, update-response JSON
+post-parse extraction, and the `WM_COPYDATA` payload validator) are exercised
+by libFuzzer harnesses under [`fuzz/`](fuzz/README.md). The same harnesses are
+wired into ClusterFuzzLite (in-repo GitHub Actions, see
+[`.clusterfuzzlite/`](.clusterfuzzlite)) and ready for submission to upstream
+OSS-Fuzz (see [`docs/oss-fuzz/`](docs/oss-fuzz)). The full continuous-fuzzing
+guide — local repro, crash triage, adding new harnesses — lives in
+[`docs/OSS-FUZZ.md`](docs/OSS-FUZZ.md).
 
 ## License
-Spooky View is licensed under the GNU GLP v3.0 or later. See the LICENSE file for more details.
+Spooky View is licensed under the GNU GPL v3.0 or later. See the LICENSE file for more details.

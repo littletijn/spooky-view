@@ -14,6 +14,7 @@
 #include "WindowsEnum.h"
 #include <cmath>
 #include "SpookyView.h"
+#include "Logger.h"
 
 #define TRANSPARENCY_TRACKER_STEPS (100.0 / 255.0)
 
@@ -275,10 +276,11 @@ void CSetupDialog::CopySettings()
 void CSetupDialog::ProgramsListNotified()
 {
 	int index = this->appsListView->GetSelectedIndex();
+	LOG_INFO("ProgramsListNotified index=%d", index);
 	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_PATH];
-		LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
+		LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer, _countof(textBuffer));
 
 		auto program = newSettings->programs->find(text);
 		if (program != newSettings->programs->end())
@@ -324,10 +326,11 @@ void CSetupDialog::ProgramsListNotified()
 void CSetupDialog::WindowsListNotified()
 {
 	int index = this->windowsListView->GetSelectedIndex();
+	LOG_INFO("WindowsListNotified index=%d currentProgram=%p", index, (void*)this->currentProgram);
 	if (index > 0)
 	{
 		TCHAR textBuffer[MAX_WINDOW_CLASS_NAME];
-		LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer);
+		LPTSTR text = this->windowsListView->GetTextByIndex(index, textBuffer, _countof(textBuffer));
 
 		auto window = currentProgram->windows->find(text);
 		if (window != currentProgram->windows->end())

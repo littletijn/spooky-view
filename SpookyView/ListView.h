@@ -8,7 +8,7 @@ class ListView
 public:
 	ListView(HWND parent, int intResource);
 	~ListView();
-	LPTSTR GetTextByIndex(int index, TCHAR* textBuffer);
+	LPTSTR GetTextByIndex(int index, TCHAR* textBuffer, int cchTextMax);
 	void InsertColumn(int index, TCHAR* textBuffer);
 	int GetSelectedIndex();
 	void SetSelectedItem(int index);

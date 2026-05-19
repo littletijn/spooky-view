@@ -15,15 +15,21 @@ ListView::~ListView()
 {
 }
 
-LPTSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer)
+LPTSTR ListView::GetTextByIndex(int index, TCHAR* textBuffer, int cchTextMax)
 {
+	if (textBuffer == NULL || cchTextMax <= 0)
+	{
+		return NULL;
+	}
 	LVITEM item;
 	SecureZeroMemory(&item, sizeof(item));
 	item.iItem = index;
 	item.mask = LVIF_TEXT;
-	item.cchTextMax = MAX_PATH;
+	item.cchTextMax = cchTextMax;
 	item.pszText = textBuffer;
+	textBuffer[0] = _T('\0');
 	ListView_GetItem(hWnd, &item);
+	textBuffer[cchTextMax - 1] = _T('\0');
 	return item.pszText;
 }
 

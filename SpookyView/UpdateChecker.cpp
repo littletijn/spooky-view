@@ -8,19 +8,86 @@
 #include "CMainWindow.h"
 #include "Defines.h"
 #include "SpookyView.h"
+#include "Logger.h"
+
+#ifndef WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_3
+#define WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_3 0x00002000
+#endif
+
+#ifndef WINHTTP_OPTION_ENABLE_FEATURE
+#define WINHTTP_OPTION_ENABLE_FEATURE 79
+#endif
+
+#ifndef WINHTTP_ENABLE_SSL_REVOCATION
+#define WINHTTP_ENABLE_SSL_REVOCATION 0x00000001
+#endif
+
+namespace {
+	constexpr size_t kMaxResponseBytes = 256 * 1024;
+	constexpr size_t kMaxChunkBytes = 64 * 1024;
+
+	// RFC 3986 unreserved + safe query characters: A-Z a-z 0-9 - _ . ~
+	static tstring UrlEncodeComponent(const TCHAR* in)
+	{
+		tstring out;
+		if (!in) return out;
+		for (const TCHAR* p = in; *p; ++p)
+		{
+			TCHAR c = *p;
+			bool unreserved = (c >= _T('A') && c <= _T('Z')) ||
+							  (c >= _T('a') && c <= _T('z')) ||
+							  (c >= _T('0') && c <= _T('9')) ||
+							  c == _T('-') || c == _T('_') || c == _T('.') || c == _T('~');
+			if (unreserved) {
+				out += c;
+			} else {
+				TCHAR buf[8];
+				unsigned char b1 = static_cast<unsigned char>(c & 0xFF);
+				unsigned char b2 = static_cast<unsigned char>((c >> 8) & 0xFF);
+				if (b2) {
+					_stprintf_s(buf, _countof(buf), _T("%%%02X%%%02X"), b2, b1);
+				} else {
+					_stprintf_s(buf, _countof(buf), _T("%%%02X"), b1);
+				}
+				out += buf;
+			}
+		}
+		return out;
+	}
+}
 
 #ifdef UNICODE
 
 void CreateUpdateCheckerThread()
 {
 	DWORD threadId;
-	auto hThread = CreateThread(NULL, 0, UpdateCheckerThread, NULL, 0, &threadId);
+	HANDLE hThread = CreateThread(NULL, 0, UpdateCheckerThread, NULL, 0, &threadId);
+	if (hThread != NULL)
+	{
+		// Fire-and-forget; the thread cleans itself up on return.
+		CloseHandle(hThread);
+	}
+	else
+	{
+		LOG_WARN("CreateThread(UpdateCheckerThread) failed: err=%lu", GetLastError());
+	}
 }
 
 DWORD WINAPI UpdateCheckerThread(LPVOID lpParam)
 {
-	std::unique_ptr<UpdateChecker> autoUpdater;
-	autoUpdater->CheckForNewerVersion();
+	try
+	{
+		UpdateChecker autoUpdater;
+		autoUpdater.CheckForNewerVersion();
+	}
+	catch (const std::exception& e)
+	{
+		LOG_ERROR("UpdateCheckerThread unhandled std::exception: %s", e.what());
+	}
+	catch (...)
+	{
+		LOG_ERROR("UpdateCheckerThread unhandled non-std exception");
+	}
 	return 0;
 }
 
@@ -56,7 +123,10 @@ bool UpdateChecker::GetProductVersion(tstring* version)
 	VS_FIXEDFILEINFO* versioInfo = NULL;
 	unsigned int versionInfoLength = 0;
 
-	VerQueryValue(&data[0], _T("\\"), (LPVOID*)&versioInfo, &versionInfoLength);
+	if (!VerQueryValue(&data[0], _T("\\"), (LPVOID*)&versioInfo, &versionInfoLength) || versioInfo == NULL)
+	{
+		return false;
+	}
 
 	*version += 
 		to_tstring((versioInfo->dwProductVersionMS >> 16) & 0xffff) + _T(".") +
@@ -85,34 +155,34 @@ void UpdateChecker::DownloadAndParseJson()
 	tstring language;
 	tstring url(_T("spookyview/status?version="));
 	GetProductVersion(&version);
-	url.append(version);
+	url.append(UrlEncodeComponent(version.c_str()));
 #ifdef PRE_RELEASE
 	url.append(_T("&pre_release=1"));
 #endif
 	url.append(_T("&language="));
 	GetUserLanguage(&language);
-	url.append(language);
+	url.append(UrlEncodeComponent(language.c_str()));
 	url.append(_T("&arch="));
 #ifdef _M_IX86 
-	url.append(_T("x86"));
+	url.append(UrlEncodeComponent(_T("x86")));
 #elif _M_AMD64
-		url.append(_T("x64"));
+		url.append(UrlEncodeComponent(_T("x64")));
 #elif _M_ARM64 
-	url.append(_T("AArch64"));
+	url.append(UrlEncodeComponent(_T("AArch64")));
 #else
-	url.append(_T("unknown"));
+	url.append(UrlEncodeComponent(_T("unknown")));
 #endif
 	url.append(_T("&packaging="));
 #ifdef PACKAGING_STORE
-	url.append(_T("store"));
+	url.append(UrlEncodeComponent(_T("store")));
 #elif PACKAGING_MSIX
-	url.append(_T("msix"));
+	url.append(UrlEncodeComponent(_T("msix")));
 #elif PACKAGING_MSI
-	url.append(_T("msi"));
+	url.append(UrlEncodeComponent(_T("msi")));
 #elif PACKAGING_PORTABLE
-	url.append(_T("portable"));
+	url.append(UrlEncodeComponent(_T("portable")));
 #else
-	url.append(_T("unknown"));
+	url.append(UrlEncodeComponent(_T("unknown")));
 #endif
 
 	DWORD dwSize = 0;
@@ -134,6 +204,25 @@ void UpdateChecker::DownloadAndParseJson()
 	// Specify an HTTP server.
 	if (hSession)
 	{
+		if (!WinHttpSetTimeouts(hSession, 5000, 5000, 15000, 15000))
+		{
+			LOG_WARN("WinHttpSetTimeouts failed (GetLastError=%lu); continuing with defaults", GetLastError());
+		}
+		DWORD secureProtocols = WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_2;
+#ifdef WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_3
+		secureProtocols |= WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_3;
+#endif
+		if (!WinHttpSetOption(hSession, WINHTTP_OPTION_SECURE_PROTOCOLS,
+							  &secureProtocols, sizeof(secureProtocols)))
+		{
+			LOG_WARN("WinHttpSetOption(SECURE_PROTOCOLS) failed: err=%lu", GetLastError());
+		}
+		DWORD enableFeatures = WINHTTP_ENABLE_SSL_REVOCATION;
+		if (!WinHttpSetOption(hSession, WINHTTP_OPTION_ENABLE_FEATURE,
+							  &enableFeatures, sizeof(enableFeatures)))
+		{
+			LOG_WARN("WinHttpSetOption(ENABLE_SSL_REVOCATION) failed: err=%lu", GetLastError());
+		}
 		hConnect = WinHttpConnect(hSession, _T("updates.tyndomyn.net"), INTERNET_DEFAULT_HTTPS_PORT, 0);
 	}
 
@@ -171,29 +260,47 @@ void UpdateChecker::DownloadAndParseJson()
 			dwSize = 0;
 			if (!WinHttpQueryDataAvailable(hRequest, &dwSize))
 			{
-				printf("Error %u in WinHttpQueryDataAvailable.\n", GetLastError());
+				LOG_WARN("WinHttpQueryDataAvailable failed (GetLastError=%lu)", GetLastError());
+				break;
 			}
 
-			// Allocate space for the buffer.
-			auto pszOutBuffer = std::make_unique<char[]>(dwSize + 1);
-			if (!pszOutBuffer)
+			if (dwSize == 0)
 			{
-				printf("Out of memory\n");
-				dwSize = 0;
+				break;
 			}
-			else
+
+			// Reject implausibly large single chunks (server-controlled value).
+			if (dwSize > kMaxChunkBytes)
 			{
-				// Read the Data.
+				LOG_WARN("Update response chunk too large (%lu bytes); aborting read", dwSize);
+				break;
+			}
+
+			// Enforce cumulative cap on the response body.
+			if (response.size() + dwSize > kMaxResponseBytes)
+			{
+				LOG_WARN("Update response exceeds %zu bytes; aborting read", kMaxResponseBytes);
+				break;
+			}
+
+			try
+			{
+				// Allocate space for the buffer.
+				auto pszOutBuffer = std::make_unique<char[]>(dwSize + 1);
 				ZeroMemory(pszOutBuffer.get(), dwSize + 1);
 
 				if (!WinHttpReadData(hRequest, (LPVOID)pszOutBuffer.get(), dwSize, &dwDownloaded))
 				{
-					printf("Error %u in WinHttpReadData.\n", GetLastError());
+					LOG_WARN("WinHttpReadData failed (GetLastError=%lu)", GetLastError());
+					break;
 				}
-				else
-				{
-					response = response + std::string(pszOutBuffer.get());
-				}
+
+				response.append(pszOutBuffer.get(), dwDownloaded);
+			}
+			catch (const std::bad_alloc&)
+			{
+				LOG_WARN("std::bad_alloc reading update response chunk (%lu bytes)", dwSize);
+				break;
 			}
 
 		} while (dwSize > 0);
@@ -202,7 +309,7 @@ void UpdateChecker::DownloadAndParseJson()
 	// Report any errors.
 	if (!bResults)
 	{
-		printf("Error %d has occurred.\n", GetLastError());
+		LOG_WARN("Update request failed: err=%lu", GetLastError());
 	}
 
 	// Close any open handles.
@@ -223,7 +330,8 @@ void UpdateChecker::DownloadAndParseJson()
 		}
 		catch (nlohmann::json::exception& e)
 		{
-			auto test = e;
+			LOG_WARN("Update JSON parse failed: %s", e.what());
+			return;
 		}
 	}
 }

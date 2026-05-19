@@ -5,6 +5,7 @@
 #include <memory>
 #include "ISettingsManager.h"
 #include "SpookyView.h"
+#include "Logger.h"
 
 CSettingsDialog::CSettingsDialog(HINSTANCE hInstance, HWND hParent) : CModelessDialog(hInstance, hParent)
 {
@@ -150,10 +151,22 @@ void CSettingsDialog::AddAutoRun()
 {
 	HKEY hKey;
 	TCHAR programPath[MAX_PATH];
-	GetModuleFileName(0, programPath, sizeof(programPath));
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	// GetModuleFileName takes a TCHAR count, not a byte count. Reserve one
+	// slot for the surrounding quote pair we add below.
+	DWORD len = GetModuleFileName(0, programPath + 1, _countof(programPath) - 2);
+	if (len == 0 || len >= _countof(programPath) - 2)
 	{
-		if (RegSetValueEx(hKey, _T("Spooky View"), 0, REG_SZ, (LPBYTE)programPath, sizeof(programPath)) != ERROR_SUCCESS)
+		// Path truncated or call failed; refuse to write a malformed Run value.
+		return;
+	}
+	// Quote the path so an unquoted-path style hijack via a space in the path is impossible.
+	programPath[0] = _T('"');
+	programPath[len + 1] = _T('"');
+	programPath[len + 2] = _T('\0');
+	DWORD byteCount = (DWORD)((len + 3) * sizeof(TCHAR));
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), 0, KEY_SET_VALUE, &hKey) == ERROR_SUCCESS)
+	{
+		if (RegSetValueEx(hKey, _T("Spooky View"), 0, REG_SZ, (LPBYTE)programPath, byteCount) != ERROR_SUCCESS)
 		{
 			//Show error message
 		}
@@ -164,7 +177,7 @@ void CSettingsDialog::AddAutoRun()
 void CSettingsDialog::RemoveAutoRun()
 {
 	HKEY hKey;
-	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+	if (RegOpenKeyEx(HKEY_CURRENT_USER, _T("Software\\Microsoft\\Windows\\CurrentVersion\\Run"), 0, KEY_SET_VALUE, &hKey) == ERROR_SUCCESS)
 	{
 		if (RegDeleteValue(hKey, _T("Spooky View")) != ERROR_SUCCESS)
 		{

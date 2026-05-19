@@ -34,7 +34,9 @@ BOOL CAddAppDialog::SetupDialog()
 	LoadString(hInst, IDS_SELECT_PROGRAM, selectProgramString, sizeof(selectProgramString) / sizeof(TCHAR));
 	LoadString(hInst, IDS_PROGRAM_FILTER, programFilterString, sizeof(programFilterString) / sizeof(TCHAR));
 	LoadString(hInst, IDS_ALL_FILES_FILTER, allFilesFilterString, sizeof(allFilesFilterString) / sizeof(TCHAR));
-	_sntprintf_s(fileSelectFilterString, sizeof(fileSelectFilterString) / sizeof(TCHAR), _T("%s (*.exe)%c*.exe%c%s (*.*)%c*.*%c"), programFilterString, '\0', '\0', allFilesFilterString, '\0', '\0');
+	// Use %ls for wchar_t* args: under MinGW UCRT _snwprintf_s treats %s as char*
+	// (silent crash with wide-string arg); %ls is consistent on both MSVC and MinGW.
+	_sntprintf_s(fileSelectFilterString, sizeof(fileSelectFilterString) / sizeof(TCHAR), _T("%ls (*.exe)%c*.exe%c%ls (*.*)%c*.*%c"), programFilterString, '\0', '\0', allFilesFilterString, '\0', '\0');
 
 	this->dialogResource = MAKEINTRESOURCE(IDD_ADD_APP);
 	return TRUE;
@@ -196,7 +198,7 @@ void CAddAppDialog::SetSelectedProgram()
 	if (index >= 0)
 	{
 		TCHAR textBuffer[MAX_PATH];
-		LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer);
+		LPTSTR text = this->appsListView->GetTextByIndex(index, textBuffer, _countof(textBuffer));
 		this->programTextbox->SetText(text);
 	}
 }

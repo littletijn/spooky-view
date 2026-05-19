@@ -7,12 +7,18 @@
 #include "CRegistrySettingsManager.h"
 #include "CMainWindow.h"
 #include "SpookyView.h"
+#include "Logger.h"
+#include "CrashHandler.h"
 #ifdef UNICODE
 #include "UpdateChecker.h"
 #endif
 
 int AppMain::Run()
 {
+	Logger::Instance().Init();
+	CrashHandler::Install();
+	LOG_INFO("SpookyView starting");
+
 	MSG msg;
 
 	INITCOMMONCONTROLSEX init;
@@ -30,6 +36,7 @@ int AppMain::Run()
 	// Perform application initialization:
 	if (!mainWindow->InitInstance())
 	{
+		LOG_ERROR("InitInstance failed: cannot create main window (lastError=%lu)", GetLastError());
 		TCHAR title[80];
 		TCHAR message[100];
 		LoadString(hInst, IDS_ERROR_TITLE, title, ARRAYSIZE(title));
@@ -38,15 +45,17 @@ int AppMain::Run()
 		return FALSE;
 	}
 
-	CLimitSingleInstance singleInstanceObj(_T("SpookyView"));
+	CLimitSingleInstance singleInstanceObj(_T("Local\\SpookyView-SingleInstance-{7CE47E95-8AA0-4B62-87FD-CA1242022F47}"));
 	if (singleInstanceObj.IsAnotherInstanceRunning())
 	{
+		LOG_INFO("Another instance is running; notifying and exiting");
 		SendAlreadyRunningNotify();
 		return FALSE;
 	}
 
 	if (!mainWindow->InitNotifyIcon())
 	{
+		LOG_ERROR("InitNotifyIcon failed (lastError=%lu)", GetLastError());
 		TCHAR title[80];
 		TCHAR message[100];
 		LoadString(hInst, IDS_ERROR_TITLE, title, ARRAYSIZE(title));
@@ -59,6 +68,7 @@ int AppMain::Run()
 	settingsManager = std::make_unique<CRegistrySettingsManager>();
 	if (!settingsManager->Init())
 	{
+		LOG_ERROR("CRegistrySettingsManager::Init failed (lastError=%lu)", GetLastError());
 		TCHAR title[80];
 		TCHAR message[200];
 		LoadString(hInst, IDS_ERROR_TITLE, title, ARRAYSIZE(title));
@@ -99,6 +109,8 @@ int AppMain::Run()
 	//Restore windows to original state
 	windowsEnum.RestoreWindows();
 
+	LOG_INFO("SpookyView exiting cleanly, wParam=%llu", (unsigned long long)msg.wParam);
+	Logger::Instance().Shutdown();
 	return (int)msg.wParam;
 }
 

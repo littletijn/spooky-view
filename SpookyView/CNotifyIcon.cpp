@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CNotifyIcon.h"
 #include <stdio.h>
+#include <strsafe.h>
 
 CNotifyIcon::CNotifyIcon(HWND hWnd, HICON hIcon, TCHAR *tooltipText)
 {
@@ -12,7 +13,7 @@ CNotifyIcon::CNotifyIcon(HWND hWnd, HICON hIcon, TCHAR *tooltipText)
 	nid.hIcon = hIcon;
 	nid.uFlags = NIF_ICON | NIF_MESSAGE | NIF_TIP;
 	nid.uCallbackMessage = WM_NOTIFYICON;
-	_stprintf_s(nid.szTip, _countof(nid.szTip), tooltipText);
+	StringCchCopy(nid.szTip, _countof(nid.szTip), tooltipText ? tooltipText : _T(""));
 	this->addIconNid = nid;
 }
 
@@ -59,7 +60,7 @@ BOOL CNotifyIcon::SetTooltipText(TCHAR* tooltipText)
 		fullTooltipText.append(tooltipText);
 	}
 	nid.uFlags = NIF_TIP;
-	_stprintf_s(nid.szTip, _countof(nid.szTip), fullTooltipText.c_str());
+	StringCchCopy(nid.szTip, _countof(nid.szTip), fullTooltipText.c_str());
 	return Shell_NotifyIcon(NIM_MODIFY, &nid);
 }
 
@@ -69,8 +70,8 @@ BOOL CNotifyIcon::ShowBalloon(TCHAR *title, TCHAR *text)
 	nid.uFlags = NIF_INFO;
 	nid.uTimeout = 20000; //20 seconds
 	nid.dwInfoFlags = NIIF_INFO;
-	_stprintf_s(nid.szInfoTitle, _countof(nid.szInfoTitle), title);
-	_stprintf_s(nid.szInfo, _countof(nid.szInfo), text);
+	StringCchCopy(nid.szInfoTitle, _countof(nid.szInfoTitle), title ? title : _T(""));
+	StringCchCopy(nid.szInfo, _countof(nid.szInfo), text ? text : _T(""));
 	BOOL result = Shell_NotifyIcon(NIM_MODIFY, &nid);
 	return result;
 }

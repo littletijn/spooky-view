@@ -429,7 +429,7 @@ void WindowsEnum::DisableAlwaysOnTop(HWND hwnd)
 
 BOOL WindowsEnum::IsWindowTransparent(HWND hwnd)
 {
-	return GetWindowLongPtr(hwnd, GWL_STYLE) & WS_EX_LAYERED;
+	return (GetWindowLongPtr(hwnd, GWL_EXSTYLE) & WS_EX_LAYERED) != 0;
 }
 
 BOOL WindowsEnum::IsWindowAlwaysOnTop(HWND hwnd)
@@ -589,9 +589,22 @@ BOOL WindowsEnum::GetWindowProcessAndClass(HWND hwnd)
 		if (!isWindows8 || isImmersive == NULL || !isImmersive(hProcess))
 		{
 			//Get process image file name
-			GetProcessImageFileName(hProcess, filePathName, ARRAYSIZE(filePathName));
+			DWORD pathLen = GetProcessImageFileName(hProcess, filePathName, ARRAYSIZE(filePathName));
+			if (pathLen == 0)
+			{
+				CloseHandle(hProcess);
+				return FALSE;
+			}
+			filePathName[ARRAYSIZE(filePathName) - 1] = _T('\0');
 			fileName = _tcsrchr(filePathName, '\\');
-			fileName++;
+			if (fileName == NULL)
+			{
+				fileName = filePathName;
+			}
+			else
+			{
+				fileName++;
+			}
 
 			//Output debug data
 #ifdef _DEBUG

@@ -1,9 +1,32 @@
 #include "stdafx.h"
 #include "CUpdateAvailableDialog.h"
 #include <shellapi.h>
+#include <shlwapi.h>
 #include <memory>
 #include "ISettingsManager.h"
 #include "SpookyView.h"
+#include "Logger.h"
+
+namespace
+{
+	// Only accept https URLs that point at our update host. Anything else
+	// coming back from the update server is treated as untrusted: no UNC,
+	// no file://, no foreign protocol handlers, no alternate hosts.
+	BOOL IsTrustedDownloadUrl(LPCTSTR url)
+	{
+		if (url == NULL)
+		{
+			return FALSE;
+		}
+		static const TCHAR kPrefix[] = _T("https://updates.tyndomyn.net/");
+		const size_t prefixLen = _countof(kPrefix) - 1;
+		if (_tcslen(url) < prefixLen)
+		{
+			return FALSE;
+		}
+		return StrCmpNI(url, kPrefix, (int)prefixLen) == 0;
+	}
+}
 
 CUpdateAvailableDialog::CUpdateAvailableDialog(HINSTANCE hInstance, HWND hParent) : CModelessDialog(hInstance, hParent)
 {
@@ -40,7 +63,15 @@ INT_PTR CALLBACK CUpdateAvailableDialog::DlgProc(HWND hDlg, UINT message, WPARAM
 			break;
 		case ID_DOWNLOAD:
 #ifndef PACKAGING_STORE
-			ShellExecute(NULL, _T("open"), this->downloadUrl.c_str(), NULL, NULL, SW_SHOWNORMAL);
+			if (IsTrustedDownloadUrl(this->downloadUrl.c_str()))
+			{
+				LOG_INFO("Opening trusted update download URL");
+				ShellExecute(NULL, _T("open"), this->downloadUrl.c_str(), NULL, NULL, SW_SHOWNORMAL);
+			}
+			else
+			{
+				LOG_WARN("Refused untrusted update download URL");
+			}
 #endif // !PACKAGING_STORE
 			DestroyWindow(hDlg);
 			return TRUE;

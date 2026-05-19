@@ -11,8 +11,8 @@ public:
 	static INT_PTR CALLBACK StaticDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 	virtual INT_PTR CALLBACK DlgProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) = 0;
 protected:
-	HWND parentHwnd;
-	WORD key;
+	HWND parentHwnd = NULL;
+	WORD key = 0;
 	virtual BOOL SetupDialog() = 0;
 	virtual BOOL Create();
 	void OnDialogDestroyed();
