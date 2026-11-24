@@ -43,6 +43,9 @@ public:
 	void DecreaseForegroundTransparencyActiveWindow();
 	void IncreaseBackgroundTransparencyActiveWindow();
 	void DecreaseBackgroundTransparencyActiveWindow();
+
+	//Variables
+	static BOOL disableAutoSave;
 protected:
 	HWINEVENTHOOK hWinEventHook[4];
 

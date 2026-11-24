@@ -26,6 +26,7 @@ BOOL WindowsEnum::isUWPProcess;
 BOOL WindowsEnum::UWPProcessFound;
 std::list<HWND> WindowsEnum::applicationFrameHostWindows;
 BOOL WindowsEnum::isMinimizedCoreWindow;
+BOOL WindowsEnum::disableAutoSave;
 
 BOOL WindowsEnum::IsPaused()
 {
@@ -81,7 +82,10 @@ void WindowsEnum::ToggleAlwaysOnTopActiveWindow()
 	if (modificationSettings)
 	{
 		modificationSettings->alwaysOnTop = !modificationSettings->alwaysOnTop;
-		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::alwaysOnTop);
+		if (!disableAutoSave)
+		{
+			settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::alwaysOnTop);
+		}
 		if (!isPause)
 		{
 			ApplyWindowsModificationsForHotkeys();
@@ -96,7 +100,10 @@ void WindowsEnum::ToggleForegroundTransparencyActiveWindow()
 	if (modificationSettings)
 	{
 		modificationSettings->enabled = !modificationSettings->enabled;
-		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
+		if (!disableAutoSave)
+		{
+			settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
+		}
 		if (!isPause)
 		{
 			ApplyWindowsModificationsForHotkeys();
@@ -111,7 +118,10 @@ void WindowsEnum::ToggleBackgroundTransparencyActiveWindow()
 	if (modificationSettings)
 	{
 		modificationSettings->separateBackgroundValue = !modificationSettings->separateBackgroundValue;
-		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
+		if (!disableAutoSave)
+		{
+			settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
+		}
 		if (!isPause)
 		{
 			ApplyWindowsModificationsForHotkeys();
@@ -134,7 +144,10 @@ void WindowsEnum::IncreaseForegroundTransparencyActiveWindow()
 			modificationSettings->foreground = modificationSettings->foreground > 32 ? modificationSettings->foreground - 16 : 16;
 		}
 		modificationSettings->enabled = true;
-		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
+		if (!disableAutoSave)
+		{
+			settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
+		}
 		if (!isPause)
 		{
 			SetWindowsModifications();
@@ -149,7 +162,10 @@ void WindowsEnum::DecreaseForegroundTransparencyActiveWindow()
 	{
 		modificationSettings->foreground = modificationSettings->foreground < 239 ? modificationSettings->foreground + 16 : 255;
 		modificationSettings->enabled = true;
-		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
+		if (!disableAutoSave)
+		{
+			settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::foreground);
+		}
 		if (!isPause)
 		{
 			SetWindowsModifications();
@@ -172,7 +188,10 @@ void WindowsEnum::IncreaseBackgroundTransparencyActiveWindow()
 		}
 		modificationSettings->enabled = true;
 		modificationSettings->separateBackgroundValue = true;
-		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
+		if (!disableAutoSave)
+		{
+			settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
+		}
 		if (!isPause)
 		{
 			SetWindowsModifications();
@@ -188,7 +207,10 @@ void WindowsEnum::DecreaseBackgroundTransparencyActiveWindow()
 		modificationSettings->background = modificationSettings->background < 239 ? modificationSettings->background + 16 : 255;
 		modificationSettings->enabled = true;
 		modificationSettings->separateBackgroundValue = true;
-		settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
+		if (!disableAutoSave)
+		{
+			settingsManager->SaveModificationSettings(modificationSettings, fileName, windowClassName, HotkeyType::background);
+		}
 		if (!isPause)
 		{
 			SetWindowsModifications();

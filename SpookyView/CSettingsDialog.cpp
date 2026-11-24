@@ -66,6 +66,10 @@ void CSettingsDialog::ApplySettings()
 	{
 		cSetupDialog->ApplyFullTransparencySettings(enableFullTransparencyState);
 	}
+	HWND disableHotkeyAutosave = GetDlgItem(hWnd, IDC_CHECKBOX_DISABLE_HOTKEY_AUTOSAVE);
+	auto autoSaveState = Button_GetCheck(disableHotkeyAutosave);
+	settingsManager->SetDisableHotkeyAutosave(autoSaveState);
+	windowsEnum.disableAutoSave = autoSaveState;
 }
 
 void CSettingsDialog::ApplyHotkeySettings()
@@ -111,6 +115,13 @@ void CSettingsDialog::SetFormValues(HWND hDlg)
 	if (fullTransparentValue == 1)
 	{
 		Button_SetCheck(enableFullTransparentCheckbox, TRUE);
+	}
+
+	HWND disableHotkeyAutosave = GetDlgItem(hDlg, IDC_CHECKBOX_DISABLE_HOTKEY_AUTOSAVE);
+	int disableHotkeyAutoSaveValue = settingsManager->GetDisableHotkeyAutosave();
+	if (disableHotkeyAutoSaveValue == 1)
+	{
+		Button_SetCheck(disableHotkeyAutosave, TRUE);
 	}
 
 	HWND autoStartupCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_AUTO_STARTUP);
