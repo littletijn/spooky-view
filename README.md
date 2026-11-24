@@ -62,8 +62,11 @@ When the portable app is downloaded and extracted:
 
 ## Building
 
-### Microsoft Visual Studio
-This project can be build with Visual Studio 2022. Install the "Desktop Development with C++" workload and the "C++ Windows XP Support for VS 2017 (v141) tools" component. Open the Solution file "SpookyView.sln" and build the SpookyView project within.
+### Microsoft Visual Studio 2026 18.8 and newer
+Install the "Desktop Development with C++" workload. Then download and install the Microsoft Visual Studio 2019 Build Tools from https://aka.ms/vs/16/release/vs_buildtools.exe. Select the "C++ Windows XP Support for VS 2017 (v141) tools" and "MSVC v141 - VS 2017 C++ x64/x86 build tools (v14.16)" component during installation. Afterwards, open the Solution file "SpookyView.sln" and build the SpookyView project within.
+
+### Microsoft Visual Studio 2017 up to and including 2026 18.7
+Install the "Desktop Development with C++" workload and the "C++ Windows XP Support for VS 2017 (v141) tools" component. Open the Solution file "SpookyView.sln" and build the SpookyView project within.
 
 ### MinGW-w64 with Microsoft Visual Studio Code
 To build with the MinGW-w64 standalone version, use the Build task available for Microsoft Visual Studio Code. Debugging is also available with the included debug configuration. Simply build the project first and start the debugger afterwards.
