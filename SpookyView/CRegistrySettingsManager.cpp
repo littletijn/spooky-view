@@ -454,3 +454,19 @@ void CRegistrySettingsManager::SetDisableHotkeyAutosave(BOOL state)
 	BYTE stateByte = state ? '\x1' : '\x0';
 	SaveValue(_T("Software\\Spooky View"), _T("Disable hotkeys autosave"), REG_BINARY, &stateByte);
 }
+
+int CRegistrySettingsManager::GetRestoreOnPause()
+{
+	BYTE keyData[1];
+	if (ReadValue(_T("Software\\Spooky View"), _T("Restore on pause"), REG_BINARY, keyData, sizeof(keyData)))
+	{
+		return keyData[0];
+	}
+	return -1;
+}
+
+void CRegistrySettingsManager::SetRestoreOnPause(BOOL state)
+{
+	BYTE stateByte = state ? '\x1' : '\x0';
+	SaveValue(_T("Software\\Spooky View"), _T("Restore on pause"), REG_BINARY, &stateByte);
+}

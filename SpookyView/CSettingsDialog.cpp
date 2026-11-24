@@ -70,6 +70,10 @@ void CSettingsDialog::ApplySettings()
 	auto autoSaveState = Button_GetCheck(disableHotkeyAutosave);
 	settingsManager->SetDisableHotkeyAutosave(autoSaveState);
 	windowsEnum.disableAutoSave = autoSaveState;
+	HWND restoreOnPause = GetDlgItem(hWnd, IDC_CHECKBOX_RESTORE_ON_PAUSE);
+	auto restoreOnPauseState = Button_GetCheck(restoreOnPause);
+	settingsManager->SetRestoreOnPause(restoreOnPauseState);
+	windowsEnum.restoreOnPause = restoreOnPauseState;
 }
 
 void CSettingsDialog::ApplyHotkeySettings()
@@ -122,6 +126,13 @@ void CSettingsDialog::SetFormValues(HWND hDlg)
 	if (disableHotkeyAutoSaveValue == 1)
 	{
 		Button_SetCheck(disableHotkeyAutosave, TRUE);
+	}
+
+	HWND restoreOnPause = GetDlgItem(hDlg, IDC_CHECKBOX_RESTORE_ON_PAUSE);
+	int restoreOnPauseValue = settingsManager->GetRestoreOnPause();
+	if (restoreOnPauseValue == 1)
+	{
+		Button_SetCheck(restoreOnPause, TRUE);
 	}
 
 	HWND autoStartupCheckbox = GetDlgItem(hDlg, IDC_CHECKBOX_AUTO_STARTUP);

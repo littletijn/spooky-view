@@ -59,6 +59,7 @@
 #define IDC_STATIC_HOTKEY3              1026
 #define IDC_STATIC_VARIANT              1027
 #define IDC_CHECKBOX_DISABLE_HOTKEY_AUTOSAVE 1028
+#define IDC_CHECKBOX_RESTORE_ON_PAUSE   1029
 #define IDC_LIST_ADD_APPS               40000
 #define IDC_LIST_ADD_WINDOWS            40000
 #define IDC_LIST_APPS                   40000

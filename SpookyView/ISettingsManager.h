@@ -30,6 +30,8 @@ public:
 	virtual void SetEnableFullTransparent(BOOL state) = 0;
 	virtual int GetDisableHotkeyAutosave() = 0;
 	virtual void SetDisableHotkeyAutosave(BOOL state) = 0;
+	virtual int GetRestoreOnPause() = 0;
+	virtual void SetRestoreOnPause(BOOL state) = 0;
 };
 
 #endif

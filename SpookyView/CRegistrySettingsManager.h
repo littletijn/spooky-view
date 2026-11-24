@@ -27,6 +27,8 @@ public:
 	void SetEnableFullTransparent(BOOL state);
 	int GetDisableHotkeyAutosave();
 	void SetDisableHotkeyAutosave(BOOL state);
+	int GetRestoreOnPause();
+	void SetRestoreOnPause(BOOL state);
 protected:
 	std::unique_ptr<CSettings> settings;
 	BOOL fullTransparentEnabled;

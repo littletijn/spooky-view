@@ -27,6 +27,7 @@ BOOL WindowsEnum::UWPProcessFound;
 std::list<HWND> WindowsEnum::applicationFrameHostWindows;
 BOOL WindowsEnum::isMinimizedCoreWindow;
 BOOL WindowsEnum::disableAutoSave;
+BOOL WindowsEnum::restoreOnPause;
 
 BOOL WindowsEnum::IsPaused()
 {
@@ -39,6 +40,10 @@ void WindowsEnum::TogglePause()
 	if (isPause)
 	{
 		Unhook();
+		if (restoreOnPause)
+		{
+			RestoreWindows();
+		}
 	}
 	else
 	{
