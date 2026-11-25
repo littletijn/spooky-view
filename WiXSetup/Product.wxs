@@ -17,19 +17,6 @@
 
 		<Icon Id="icon.ico" SourceFile="spookyview.ico" />
 		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
-
-		<?if $(var.SpookyView.Platform) = "x64" or $(var.SpookyView.Platform) = "ARM64"?>
-			<!-- Fix for https://github.com/wixtoolset/issues/issues/2165 -->
-			<CustomAction Id="Overwrite_WixSetDefaultPerMachineFolder" Property="WixPerMachineFolder" Value="[ProgramFiles64Folder][ApplicationFolderName]" Execute="immediate" />
-			<InstallUISequence>
-				<Custom Action="Overwrite_WixSetDefaultPerMachineFolder" After="WixSetDefaultPerMachineFolder" />
-			</InstallUISequence>
-			<InstallExecuteSequence>
-				<Custom Action="Overwrite_WixSetDefaultPerMachineFolder" After="WixSetDefaultPerMachineFolder" />
-			</InstallExecuteSequence>
-
-			<SetProperty Id="ARPINSTALLLOCATION" Value="[APPLICATIONFOLDER]" After="CostFinalize" />
-		<?endif?>
 	</Package>
 
 	<Fragment>
