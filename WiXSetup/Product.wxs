@@ -13,10 +13,10 @@
 		<Property Id="ApplicationFolderName" Value="Spooky View" />
 		<Property Id="WixAppFolder" Value="WixPerMachineFolder" />
 		<ui:WixUI Id="WixUI_Advanced" />
-    <WixVariable Id="WixUILicenseRtf" Value="gpl-3.0.rtf" />
+		<WixVariable Id="WixUILicenseRtf" Value="gpl-3.0.rtf" />
 
-    <Icon Id="icon.ico" SourceFile="spookyview.ico" />
-    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+		<Icon Id="icon.ico" SourceFile="spookyview.ico" />
+		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
 
 		<?if $(var.SpookyView.Platform) = "x64" or $(var.SpookyView.Platform) = "ARM64"?>
 			<!-- Fix for https://github.com/wixtoolset/issues/issues/2165 -->
@@ -50,20 +50,22 @@
 
 	<Fragment>
 		<ComponentGroup Id="ProductComponents" Directory="APPLICATIONFOLDER">
-			<Component Id="ProductComponent">
+			<Component Id="spookyview" Guid="02a7733c-dbb6-40ae-8038-6f72272e3bd1">
 				<File Id="executable" Source="$(var.SpookyView.TargetPath)" />
-        <File Id="license" Source="gpl-3.0.rtf" />
+			</Component>
+			<Component Id="license" Guid="5bb70d0a-95a3-40b5-8c93-d46e864a0ad1">
+				<File Id="license" Source="gpl-3.0.rtf" />
 			</Component>
 		</ComponentGroup>
 	</Fragment>
 
-  <Fragment>
-    <DirectoryRef Id="ApplicationProgramsFolder">
-      <Component Id="ApplicationShortcut" Guid="C35E4AD7-0D9D-4FA3-B507-ADDC1CDC0561">
-        <Shortcut Id="ApplicationStartMenuShortcut" Name="Spooky View" Description="Make any window transparent." Target="[#executable]" WorkingDirectory="APPLICATIONFOLDER" />
-        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
-        <RegistryValue Root="HKCU" Key="Software\SpookyView" Name="installed" Type="integer" Value="1" KeyPath="yes" />
-      </Component>
-    </DirectoryRef>
-  </Fragment>
+	<Fragment>
+		<DirectoryRef Id="ApplicationProgramsFolder">
+			<Component Id="ApplicationShortcut" Guid="C35E4AD7-0D9D-4FA3-B507-ADDC1CDC0561">
+				<Shortcut Id="ApplicationStartMenuShortcut" Name="Spooky View" Description="Make any window transparent." Target="[#executable]" WorkingDirectory="APPLICATIONFOLDER" />
+				<RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall" />
+				<RegistryValue Root="HKCU" Key="Software\SpookyView" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+			</Component>
+		</DirectoryRef>
+	</Fragment>
 </Wix>
