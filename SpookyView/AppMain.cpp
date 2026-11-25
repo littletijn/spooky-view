@@ -73,6 +73,8 @@ int AppMain::Run()
 	{
 		mainWindow->InitHotKeys();
 	}
+	windowsEnum.disableAutoSave = settingsManager->GetDisableHotkeyAutosave() == 1;
+	windowsEnum.restoreOnPause = settingsManager->GetRestoreOnPause() == 1;
 	windowsEnum.SetWindowsModifications();
 	mainWindow->CheckIsFirstRun();
 #ifdef UNICODE
