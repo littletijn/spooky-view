@@ -1,6 +1,7 @@
 .vs/
 *.vcxproj.user
 *.wapproj.user
+*.wixproj.user
 *.cache
 *.aps
 /bin/**
